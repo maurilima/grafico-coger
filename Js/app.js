@@ -1,33 +1,51 @@
 
 $('document').ready(function () {
 
-    $.ajax({
-        type: "POST",
-        url: "chart.php",
-        dataType: "json",
-        success: function (data) {
+    var myInit = {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'default'
+        
+    };
 
-            // for (var i in data) {
-            //     console.log(data[i].vendas)
-            // }
-            var nomearray = [];
-            var vendasarray = [];
+    //const url = "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-06-19/2018-07-04";
+    const url = "https://viacep.com.br/ws/69301110/json/";
+    console.log('Iniciando');
 
-            for (var i = 0; i < data.length; i++) {
+    fetch(url,myInit)
+    .then(response => { response.json()
+        .then(data => console.log(data))
+    })
+    .catch(e => console.log('Erro :'+ e.message));
 
-                nomearray.push(data[i].nome);
-                vendasarray.push(data[i].vendas);
 
-            }
 
-            grafico(nomearray,vendasarray);
 
-        }
-    });
+
+
+    //      .then(function(response){
+    //          return response.json()})
+    //         .then(function(data){
+    //          console.log(data)
+    //     })
+    //    .catch(function(err) { console.error(err) })
+
+
+    // fetch(url, myInit)
+    //     .then(function(response){
+    //          return response.json()
+    //     })
+    //     .then(function (data) {
+    //         console.log(data);
+    //     })
+    //     .catch(function(err) { console.error(err); });
+        
+
+
 
 })
 
-function grafico(nome,vendas) {
+function grafico(nome, vendas) {
 
 
     var ctx = document.getElementById('myChart').getContext('2d');
