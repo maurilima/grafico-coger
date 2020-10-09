@@ -12,25 +12,38 @@ $('document').ready(function () {
     const url = "https://viacep.com.br/ws/69301110/json/";
     console.log('Iniciando');
 
-    fetch(url, myInit)
-        .then(response => {
-            response.json()
-                .then(data => console.log(data))
-        })
-        .catch(e => console.log('Erro :' + e.message));
+    var aLabel = [];
+    var aValorIcms = [];
+
+    for (var i in vrepase ) {
+
+        aLabel.push(vrepase[i].portalrepassedata.substring(0,10))
+        aValorIcms.push(vrepase[i].portalrepasseicms)
+    }
+
+    grafico(aLabel, aValorIcms)
+    
+    // Obter Dado Api
+
+    // fetch(url, myInit)
+    //     .then(response => {
+    //         response.json()
+    //             .then(data => console.log(data))
+    //     })
+    //     .catch(e => console.log('Erro :' + e.message));
 
 
 
 })
 
-function grafico(nome, vendas) {
+function grafico(nome, valor) {
 
 
     var ctx = document.getElementById('myChart').getContext('2d');
 
     var chart = new Chart(ctx, {
 
-        type: 'horizontalBar',
+        type: 'doughnut',
         data: {
             labels: nome,
 
@@ -39,7 +52,7 @@ function grafico(nome, vendas) {
                 label: 'Gráfico',
                 backgroundColor: ['green', 'blue', 'yellow'],
                 borderColor: 'rgb(255, 99, 132)',
-                data: vendas
+                data: valor
             }]
         },
 
