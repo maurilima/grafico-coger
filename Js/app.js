@@ -1,5 +1,7 @@
 
-$('document').ready(function () {
+// $('document').ready(function () {
+  document.addEventListener('DOMContentLoaded', function(){
+    // do something
 
     var myInit = {
         method: 'GET',
@@ -8,33 +10,33 @@ $('document').ready(function () {
 
     };
 
-    //const url = "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-06-19/2018-07-04";
-    const url = "https://viacep.com.br/ws/69301110/json/";
+    const url = "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-06-19/2018-07-04";
+    // const url = "https://viacep.com.br/ws/69301110/json/";
     console.log('Iniciando');
 
     var aLabel = [];
     var aValorIcms = [];
 
-    for (var i in vrepase ) {
+    // for (var i in vrepase ) {
 
-        aLabel.push(vrepase[i].portalrepassedata.substring(0,10))
-        aValorIcms.push(vrepase[i].portalrepasseicms)
-    }
+    //     aLabel.push(vrepase[i].portalrepassedata.substring(0,10))
+    //     aValorIcms.push(vrepase[i].portalrepasseicms)
+    // }
 
-    grafico(aLabel, aValorIcms)
+    // grafico(aLabel, aValorIcms)
     
     // Obter Dado Api
 
-    // fetch(url, myInit)
-    //     .then(response => {
-    //         response.json()
-    //             .then(data => console.log(data))
-    //     })
-    //     .catch(e => console.log('Erro :' + e.message));
+    fetch(url, myInit)
+        .then(response => {
+            response.json()
+                .then(data => console.log(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
 
 
-
-})
+});
+// })
 
 function grafico(nome, valor) {
 
@@ -43,7 +45,7 @@ function grafico(nome, valor) {
 
     var chart = new Chart(ctx, {
 
-        type: 'doughnut',
+        type: 'line',
         data: {
             labels: nome,
 
