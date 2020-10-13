@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // Obter Dado Api
+    alert('Entrando no Aplicativo')
+   
 
     fetch(url, options)
         .then(response => {
@@ -30,7 +32,12 @@ function ShowGrafico(data) {
     var vFundebIpva = mapFundebIpva(data)
     var vFundef = mapFundef(data)
 
-    console.log(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef)
+    // var dt = new Date;
+    // var ag = dt.toLocaleDateString(dt);
+
+
+    // console.log(FormataStringData(ag));
+    // console.log(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef)
 
     grafico(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef  );
 
@@ -294,3 +301,21 @@ function totalFundef(data) {
     }, []);
     return retorno
 }
+
+function FormataStringData(data) {
+    var dia  = data.split("/")[0];
+    var mes  = data.split("/")[1];
+    var ano  = data.split("/")[2];
+  
+    return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
+    // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
+  }
+  
+  function formata_data(data) { // dd/mm/yyyy -> yyyy-mm-dd
+    data_formatada = data.substr(6,4) + '-' + data.substr(3,2) + '-' + data.substr(0,2) + ' 00:00:00';
+    return new Date(data_formatada);
+}
+  
+// function DataInvertida(data){
+//     dia  
+// }
