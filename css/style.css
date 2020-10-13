@@ -1,11 +1,82 @@
-html, body {
+*{
+   margin: 0; 
+   padding: 0;
+   box-sizing: border-box;
+   /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', 'sans-serif'; */
+
+}
+.container {
+    border: 1px red solid;
+    background-color: #cecbca;
+    /* height: 200px;  */
+    display: flex;
+    flex-direction: row;
     margin: 0;
-    padding: 0;
-    background: #487eb0;
-    font-family: 'Roboto';
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px;
+    /* flex-grow: 0; */
+
+}
+.entradas {
+    display: flex;
+    flex-direction: column;
+    align-items: space-around;
+    width: 49%;
+    height: 200px;
+    padding-left: 10px;
+    padding-right: 80px;
+    margin: 20;
+    background-color:rgb(241, 223, 199);
+
 }
 
-h1 {
+div.charts-Content {
+    background-color: #faf6f5;
+    height: 400px;
+    /* border: 1px solid red; */
+
+
+}
+.charts-flex-parent {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around ;
+    align-items: space-around;
+    height: 90%;
+
+
+}
+.charts-box {
+    display: flex;
+    flex-direction: column;
+    align-items: space-around;
+    justify-content: space-between;
+    width: 45%;
+    background-color:rgb(241, 223, 199);
+}
+
+
+form.input {
+    padding: 15px;
+    font-size: 16px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: none;
+    outline: 0;
+}
+
+/* html, body {
+    margin: 50; 
+    padding: 10;
+    
+    background: #dce1e2;
+    font-family: 'Roboto';
+} */
+
+/* h1 {
     padding-left: 15px;
     color: white;
 }
@@ -42,11 +113,14 @@ input {
 }
 
 .container {
-    height: 480px;
+    height: 800px;
+    margin-left: 10px;
+    margin-right: 10px;
     background: white;
     border: 1px solid gainsboro;
     overflow: auto;
 }
+
 
 .get {
     background: #40739e;
@@ -59,4 +133,4 @@ input {
 
 .content {
     padding: 20px 30px 20px 30px;
-}
+} */
