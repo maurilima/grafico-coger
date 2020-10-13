@@ -24,35 +24,39 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">Data Inicial</span>
                       </div>
-                      <input type="date" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                      <input id="dataInicial" name="dataInicial" type="date" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                     </div>
                     
                     <div class="input-group mb-3">
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">Data Final . </span>
                       </div>
-                      <input type="date" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                      <input  type="date" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                     </div>
+                    <button id ="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
 
                 </form>
        
             </div>
             <div class="entradas">
-                <form>
-                    <div class="input-group-prepend">
-
-                        <div class="form-group">
-                            <label for="dataInicial">Data Inicial</label>
-                            <input type="date" class="form-control">
-                            <small>Informe a Data Inicial</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="dataFinal">Data Final</label>
-                            <input type="date" class="form-control">
-                            <small>Informe a Data Final</small>
-                        </div>
+                <form >
+                    <label for="basic-url">Repasses por Periodo</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">Data Inicial</span>
+                      </div>
+                      <input id="dtInicial" name="dtInicial" type="date" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                     </div>
+                    
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">Data Final . </span>
+                      </div>
+                      <input id="dtFinal" name="dtFinal" type="date" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                    </div>
+                    <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary">Enviar</button>
                 </form>
+       
             </div>
 
         </div>

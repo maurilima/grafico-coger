@@ -1,29 +1,50 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // do something
 
-    var options = {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'default'
-
-    };
-
-    const url = "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-06-19/2018-07-04";
+var btnRepasse = document.getElementById("repasse");
 
 
-    // Obter Dado Api
-    alert('Entrando no Aplicativo')
+
+btnRepasse.addEventListener("click", GerarRepasse, false);
+
+
+
+
+
+function GerarRepasse() {
+    var dtInicial =  document.getElementById("dtInicial").value;
+    var dtFinal  =  document.getElementById("dtFinal").value;
+    if ( dtInicial > dtFinal ) {
+        console.log("Maior")
+    }
+    console.log(dtInicial, dtFinal);
+
+}
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     // do something
+
+//     var options = {
+//         method: 'GET',
+//         mode: 'cors',
+//         cache: 'default'
+
+//     };
+
+    // const url = "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
+
+
+    // // Obter Dado Api
+    // // alert('Entrando no Aplicativo')
    
 
-    fetch(url, options)
-        .then(response => {
-            response.json()
-                .then(data => ShowGrafico(data))
-        })
-        .catch(e => console.log('Erro :' + e.message));
+    // fetch(url, options)
+    //     .then(response => {
+    //         response.json()
+    //             .then(data => ShowGrafico(data))
+    //     })
+    //     .catch(e => console.log('Erro :' + e.message));
 
 
-});
+// });
 
 function ShowGrafico(data) {
     var vArrecadaIcms = mapIcms(data)
@@ -248,8 +269,6 @@ function mapFundef(data) {
 }
 
 
-
-
 function totalIcms(data) {
     var retorno = data.reduce(function (acumulador, valor) {
         var indice = acumulador.map((o) => o.munId).indexOf(valor.munId);
@@ -316,6 +335,3 @@ function FormataStringData(data) {
     return new Date(data_formatada);
 }
   
-// function DataInvertida(data){
-//     dia  
-// }
