@@ -1,121 +1,108 @@
+// document.addEventListener('DOMContentLoaded', function () {
+
+// "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
+// https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
+
+
+
+const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/'
+
+var options = {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'default'
+}
 
 var btnRepasse = document.getElementById("repasse");
-
-
+var btnArrecada = document.getElementById("arrecada");
 
 btnRepasse.addEventListener("click", GerarRepasse, false);
 
+btnArrecada.addEventListener('click',GerarArrecadacao, false);
 
 
+function GerarArrecadacao(){
+    var mes = document.getElementById('mes').value;
+    var ano = document.getElementById('ano').value;
 
-
-function GerarRepasse() {
-    var dtInicial =  document.getElementById("dtInicial").value;
-    var dtFinal  =  document.getElementById("dtFinal").value;
-    if ( dtInicial > dtFinal ) {
-        console.log("Maior")
+    if(mes > 12) {
+        alert('Mes de Esta entre "0" e "12" ')
     }
-    console.log(dtInicial, dtFinal);
+    getApiArrecada(mes,ano)
+
+
 
 }
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     // do something
+function getApiArrecada(mes, ano) {
+    var url = BASE_URL+ 'getportalarrecadacao/'+ mes + '/' + ano;
 
-//     var options = {
-//         method: 'GET',
-//         mode: 'cors',
-//         cache: 'default'
-
-//     };
-
-    // const url = "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
-
-
-    // // Obter Dado Api
-    // // alert('Entrando no Aplicativo')
-   
-
-    // fetch(url, options)
-    //     .then(response => {
-    //         response.json()
-    //             .then(data => ShowGrafico(data))
-    //     })
-    //     .catch(e => console.log('Erro :' + e.message));
-
-
-// });
-
-function ShowGrafico(data) {
-    var vArrecadaIcms = mapIcms(data)
-    var vArrecadaIpva = mapIpva(data)
-    var vFundebIcms = mapFundebIcms(data)
-    var vFundebIpva = mapFundebIpva(data)
-    var vFundef = mapFundef(data)
-
-    // var dt = new Date;
-    // var ag = dt.toLocaleDateString(dt);
-
-
-    // console.log(FormataStringData(ag));
-    // console.log(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef)
-
-    grafico(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef  );
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => ArrecadaGrafico(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
 
 
 }
 
 
+function ArrecadaGrafico(data){
+    var ArrecadaIcms = mapArrecadaIcms(data)
+    var ArrecadaIpva = mapArrecadaIpva(data)
+    var ArrecadaOutros = mapArrecadaOutros(data)
+    var ArrecadaItcd = mapArrecadaItcd(data)
+    var ArrecadaIrrf = mapArrecadaIrrf(data)
+    var ArrecadaTaxas = mapArrecadaTaxas(data)
 
 
-function grafico(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
+    GraficoArrecada( ArrecadaIcms, ArrecadaIpva , ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas )
 
-    var labelIcms      = []
-    var valorIcms      = []
-    var labelIpva      = []
-    var valorIpva      = []
-    var labelFundeIcms = [] 
-    var valorFundeIcms = [] 
-    var labelFundeIpva = [] 
-    var valorFundeIpva = [] 
-    var labelFundef    = [] 
-    var valorFundef    = [] 
 
-    for (var i in vIcms) {
-        labelIcms.push(vIcms[i].munId)
-        valorIcms.push(vIcms[i].icms)
-        // .toLocaleString("pt-BR",
-        // { style : "currency", currency : "BRL"}))
+
+}
+
+
+function GraficoArrecada(ArrecadaIcms, ArrecadaIpva , ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas ) {
+
+    var labelIcms   = []
+    var valorIcms   = []
+    var valorIpva   = []
+    var valorOutros = []
+    var valorItcd   = []
+    var valorIrrf   = []
+    var valorTaxas  = []
+
+    for (var i in ArrecadaIcms) {
+        labelIcms.push(ArrecadaIcms[i].mes)
+        valorIcms.push(ArrecadaIcms[i].icms)
+        
     }
-    for (var i in vIpva) {
-        labelIpva.push(vIpva[i].munId)
-        valorIpva.push(vIpva[i].ipv)
-        // .toLocaleString("pt-BR",
-        // { style : "currency", currency : "BRL"}))
+    for (var i in ArrecadaIpva) {
+          valorIpva.push(ArrecadaIpva[i].ipva)
+        
     }
+    for (var i in ArrecadaOutros) {
+        valorOutros.push(ArrecadaOutros[i].outros)
+      
+  }
 
-    for (var i in vFundebIcms) {
-        labelFundeIcms.push(vFundebIcms[i].munId)
-        valorFundeIcms.push(vFundebIcms[i].fundebicms)
-        // .toLocaleString("pt-BR",
-        // { style : "currency", currency : "BRL"}))
-    }
+  for (var i in ArrecadaItcd) {
+    valorItcd.push(ArrecadaItcd[i].itcd)
+  
+  }
+  
+  for (var i in ArrecadaIrrf) {
+    valorIrrf.push(ArrecadaIrrf[i].irrf)
+  
+  }
+  for (var i in ArrecadaTaxas) {
+    valorTaxas.push(ArrecadaTaxas[i].taxas)
+  
+  }
 
-    for (var i in vFundebIpva) {
-        labelFundeIpva.push(vFundebIpva[i].munId)
-        valorFundeIpva.push(vFundebIpva[i].fundebipva)
-        // .toLocaleString("pt-BR",
-        // { style : "currency", currency : "BRL"}))
-    }
-
-    for (var i in vFundef) {
-        labelFundef.push(vFundef[i].munId)
-        valorFundef.push(vFundef[i].fundef)
-        // .toLocaleString("pt-BR",
-        // { style : "currency", currency : "BRL"}))
-    }
-
-    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx = document.getElementById('arrecadaChart').getContext('2d');
 
     var chart = new Chart(ctx, {
 
@@ -125,7 +112,7 @@ function grafico(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
 
 
             datasets: [{
-                label: 'Icms',
+                label: 'ICMS',
                 backgroundColor: 'rgba(38,185,154,0.31)',
                 borderColor: 'rgba(38,185,154,0.7)',
                 pointBorderColor: 'rgba(38,185,154,0.7)',
@@ -136,19 +123,335 @@ function grafico(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
                 data: valorIcms
             },
             {
-                label: 'Ipva',
-                backgroundColor: 'rgba(3,88,106,0.3)',
-                borderColor: 'rgba(3,88,106,0.7)',
-                pointBorderColor: 'rgba(3,88,106,0.7)',
-                pointBackgroundColor: 'rgba(3,88,106,0.7)',
+                label: 'IPVA',
+                backgroundColor: 'rgba(0,0,128,0.6)',
+                borderColor: 'rgba(25,25,112,0.7)',
+                pointBorderColor: 'rgba(25,25,112,0.7)',
+                pointBackgroundColor: 'rgba(25,25,112,0.7)',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(151,187,205,1)',
+                pointHoverBorderColor: 'rgba(25,25,112,1)',
                 pointBorderWidth: 1,
-                data: valorFundef
+                data: valorIpva
 
             },
             {
-                label: 'Fundef',
+                label: 'OUTROS',
+                backgroundColor: 'rgba(147,112,219,0.6)',
+                borderColor: 'rgba(147,112,219,0.7)',
+                pointBorderColor: 'rgba(147,112,219,0.7)',
+                pointBackgroundColor: 'rgba(147,112,219,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(138,43,226,1)',
+                pointBorderWidth: 1,
+                data: valorOutros
+
+            },
+            {
+                label: 'ITCD',
+                backgroundColor: 'rgba(244,164,96,0.4)',
+                borderColor: 'rgba(244,164,96,0.7)',
+                pointBorderColor: 'rgba(244,164,96,0.5)',
+                pointBackgroundColor: 'rgba(244,164,96,0.5)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(139,69,19,1)',
+                pointBorderWidth: 1,
+                data: valorItcd
+
+            },
+            {
+                label: 'IRRF',
+                backgroundColor: 'rgba(255,0,0,0.4)',
+                borderColor: 'rgba(255,0,0,0.7)',
+                pointBorderColor: 'rgba(255,0,0,0.7)',
+                pointBackgroundColor: 'rgba(255,0,0,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(139,0,0,1)',
+                pointBorderWidth: 1,
+                data: valorIrrf
+
+            },
+            {
+                label: 'TAXAS',
+                backgroundColor: 'rgba(255,255,0,0.5)',
+                borderColor: 'rgba(255,255,0,0.7)',
+                pointBorderColor: 'rgba(255,255,0,0.7)',
+                pointBackgroundColor: 'rgba(255,255,0,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(255,140,0,1)',
+                pointBorderWidth: 1,
+                data: valorTaxas
+
+            }
+
+
+
+
+            ]
+        },
+
+        options: {
+            layout: {
+                padding: {
+                    left: 50,
+                    right: 50,
+                    top: 10,
+                    bottom: 10,
+                    with: 10,
+                    heigh: 10
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            tooltips :{
+                mode:'index',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return data.datasets[tooltipItem.datasetIndex]
+                        .label + ' : R$ '  + (data.datasets[tooltipItem.datasetIndex])
+                         .data[tooltipItem.index]
+                         .toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+
+
+
+
+function mapArrecadaIcms(data) {
+  
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            icms: parseFloat2Decimals( item.portalarrecadacaoicms )
+        }
+
+    }
+    )
+    // console.log(retorno)
+    return retorno
+}
+
+function mapArrecadaIpva(data) {
+  
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            ipva: parseFloat2Decimals( item.portalarrecadacaoipva )
+        }
+
+    }
+    )
+    return retorno
+
+}
+
+
+function mapArrecadaOutros(data) {
+  
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            outros: parseFloat2Decimals( item.portalportalarrecadacaooutros )
+        }
+
+    }
+    )
+    return retorno
+
+}
+
+function mapArrecadaItcd(data) {
+  
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            itcd: parseFloat2Decimals(item.portalarrecadacaoitcd )
+                                           
+        }
+
+
+    }
+    )
+    return retorno
+}
+
+function mapArrecadaIrrf(data) {
+  
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            irrf: parseFloat2Decimals( item.portalarrecadacaoirrf )
+        }
+
+    }
+    )
+    return retorno
+}
+
+function mapArrecadaTaxas(data) {
+  
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            taxas: parseFloat2Decimals( item.portalarrecadacaotaxas )
+        }
+
+    }
+    )
+    // console.log(retorno)
+    return retorno
+}
+
+// function totalArrecadaIcms(data) {
+//     var retorno = data.reduce(function (acumulador, valor) {
+//         var indice = acumulador.map((o) => o.munId).indexOf(valor.mes);
+//         if (indice == -1) {
+//             acumulador.push(valor);
+//         } else {
+//             acumulador[indice].icms += valor.icms;
+//         }
+//         return acumulador;
+//     }, []);
+//     console.log(retorno)
+//     return retorno
+// }
+
+
+
+
+
+function GerarRepasse() {
+    var dtInicial = document.getElementById("dtInicial").value;
+    var dtFinal = document.getElementById("dtFinal").value;
+    if (dtInicial > dtFinal) {
+        alert('Data Inical deve Ser Menor que Data Final!')
+    }
+    else {
+        ObterDadosRepase(dtInicial, dtFinal);
+    }
+
+}
+
+function ObterDadosRepase(dInicial, dFinal) {
+    var url = BASE_URL + 'getportalrepasse/' + dInicial + '/' + dFinal;
+
+
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => ShowGrafico(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+
+
+};
+
+function ShowGrafico(data) {
+    var vArrecadaIcms = mapIcms(data)
+    var vArrecadaIpva = mapIpva(data)
+    var vFundebIcms = mapFundebIcms(data)
+    var vFundebIpva = mapFundebIpva(data)
+    var vFundef = mapFundef(data)
+    
+    GraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef);
+    // console.log(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef);
+    
+
+}
+
+function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
+
+    var labelIcms = []
+    var valorIcms = []
+    var labelIpva = []
+    var valorIpva = []
+    var labelFundeIcms = []
+    var valorFundeIcms = []
+    var labelFundeIpva = []
+    var valorFundeIpva = []
+    var labelFundef = []
+    var valorFundef = []
+
+    for (var i in vIcms) {
+        labelIcms.push(vIcms[i].munId)
+        valorIcms.push(vIcms[i].icms)
+        
+    }
+    for (var i in vIpva) {
+        labelIpva.push(vIpva[i].municipionome)
+        valorIpva.push(vIpva[i].ipv)
+        
+    }
+
+    for (var i in vFundebIcms) {
+        labelFundeIcms.push(vFundebIcms[i].municipionome)
+        valorFundeIcms.push(vFundebIcms[i].fundebicms)
+        
+    }
+
+    for (var i in vFundebIpva) {
+        labelFundeIpva.push(vFundebIpva[i].municipionome)
+        valorFundeIpva.push(vFundebIpva[i].fundebipva)
+       
+    }
+
+    for (var i in vFundef) {
+        labelFundef.push(vFundef[i].municipionome)
+        valorFundef.push(vFundef[i].fundef)
+        
+    }
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var chart = new Chart(ctx, {
+
+        type: 'bar',
+        data: {
+            labels: labelIcms,
+
+
+            datasets: [{
+                label: 'ICMS',
+                backgroundColor: 'rgba(38,185,154,0.31)',
+                borderColor: 'rgba(38,185,154,0.7)',
+                pointBorderColor: 'rgba(38,185,154,0.7)',
+                pointBackgroundColor: 'rgba(38,185,154,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(220,220,220,1)',
+                pointBorderWidth: 1,
+                data: valorIcms
+            },
+            {
+                label: 'IPVA',
+                backgroundColor: 'rgba(0,0,128,0.6)',
+                borderColor: 'rgba(25,25,112,0.7)',
+                pointBorderColor: 'rgba(25,25,112,0.7)',
+                pointBackgroundColor: 'rgba(25,25,112,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(25,25,112,1)',
+                pointBorderWidth: 1,
+                data: valorIpva
+
+            },
+            {
+                label: 'FUNDEF',
                 backgroundColor: 'rgba(147,112,219,0.3)',
                 borderColor: 'rgba(147,112,219,0.7)',
                 pointBorderColor: 'rgba(147,112,219,0.7)',
@@ -156,7 +459,7 @@ function grafico(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(138,43,226,1)',
                 pointBorderWidth: 1,
-                data: valorIpva
+                data: valorFundef
 
             }
 
@@ -180,28 +483,34 @@ function grafico(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
                         beginAtZero: true
                     }
                 }]
+            },
+            tooltips :{
+                mode:'index',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return data.datasets[tooltipItem.datasetIndex]
+                        .label + ' : R$ '  + (data.datasets[tooltipItem.datasetIndex])
+                         .data[tooltipItem.index]
+                         .toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+                    }
+                }
             }
         }
     });
 }
 
-
-
-
-
 function parseFloat2Decimals(value) {
-    if(value != null) {
-      return parseFloat(parseFloat(value).toFixed(2));
+    if (value != null) {
+        return parseFloat(parseFloat(value).toFixed(2));
     }
-    else 
-    {return 0}
+    else { return 0 }
 }
 
 function mapIcms(data) {
     var retorno = data.map(function (item) {
         return {
 
-            munId: item.portalrepassemunicipiocod,
+            munId: item.municipionome,
             icms: parseFloat2Decimals(item.portalrepasseicms),
         }
 
@@ -214,7 +523,7 @@ function mapIpva(data) {
     var retorno = data.map(function (item) {
         return {
 
-            munId: item.portalrepassemunicipiocod,
+            munId: item.municipionome,
             ipv: parseFloat2Decimals(item.portalrepasseipva)
         }
     })
@@ -226,7 +535,7 @@ function mapFundebIcms(data) {
     var retorno = data.map(function (item) {
         return {
 
-            munId: item.portalrepassemunicipiocod,
+            munId: item.municipionome,
             fundebicms: parseFloat2Decimals(item.portalrepassefundebicms)
         }
     })
@@ -250,7 +559,7 @@ function mapFundebIpva(data) {
     var retorno = data.map(function (item) {
         return {
 
-            munId: item.portalrepassemunicipiocod,
+            munId: item.municipionome,
             fundebipva: parseFloat2Decimals(item.portalrepassefundebipva)
         }
     })
@@ -261,7 +570,7 @@ function mapFundef(data) {
     var retorno = data.map(function (item) {
         return {
 
-            munId: item.portalrepassemunicipiocod,
+            munId: item.municipionome,
             fundef: parseFloat2Decimals(item.portalrepassefundef)
         }
     })
@@ -322,16 +631,33 @@ function totalFundef(data) {
 }
 
 function FormataStringData(data) {
-    var dia  = data.split("/")[0];
-    var mes  = data.split("/")[1];
-    var ano  = data.split("/")[2];
-  
-    return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
+    var dia = data.split("/")[0];
+    var mes = data.split("/")[1];
+    var ano = data.split("/")[4];
+
+    return ano + '-' + ("0" + mes).slice(-2) + '-' + ("0" + dia).slice(-2);
     // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
-  }
-  
-  function formata_data(data) { // dd/mm/yyyy -> yyyy-mm-dd
-    data_formatada = data.substr(6,4) + '-' + data.substr(3,2) + '-' + data.substr(0,2) + ' 00:00:00';
+}
+
+function formata_data(data) { // dd/mm/yyyy -> yyyy-mm-dd
+    data_formatada = data.substr(6, 4) + '-' + data.substr(3, 2) + '-' + data.substr(0, 2) + ' 00:00:00';
     return new Date(data_formatada);
 }
-  
+
+function leftPadZeros(value, totalWidth, paddingChar) {
+    var length = totalWidth - value.toString().length + 1;
+    return Array(length).join(paddingChar || '0') + value;
+  };
+
+  function onlynumber(evt) {
+    var theEvent = evt || window.event;
+    var key = theEvent.keyCode || theEvent.which;
+    key = String.fromCharCode( key );
+    //var regex = /^[0-9.,]+$/;
+    var regex = /^[0-9.]+$/;
+    if( !regex.test(key) ) {
+       theEvent.returnValue = false;
+       if(theEvent.preventDefault) theEvent.preventDefault();
+    }
+ }
+ //  
