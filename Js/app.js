@@ -8,11 +8,11 @@ var options = {
 }
 
 var arrays = ['portalarrecadacaoicms',
-                  'portalarrecadacaoipva',
-                  'portalportalarrecadacaooutros',
-                  'portalarrecadacaoitcd',
-                  'portalarrecadacaoirrf',
-                  'portalarrecadacaotaxas'
+              'portalarrecadacaoipva',
+              'portalportalarrecadacaooutros',
+              'portalarrecadacaoitcd',
+              'portalarrecadacaoirrf',
+              'portalarrecadacaotaxas'
     ]
 
 var btnRepasse = document.getElementById("repasse");
@@ -48,7 +48,16 @@ function GerarImpostometro(data) {
     return novoConteudo;
   });
 
-   
+
+console.log(data, data[0]["portalportalarrecadacaooutros"])
+  
+    document.getElementById('icmsvalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoicms"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('ipvavalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoipva"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('irrfvalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('itcdvalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('taxasvalor').innerHTML  = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+
     dados = arrays.map(a => parseFloat2Decimals(a,2 ))
 
 
@@ -73,7 +82,20 @@ function ImpostoGrafico(dados) {
 
             datasets: [{
                 // label: LabelImpostos,
-                backgroundColor: ['Silver','grey31','SlateBlue','DarkCyan', 'MediumSlateBlue','DarkViolet'],
+                backgroundColor: [
+                                  'rgba(0, 123, 255, 1)',
+                                  'rgba(108, 117, 125, 1)',
+                                  'rgba(111, 66, 193, 1)',
+                                  'rgba(108, 117, 125, 0.98)',
+                                  'rgba(23, 162, 184, 1)',
+                                  'rgba(255, 193, 7, 1)'
+                                  ],
+                                  
+
+
+                    
+                    
+                    // 'Silver','grey31','SlateBlue','DarkCyan', 'MediumSlateBlue','DarkViolet'],
                 borderColor: 'rgba(220,220,220,0.3)',
                 // pointBorderColor: 'rgba(38,185,154,0.7)',
                 pointBackgroundColor: 'rgba(211,211,211,0.5)',
@@ -217,7 +239,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 
     var chart = new Chart(ctx, {
 
-        type: 'line',
+        type: 'bar',
         data: {
             labels: labelIcms,
 

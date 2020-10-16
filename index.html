@@ -22,53 +22,65 @@
       </div>
       <div class="dashboard-content">
         <div class="dashboard-flex-parent">
-          <div class="dashboard-box">
+          <div class="dashboard-box flex-icms">
             <div class="box-icon box-icms">
-              <i class="fas fa-money-check-alt"></i>
+              <i class="fas fa-money-check-edit-alt"></i>
             </div>
-            <div class="value">Icms</div>
-            <div class="type">R$ 1000,200</div>
+            <div class="value">
+              Icms</div>
+            <div id='icmsvalor' class="type">R$ 1000,200</div>
 
           </div>
-          <div class="dashboard-box">
+          <div class="dashboard-box flex-ipva">
             <div class="box-icon box-ipva">
-              <i class="fas fa-money-check-alt"></i>
+              <i class="fas fa-truck"></i>
             </div>
             <div class="value">Ipva</div>
-            <div class="type">R$ 1000,200</div>
+            <div id='ipvavalor' class="type">R$ 1000,200</div>
 
           </div>
-          <div class="dashboard-box">
-            <div class="box-icon box-outros">
-              <i class="fas fa-money-check-alt"></i>
-            </div>
-            <div class="value">Outros</div>
-            <div class="type">R$ 1000,200</div>
-
-          </div>
-          <div class="dashboard-box">
+          <div class="dashboard-box flex-itcd">
             <div class="box-icon box-itcd">
               <i class="fas fa-money-check-alt"></i>
             </div>
             <div class="value">Itcd</div>
-            <div class="type">R$ 1000,200</div>
+            <div id='itcdvalor' class="type">R$ 1000,200</div>
 
           </div>
-          <div class="dashboard-box">
+          <div class="dashboard-box flex-irrf">
             <div class="box-icon box-irrf">
               <i class="fas fa-money-check-alt"></i>
             </div>
             <div class="value">Irrf</div>
-            <div class="type">R$ 1000,200</div>
+            <div id='irrfvalor' class="type">R$ 1000,200</div>
 
           </div>
-          <div class="dashboard-box box-taxas">
-            <div class="box-icon">
+          <div class="dashboard-box flex-taxas ">
+            <div class="box-icon box-taxas">
               <i class="fas fa-money-check-alt"></i>
             </div>
             <div class="value">Taxas</div>
-            <div class="type">R$ 1000,200</div>
+            <div id='taxasvalor' class="type">R$ 1000,200</div>
 
+          </div>
+          <div class="dashboard-box flex-outros">
+            <div class="box-icon box-outros">
+              <i class="fas fa-money-check-alt"></i>
+            </div>
+            <div class="value">Outros</div>
+            <div id='outrosvalor' class="type">R$ 1000,200</div>
+
+          </div>
+        </div>
+        <!-- Arrecadacao -->
+        <div class="dashborad-content-arrecada">
+          <div class="dashboard-flex-parent-arrecada">
+            <div class="dashboard-box-arrecada">
+              <canvas id="impostoChart"></canvas>
+            </div>
+            <div class="dashboard-box-arrecada">
+              <canvas id="arrecadaChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
@@ -81,10 +93,8 @@
       <div class="charts-arrecada">
         <div class="chart-box-arrecada">
           <div class="arrecada">
-            <canvas id="impostoChart"></canvas>
           </div>
           <div class="arrecada">
-            <canvas id="arrecadaChart"></canvas>
           </div>
         </div>
       </div>
