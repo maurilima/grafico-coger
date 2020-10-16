@@ -1,11 +1,5 @@
-// document.addEventListener('DOMContentLoaded', function () {
-
-// "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
-// https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
-
-
-
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/'
+var LabelImpostos = ['ICMS','IPVA','OUTROS','ITCD','IRRF', 'TAXAS']
 
 var options = {
     method: 'GET',
@@ -13,29 +7,146 @@ var options = {
     cache: 'default'
 }
 
+var arrays = ['portalarrecadacaoicms',
+                  'portalarrecadacaoipva',
+                  'portalportalarrecadacaooutros',
+                  'portalarrecadacaoitcd',
+                  'portalarrecadacaoirrf',
+                  'portalarrecadacaotaxas'
+    ]
+
 var btnRepasse = document.getElementById("repasse");
 var btnArrecada = document.getElementById("arrecada");
 
 btnRepasse.addEventListener("click", GerarRepasse, false);
 
-btnArrecada.addEventListener('click',GerarArrecadacao, false);
+btnArrecada.addEventListener('click', GerarArrecadacao, false);
 
 
-function GerarArrecadacao(){
+
+document.addEventListener('DOMContentLoaded', function () {
+    var now = new Date;
+    var mes = now.getMonth();
+    var ano = now.getFullYear();
+    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => GerarImpostometro(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+
+})
+
+function GerarImpostometro(data) {
+       
+    arrays = arrays.map(function(campo){
+    var novoConteudo = data.map(function(objeto){
+       return objeto[campo]; 
+    });
+    return novoConteudo;
+  });
+
+   
+    dados = arrays.map(a => parseFloat2Decimals(a,2 ))
+
+
+
+    // console.log(data)
+    ImpostoGrafico(dados)
+
+
+}
+
+function ImpostoGrafico(dados) {
+
+    
+    var ctx = document.getElementById('impostoChart').getContext('2d');
+
+    var chart = new Chart(ctx, {
+
+        type: 'doughnut',
+        data: {
+            labels: LabelImpostos,
+
+
+            datasets: [{
+                // label: LabelImpostos,
+                backgroundColor: ['Silver','grey31','SlateBlue','DarkCyan', 'MediumSlateBlue','DarkViolet'],
+                borderColor: 'rgba(220,220,220,0.3)',
+                // pointBorderColor: 'rgba(38,185,154,0.7)',
+                pointBackgroundColor: 'rgba(211,211,211,0.5)',
+                pointHoverBackgroundColor: ['write'],
+                // pointHoverBorderColor: 'rgba(220,220,220,1)',
+                pointBorderWidth: 1,
+                data: dados
+            }
+            
+            ]
+        },
+        options : {
+            legend:{
+               position: 'right' ,
+               label:{
+                   boxerwidth:12,
+                   fontSize:16
+               }
+            },
+            title: {
+                display: true,
+                text: 'Arrecadçaõ Mês'
+            }
+        },
+        tooltips:{
+           
+                callbacks: {
+                    afterLabel: function(tooltipItem, data){
+                        var porcento = 0;
+                        for(i=0; i<5; i++){
+                            porcento+= data.datasets[tooltipItem.datasetIndex].data[i]
+                        }
+                        return 'ou : '+ parseInt((data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]/porcento)*100)+ '% do total'
+                    },
+                    label: function(tooltipItem, data) {
+                    return data.datasets[tooltipItem.datasetIndex].label +': R$ '+data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+                  }
+                }
+    
+    
+    
+                }
+            
+        
+    });
+    
+}
+
+
+
+
+// "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
+// https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
+
+
+
+
+
+function GerarArrecadacao() {
     var mes = document.getElementById('mes').value;
     var ano = document.getElementById('ano').value;
 
-    if(mes > 12) {
+    if (mes > 12) {
         alert('Mes de Esta entre "0" e "12" ')
     }
-    getApiArrecada(mes,ano)
+    getApiArrecada(mes, ano)
 
 
 
 }
 
 function getApiArrecada(mes, ano) {
-    var url = BASE_URL+ 'getportalarrecadacao/'+ mes + '/' + ano;
+    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
     fetch(url, options)
         .then(response => {
@@ -48,7 +159,7 @@ function getApiArrecada(mes, ano) {
 }
 
 
-function ArrecadaGrafico(data){
+function ArrecadaGrafico(data) {
     var ArrecadaIcms = mapArrecadaIcms(data)
     var ArrecadaIpva = mapArrecadaIpva(data)
     var ArrecadaOutros = mapArrecadaOutros(data)
@@ -57,50 +168,50 @@ function ArrecadaGrafico(data){
     var ArrecadaTaxas = mapArrecadaTaxas(data)
 
 
-    GraficoArrecada( ArrecadaIcms, ArrecadaIpva , ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas )
+    GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas)
 
 
 
 }
 
 
-function GraficoArrecada(ArrecadaIcms, ArrecadaIpva , ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas ) {
+function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas) {
 
-    var labelIcms   = []
-    var valorIcms   = []
-    var valorIpva   = []
+    var labelIcms = []
+    var valorIcms = []
+    var valorIpva = []
     var valorOutros = []
-    var valorItcd   = []
-    var valorIrrf   = []
-    var valorTaxas  = []
+    var valorItcd = []
+    var valorIrrf = []
+    var valorTaxas = []
 
     for (var i in ArrecadaIcms) {
         labelIcms.push(ArrecadaIcms[i].mes)
         valorIcms.push(ArrecadaIcms[i].icms)
-        
+
     }
     for (var i in ArrecadaIpva) {
-          valorIpva.push(ArrecadaIpva[i].ipva)
-        
+        valorIpva.push(ArrecadaIpva[i].ipva)
+
     }
     for (var i in ArrecadaOutros) {
         valorOutros.push(ArrecadaOutros[i].outros)
-      
-  }
 
-  for (var i in ArrecadaItcd) {
-    valorItcd.push(ArrecadaItcd[i].itcd)
-  
-  }
-  
-  for (var i in ArrecadaIrrf) {
-    valorIrrf.push(ArrecadaIrrf[i].irrf)
-  
-  }
-  for (var i in ArrecadaTaxas) {
-    valorTaxas.push(ArrecadaTaxas[i].taxas)
-  
-  }
+    }
+
+    for (var i in ArrecadaItcd) {
+        valorItcd.push(ArrecadaItcd[i].itcd)
+
+    }
+
+    for (var i in ArrecadaIrrf) {
+        valorIrrf.push(ArrecadaIrrf[i].irrf)
+
+    }
+    for (var i in ArrecadaTaxas) {
+        valorTaxas.push(ArrecadaTaxas[i].taxas)
+
+    }
 
     var ctx = document.getElementById('arrecadaChart').getContext('2d');
 
@@ -207,14 +318,14 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva , ArrecadaOutros, ArrecadaIt
                     }
                 }]
             },
-            tooltips :{
-                mode:'index',
+            tooltips: {
+                mode: 'index',
                 callbacks: {
                     label: function (tooltipItem, data) {
                         return data.datasets[tooltipItem.datasetIndex]
-                        .label + ' : R$ '  + (data.datasets[tooltipItem.datasetIndex])
-                         .data[tooltipItem.index]
-                         .toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+                            .label + ' : R$ ' + (data.datasets[tooltipItem.datasetIndex])
+                                .data[tooltipItem.index]
+                                .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
                     }
                 }
             }
@@ -223,18 +334,13 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva , ArrecadaOutros, ArrecadaIt
 }
 
 
-
-
-
-
-
 function mapArrecadaIcms(data) {
-  
+
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
-            icms: parseFloat2Decimals( item.portalarrecadacaoicms )
+            icms: parseFloat2Decimals(item.portalarrecadacaoicms)
         }
 
     }
@@ -244,12 +350,12 @@ function mapArrecadaIcms(data) {
 }
 
 function mapArrecadaIpva(data) {
-  
+
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
-            ipva: parseFloat2Decimals( item.portalarrecadacaoipva )
+            ipva: parseFloat2Decimals(item.portalarrecadacaoipva)
         }
 
     }
@@ -260,12 +366,12 @@ function mapArrecadaIpva(data) {
 
 
 function mapArrecadaOutros(data) {
-  
+
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
-            outros: parseFloat2Decimals( item.portalportalarrecadacaooutros )
+            outros: parseFloat2Decimals(item.portalportalarrecadacaooutros)
         }
 
     }
@@ -275,13 +381,13 @@ function mapArrecadaOutros(data) {
 }
 
 function mapArrecadaItcd(data) {
-  
+
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
-            itcd: parseFloat2Decimals(item.portalarrecadacaoitcd )
-                                           
+            itcd: parseFloat2Decimals(item.portalarrecadacaoitcd)
+
         }
 
 
@@ -291,12 +397,12 @@ function mapArrecadaItcd(data) {
 }
 
 function mapArrecadaIrrf(data) {
-  
+
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
-            irrf: parseFloat2Decimals( item.portalarrecadacaoirrf )
+            irrf: parseFloat2Decimals(item.portalarrecadacaoirrf)
         }
 
     }
@@ -305,12 +411,12 @@ function mapArrecadaIrrf(data) {
 }
 
 function mapArrecadaTaxas(data) {
-  
+
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
-            taxas: parseFloat2Decimals( item.portalarrecadacaotaxas )
+            taxas: parseFloat2Decimals(item.portalarrecadacaotaxas)
         }
 
     }
@@ -369,10 +475,10 @@ function ShowGrafico(data) {
     var vFundebIcms = mapFundebIcms(data)
     var vFundebIpva = mapFundebIpva(data)
     var vFundef = mapFundef(data)
-    
+
     GraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef);
     // console.log(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef);
-    
+
 
 }
 
@@ -392,30 +498,30 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
     for (var i in vIcms) {
         labelIcms.push(vIcms[i].munId)
         valorIcms.push(vIcms[i].icms)
-        
+
     }
     for (var i in vIpva) {
         labelIpva.push(vIpva[i].municipionome)
         valorIpva.push(vIpva[i].ipv)
-        
+
     }
 
     for (var i in vFundebIcms) {
         labelFundeIcms.push(vFundebIcms[i].municipionome)
         valorFundeIcms.push(vFundebIcms[i].fundebicms)
-        
+
     }
 
     for (var i in vFundebIpva) {
         labelFundeIpva.push(vFundebIpva[i].municipionome)
         valorFundeIpva.push(vFundebIpva[i].fundebipva)
-       
+
     }
 
     for (var i in vFundef) {
         labelFundef.push(vFundef[i].municipionome)
         valorFundef.push(vFundef[i].fundef)
-        
+
     }
 
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -484,14 +590,14 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
                     }
                 }]
             },
-            tooltips :{
-                mode:'index',
+            tooltips: {
+                mode: 'index',
                 callbacks: {
                     label: function (tooltipItem, data) {
                         return data.datasets[tooltipItem.datasetIndex]
-                        .label + ' : R$ '  + (data.datasets[tooltipItem.datasetIndex])
-                         .data[tooltipItem.index]
-                         .toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+                            .label + ' : R$ ' + (data.datasets[tooltipItem.datasetIndex])
+                                .data[tooltipItem.index]
+                                .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
                     }
                 }
             }
@@ -647,17 +753,38 @@ function formata_data(data) { // dd/mm/yyyy -> yyyy-mm-dd
 function leftPadZeros(value, totalWidth, paddingChar) {
     var length = totalWidth - value.toString().length + 1;
     return Array(length).join(paddingChar || '0') + value;
-  };
+};
 
-  function onlynumber(evt) {
+function onlynumber(evt) {
     var theEvent = evt || window.event;
     var key = theEvent.keyCode || theEvent.which;
-    key = String.fromCharCode( key );
+    key = String.fromCharCode(key);
     //var regex = /^[0-9.,]+$/;
     var regex = /^[0-9.]+$/;
-    if( !regex.test(key) ) {
-       theEvent.returnValue = false;
-       if(theEvent.preventDefault) theEvent.preventDefault();
+    if (!regex.test(key)) {
+        theEvent.returnValue = false;
+        if (theEvent.preventDefault) theEvent.preventDefault();
     }
- }
- //  
+}
+ //
+
+
+ 
+                // afterLabel : function(tooltipItem,data) {
+                //     var procento = 0;
+                //     for(i =0; i < 4; i++){
+                //         procento += data.datasets[tooltipItem.datasetIndex].data[i]
+                //     }
+                //     return 'Equivale a:' + 
+                //      parseInt((data.datasets[tooltipItems.datasetIndex]
+                //                 .data[tooltipItem.index] / procento) * 100 ) + '%'
+                // },
+                // label: function(tooltipItem, data) {
+                //     return data.datasets[tooltipItem.datasetIndex].
+                //             label +': R$ '+
+                //             data.datasets[tooltipItem.datasetIndex]
+                //             .data[tooltipItem.index]                
+                // label: function(tooltipItems, data ){
+                //     return data.datasets[tooltipItem.datasetIndex].labels[tooltipItem.index] + 
+                //     ' : R$ ' + data.datasets[tooltipItem.datasetIndex]
+                //     .data

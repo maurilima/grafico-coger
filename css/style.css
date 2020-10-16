@@ -2,26 +2,124 @@
    margin: 0; 
    padding: 0;
    box-sizing: border-box;
+   }
    
+
+div.container-charts {
+    background-color: rgb(245, 243, 243);
 }
-.container {
-    border: 1px red solid;
-    background-color: #cecbca;
-    /* height: 200px;  */
+
+div.dashboard-content {
+    /* border: 1px solid red; */
+    padding: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+
+}
+.dashboard-flex-parent{
     display: flex;
     flex-direction: row;
-    margin: 0;
-    width: 100%;
-    justify-content: space-between;
-    padding: 10px;
-    /* flex-grow: 0; */
+    align-items: center;
+    justify-content: space-around;
 
+
+}
+.dashboard-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 14%;
+    height: 130px;
+    /* max-width: 120; */
+    background-color: white;
+
+}
+.dashboard-box:hover {
+    transition: 0.5s;
+    box-shadow: 0 0 1rem rgba(156,156,156,0.4);
+    transform: scale(1.05);
+}
+
+
+
+
+div.box-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rebeccapurple; */
+    margin-top: 10px;
+}
+div.box-icon svg {
+    font-size: 18px;
+
+}
+div.value {
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+div.type {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.box-icms {
+    background-color: rgba(110,142,251,0.1);
+ 
+ }
+ 
+ .box-ipva {
+    background-color: rgba(229,115,115,0.1);
+ 
+ }
+ 
+ .box-outros {
+    background-color: rgba(220,231,117,0.4);
+
+ }
+ .box-itcd {
+    background-color: rgba(255,138,101,0.2);
+
+ }
+ .box-irrf {
+ 
+ }
+ .box-taxas {
+ 
+ }
+ 
+
+
+
+
+
+
+
+
+.container-remessa {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around ;
+    align-items: space-around;
+    height: 180px;
+
+    border: 1px solid red;
+    background-color: #faf6f5;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 .entradas {
     display: flex;
     flex-direction: column;
     align-items: space-around;
-    width: 49%;
+    width: 45%;
     /* height: 400%; */
     padding-left: 10px;
     padding-right: 80px;
@@ -30,14 +128,7 @@
 
 }
 
-div.charts-Content {
-    
-    background-color: #faf6f5;
-    height: 75%;
-    border: 1px solid red;
 
-
-}
 .charts-flex-parent {
     margin-top: 20px;
     margin-bottom: 10px;
@@ -133,4 +224,4 @@ input {
 
 .content {
     padding: 20px 30px 20px 30px;
-} */
+}
