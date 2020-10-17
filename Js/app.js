@@ -1,5 +1,8 @@
+// "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
+// https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
+
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/'
-var LabelImpostos = ['ICMS','IPVA','OUTROS','ITCD','IRRF', 'TAXAS']
+var LabelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS']
 
 var options = {
     method: 'GET',
@@ -8,12 +11,14 @@ var options = {
 }
 
 var arrays = ['portalarrecadacaoicms',
-              'portalarrecadacaoipva',
-              'portalportalarrecadacaooutros',
-              'portalarrecadacaoitcd',
-              'portalarrecadacaoirrf',
-              'portalarrecadacaotaxas'
-    ]
+    'portalarrecadacaoipva',
+    'portalportalarrecadacaooutros',
+    'portalarrecadacaoitcd',
+    'portalarrecadacaoirrf',
+    'portalarrecadacaotaxas'
+]
+
+var meses = ['NUL','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
 
 var btnRepasse = document.getElementById("repasse");
 var btnArrecada = document.getElementById("arrecada");
@@ -36,31 +41,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => GerarImpostometro(data))
         })
         .catch(e => console.log('Erro :' + e.message));
+     getApiArrecada(0,ano,'arrecadaChart') 
 
 })
+// --------------------------------------
 
 function GerarImpostometro(data) {
-       
-    arrays = arrays.map(function(campo){
-    var novoConteudo = data.map(function(objeto){
-       return objeto[campo]; 
+
+    arrays = arrays.map(function (campo) {
+        var novoConteudo = data.map(function (objeto) {
+            return objeto[campo];
+        });
+        return novoConteudo;
     });
-    return novoConteudo;
-  });
 
 
-console.log(data, data[0]["portalportalarrecadacaooutros"])
-  
-    document.getElementById('icmsvalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoicms"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('ipvavalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoipva"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('irrfvalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('itcdvalor').innerHTML   = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('taxasvalor').innerHTML  = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"]).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
 
-    dados = arrays.map(a => parseFloat2Decimals(a,2 ))
+    document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('irrfvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('itcdvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
 
-
+    dados = arrays.map(a => parseFloat2Decimals(a, 2))
 
     // console.log(data)
     ImpostoGrafico(dados)
@@ -70,7 +80,7 @@ console.log(data, data[0]["portalportalarrecadacaooutros"])
 
 function ImpostoGrafico(dados) {
 
-    
+
     var ctx = document.getElementById('impostoChart').getContext('2d');
 
     var chart = new Chart(ctx, {
@@ -78,24 +88,18 @@ function ImpostoGrafico(dados) {
         type: 'doughnut',
         data: {
             labels: LabelImpostos,
-
-
             datasets: [{
                 // label: LabelImpostos,
                 backgroundColor: [
-                                  'rgba(0, 123, 255, 1)',
-                                  'rgba(108, 117, 125, 1)',
-                                  'rgba(111, 66, 193, 1)',
-                                  'rgba(108, 117, 125, 0.98)',
-                                  'rgba(23, 162, 184, 1)',
-                                  'rgba(255, 193, 7, 1)'
-                                  ],
-                                  
+                    'rgba(0, 123, 255, 1)',
+                    'rgba(108, 117, 125, 1)',
+                    'rgba(111, 66, 193, 1)',
+                    'rgba(40, 167, 69, 0.98)',
+                    'rgba(23, 162, 184, 1)',
+                    'rgba(255, 193, 7, 1)'
+                ],
 
-
-                    
-                    
-                    // 'Silver','grey31','SlateBlue','DarkCyan', 'MediumSlateBlue','DarkViolet'],
+                // 'Silver','grey31','SlateBlue','DarkCyan', 'MediumSlateBlue','DarkViolet'],
                 borderColor: 'rgba(220,220,220,0.3)',
                 // pointBorderColor: 'rgba(38,185,154,0.7)',
                 pointBackgroundColor: 'rgba(211,211,211,0.5)',
@@ -104,76 +108,49 @@ function ImpostoGrafico(dados) {
                 pointBorderWidth: 1,
                 data: dados
             }
-            
+
             ]
         },
-        options : {
-            legend:{
-               position: 'right' ,
-               label:{
-                   boxerwidth:12,
-                   fontSize:16
-               }
+        options: {
+            legend: {
+                position: 'right',
+                label: {
+                    boxerwidth: 12,
+                    fontSize: 16
+                }
             },
             title: {
                 display: true,
                 text: 'Arrecadçaõ Mês'
             }
         },
-        tooltips:{
-           
-                callbacks: {
-                    afterLabel: function(tooltipItem, data){
-                        var porcento = 0;
-                        for(i=0; i<5; i++){
-                            porcento+= data.datasets[tooltipItem.datasetIndex].data[i]
-                        }
-                        return 'ou : '+ parseInt((data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]/porcento)*100)+ '% do total'
-                    },
-                    label: function(tooltipItem, data) {
-                    return data.datasets[tooltipItem.datasetIndex].label +': R$ '+data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
-                  }
-                }
-    
-    
-    
-                }
-            
-        
+
     });
-    
+
 }
-
-
-
-
-// "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
-// https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
-
-
-
-
 
 function GerarArrecadacao() {
     var mes = document.getElementById('mes').value;
     var ano = document.getElementById('ano').value;
+    var canvas = 'impostoChartConsulta'
+    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
     if (mes > 12) {
         alert('Mes de Esta entre "0" e "12" ')
     }
-    getApiArrecada(mes, ano)
+    getApiArrecada(mes, ano, canvas)
 
 
 
 }
 
-function getApiArrecada(mes, ano) {
+function getApiArrecada(mes, ano, canvas) {
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => ArrecadaGrafico(data))
+                .then(data => ArrecadaGrafico(data,canvas))
         })
         .catch(e => console.log('Erro :' + e.message));
 
@@ -181,7 +158,7 @@ function getApiArrecada(mes, ano) {
 }
 
 
-function ArrecadaGrafico(data) {
+function ArrecadaGrafico(data, canvas) {
     var ArrecadaIcms = mapArrecadaIcms(data)
     var ArrecadaIpva = mapArrecadaIpva(data)
     var ArrecadaOutros = mapArrecadaOutros(data)
@@ -190,14 +167,14 @@ function ArrecadaGrafico(data) {
     var ArrecadaTaxas = mapArrecadaTaxas(data)
 
 
-    GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas)
+    GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas,canvas)
 
 
 
 }
 
 
-function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas) {
+function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas) {
 
     var labelIcms = []
     var valorIcms = []
@@ -206,9 +183,10 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     var valorItcd = []
     var valorIrrf = []
     var valorTaxas = []
+    console.log(ArrecadaIcms)
 
     for (var i in ArrecadaIcms) {
-        labelIcms.push(ArrecadaIcms[i].mes)
+        labelIcms.push(meses[ArrecadaIcms[i].mes])
         valorIcms.push(ArrecadaIcms[i].icms)
 
     }
@@ -234,8 +212,10 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         valorTaxas.push(ArrecadaTaxas[i].taxas)
 
     }
+    console.log(canvas)
 
-    var ctx = document.getElementById('arrecadaChart').getContext('2d');
+    var ctx = document.getElementById(canvas).getContext('2d');
+    
 
     var chart = new Chart(ctx, {
 
@@ -246,10 +226,10 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 
             datasets: [{
                 label: 'ICMS',
-                backgroundColor: 'rgba(38,185,154,0.31)',
-                borderColor: 'rgba(38,185,154,0.7)',
-                pointBorderColor: 'rgba(38,185,154,0.7)',
-                pointBackgroundColor: 'rgba(38,185,154,0.7)',
+                backgroundColor: 'rgba(0, 123, 255,1)',
+                borderColor: 'rgba(0, 123, 255,0.7)',
+                pointBorderColor: 'rgba(0, 123, 255,0.7)',
+                pointBackgroundColor: 'rgba(0, 123, 255,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointBorderWidth: 1,
@@ -257,10 +237,10 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
             },
             {
                 label: 'IPVA',
-                backgroundColor: 'rgba(0,0,128,0.6)',
-                borderColor: 'rgba(25,25,112,0.7)',
-                pointBorderColor: 'rgba(25,25,112,0.7)',
-                pointBackgroundColor: 'rgba(25,25,112,0.7)',
+                backgroundColor: 'rgba(108, 117, 125,1)',
+                borderColor: 'rgba(108, 117, 125,0.7)',
+                pointBorderColor: 'rgba(108, 117, 125,0.7)',
+                pointBackgroundColor: 'rgba(108, 117, 125,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(25,25,112,1)',
                 pointBorderWidth: 1,
@@ -268,23 +248,11 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 
             },
             {
-                label: 'OUTROS',
-                backgroundColor: 'rgba(147,112,219,0.6)',
-                borderColor: 'rgba(147,112,219,0.7)',
-                pointBorderColor: 'rgba(147,112,219,0.7)',
-                pointBackgroundColor: 'rgba(147,112,219,0.7)',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(138,43,226,1)',
-                pointBorderWidth: 1,
-                data: valorOutros
-
-            },
-            {
                 label: 'ITCD',
-                backgroundColor: 'rgba(244,164,96,0.4)',
-                borderColor: 'rgba(244,164,96,0.7)',
-                pointBorderColor: 'rgba(244,164,96,0.5)',
-                pointBackgroundColor: 'rgba(244,164,96,0.5)',
+                backgroundColor: 'rgba(40, 167, 69,.9)',
+                borderColor: 'rgba(40, 167, 69,0.7)',
+                pointBorderColor: 'rgba(40, 167, 69,0.5)',
+                pointBackgroundColor: 'rgba(40, 167, 69,0.5)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(139,69,19,1)',
                 pointBorderWidth: 1,
@@ -293,10 +261,10 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
             },
             {
                 label: 'IRRF',
-                backgroundColor: 'rgba(255,0,0,0.4)',
-                borderColor: 'rgba(255,0,0,0.7)',
+                backgroundColor: 'rgba(23, 162, 184,1)',
+                borderColor: 'rgba(23, 162, 184,0.7)',
                 pointBorderColor: 'rgba(255,0,0,0.7)',
-                pointBackgroundColor: 'rgba(255,0,0,0.7)',
+                pointBackgroundColor: 'rgba(23, 162, 184,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(139,0,0,1)',
                 pointBorderWidth: 1,
@@ -305,16 +273,28 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
             },
             {
                 label: 'TAXAS',
-                backgroundColor: 'rgba(255,255,0,0.5)',
-                borderColor: 'rgba(255,255,0,0.7)',
-                pointBorderColor: 'rgba(255,255,0,0.7)',
-                pointBackgroundColor: 'rgba(255,255,0,0.7)',
+                backgroundColor: 'rgba(255, 193, 7,.8)',
+                borderColor: 'rgba(255, 193, 7,0.7)',
+                pointBorderColor: 'rgba(255, 193, 7,0.7)',
+                pointBackgroundColor: 'rgba(255, 193, 7,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(255,140,0,1)',
                 pointBorderWidth: 1,
                 data: valorTaxas
 
-            }
+            },
+            {
+                label: 'OUTROS',
+                backgroundColor: 'rgba(111, 66, 193,.8)',
+                borderColor: 'rgba(111, 66, 193,0.7)',
+                pointBorderColor: 'rgba(111, 66, 193,0.7)',
+                pointBackgroundColor: 'rgba(111, 66, 193,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(138,43,226,1)',
+                pointBorderWidth: 1,
+                data: valorOutros
+
+            },
 
 
 
@@ -323,6 +303,21 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         },
 
         options: {
+
+            legend: {
+                position: 'bottom',
+                label: {
+                    boxerwidth: 10,
+                    fontSize: 16,
+                    fontColor: 'rgb(245, 245, 245)'
+                    
+                }
+            },
+            title: {
+                display: true,
+                text: 'Arrecadaçaõ Anual'
+            }
+            ,
             layout: {
                 padding: {
                     left: 50,
@@ -447,19 +442,6 @@ function mapArrecadaTaxas(data) {
     return retorno
 }
 
-// function totalArrecadaIcms(data) {
-//     var retorno = data.reduce(function (acumulador, valor) {
-//         var indice = acumulador.map((o) => o.munId).indexOf(valor.mes);
-//         if (indice == -1) {
-//             acumulador.push(valor);
-//         } else {
-//             acumulador[indice].icms += valor.icms;
-//         }
-//         return acumulador;
-//     }, []);
-//     console.log(retorno)
-//     return retorno
-// }
 
 
 
@@ -523,28 +505,20 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
 
     }
     for (var i in vIpva) {
-        labelIpva.push(vIpva[i].municipionome)
         valorIpva.push(vIpva[i].ipv)
 
     }
 
     for (var i in vFundebIcms) {
-        labelFundeIcms.push(vFundebIcms[i].municipionome)
         valorFundeIcms.push(vFundebIcms[i].fundebicms)
 
     }
 
     for (var i in vFundebIpva) {
-        labelFundeIpva.push(vFundebIpva[i].municipionome)
         valorFundeIpva.push(vFundebIpva[i].fundebipva)
 
     }
 
-    for (var i in vFundef) {
-        labelFundef.push(vFundef[i].municipionome)
-        valorFundef.push(vFundef[i].fundef)
-
-    }
 
     var ctx = document.getElementById('myChart').getContext('2d');
 
@@ -557,10 +531,10 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
 
             datasets: [{
                 label: 'ICMS',
-                backgroundColor: 'rgba(38,185,154,0.31)',
-                borderColor: 'rgba(38,185,154,0.7)',
-                pointBorderColor: 'rgba(38,185,154,0.7)',
-                pointBackgroundColor: 'rgba(38,185,154,0.7)',
+                backgroundColor: 'rgba(0, 123, 255,1)',
+                borderColor: 'rgba(0, 123, 255,0.7)',
+                pointBorderColor: 'rgba(0, 123, 255,0.7)',
+                pointBackgroundColor: 'rgba(0, 123, 255,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointBorderWidth: 1,
@@ -568,10 +542,10 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
             },
             {
                 label: 'IPVA',
-                backgroundColor: 'rgba(0,0,128,0.6)',
-                borderColor: 'rgba(25,25,112,0.7)',
-                pointBorderColor: 'rgba(25,25,112,0.7)',
-                pointBackgroundColor: 'rgba(25,25,112,0.7)',
+                backgroundColor: 'rgba(108, 117, 125,1)',
+                borderColor: 'rgba(108, 117, 125,0.7)',
+                pointBorderColor: 'rgba(108, 117, 125,0.7)',
+                pointBackgroundColor: 'rgba(108, 117, 125,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(25,25,112,1)',
                 pointBorderWidth: 1,
@@ -579,22 +553,47 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
 
             },
             {
-                label: 'FUNDEF',
-                backgroundColor: 'rgba(147,112,219,0.3)',
-                borderColor: 'rgba(147,112,219,0.7)',
-                pointBorderColor: 'rgba(147,112,219,0.7)',
-                pointBackgroundColor: 'rgba(147,112,219,0.7)',
+                label: 'FUNDEBICMS',
+                backgroundColor: 'rgba(40, 167, 69,1)',
+                borderColor: 'rgba(40, 167, 69,0.7)',
+                pointBorderColor: 'rgba(40, 167, 69,0.7)',
+                pointBackgroundColor: 'rgba(40, 167, 69,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(138,43,226,1)',
                 pointBorderWidth: 1,
-                data: valorFundef
+                data: valorFundeIcms
+
+            },
+            {
+                label: 'FUNDEBIPVA',
+                backgroundColor: 'rgba(23, 162, 184,1)',
+                borderColor: 'rgba(23, 162, 184,0.6)',
+                pointBorderColor: 'rgba(23, 162, 184,0.6)',
+                pointBackgroundColor: 'rgba(23, 162, 184,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(138,43,226,1)',
+                pointBorderWidth: 1,
+                data: valorFundeIpva
 
             }
+
 
             ]
         },
 
         options: {
+            legend: {
+                position: 'bottom',
+                label: {
+                    boxerwidth: 10,
+                    fontSize: 16
+                }
+            },
+            title: {
+                display: true,
+                text: 'Repasse aos Municípios'
+            } ,
+                     
             layout: {
                 padding: {
                     left: 50,
@@ -791,7 +790,7 @@ function onlynumber(evt) {
  //
 
 
- 
+
                 // afterLabel : function(tooltipItem,data) {
                 //     var procento = 0;
                 //     for(i =0; i < 4; i++){
@@ -810,3 +809,18 @@ function onlynumber(evt) {
                 //     return data.datasets[tooltipItem.datasetIndex].labels[tooltipItem.index] + 
                 //     ' : R$ ' + data.datasets[tooltipItem.datasetIndex]
                 //     .data
+
+
+                // function totalArrecadaIcms(data) {
+//     var retorno = data.reduce(function (acumulador, valor) {
+//         var indice = acumulador.map((o) => o.munId).indexOf(valor.mes);
+//         if (indice == -1) {
+//             acumulador.push(valor);
+//         } else {
+//             acumulador[indice].icms += valor.icms;
+//         }
+//         return acumulador;
+//     }, []);
+//     console.log(retorno)
+//     return retorno
+// }
