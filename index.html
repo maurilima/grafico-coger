@@ -26,7 +26,7 @@
           <div class="dashboard-box flex-icms">
             <div class="box-icon box-icms">
               <i class="fas fa-money-bill-wave"></i>
-              
+
             </div>
             <div class="value">Icms</div>
             <div id='icmsvalor' class="type">R$ 0,00</div>
@@ -59,7 +59,7 @@
           <div class="dashboard-box flex-taxas ">
             <div class="box-icon box-taxas">
               <i class="fas fa-hand-holding-usd"></i>
-              
+
             </div>
             <div class="value">Taxas</div>
             <div id='taxasvalor' class="type">R$ 0,00</div>
@@ -76,8 +76,8 @@
         <!-- Arrecadacao -->
         <div class="dashborad-content-arrecada">
           <div class="dashboard-flex-parent-arrecada">
-            <div class="dashboard-box-arrecada">
-              <canvas id="impostoChart"></canvas>
+            <div class="dashboard-box-arrecada" > <!-- style="position: relative; height:40vh; width:40vw" -->
+              <canvas id="impostoChart" ></canvas>
             </div>
             <div class="dashboard-box-arrecada">
               <canvas id="arrecadaChart"></canvas>
@@ -85,12 +85,6 @@
           </div>
         </div>
       </div>
-
-
-
-
-
-
       <div class="charts-arrecada">
         <div class="chart-box-arrecada">
           <div class="arrecada">
@@ -99,7 +93,7 @@
           </div>
         </div>
       </div>
-
+      <!-- Arrecadaco / Remessa -->
       <div class="container-remessa">
         <div class="entradas">
           <form>
@@ -111,7 +105,7 @@
               <input id="mes" type="text" class="form-control" aria-describedby="basic-addon3" maxlength="2" range='12'
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 placeholder="Apenas Numero, Zero para Emitir o Ano">
-              <!-- <small>Digite Mes</small> -->
+    
             </div>
 
             <div class="input-group mb-3">
@@ -170,7 +164,7 @@
       </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
     <script src="js/app.js"></script>
   </body>
 

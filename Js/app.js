@@ -55,7 +55,7 @@ function GerarImpostometro(data) {
         return novoConteudo;
     });
 
-
+    // console.log(arrays, data) 
 
     document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
@@ -80,8 +80,11 @@ function GerarImpostometro(data) {
 
 function ImpostoGrafico(dados) {
 
-
+    var totalImpostos = dados.reduce(function(acumulador, valorAtual) {
+        return acumulador + valorAtual})
+         
     var ctx = document.getElementById('impostoChart').getContext('2d');
+    
 
     var chart = new Chart(ctx, {
 
@@ -89,7 +92,7 @@ function ImpostoGrafico(dados) {
         data: {
             labels: LabelImpostos,
             datasets: [{
-                // label: LabelImpostos,
+                label: 'Donut',
                 backgroundColor: [
                     'rgba(0, 123, 255, 1)',
                     'rgba(108, 117, 125, 1)',
@@ -99,9 +102,7 @@ function ImpostoGrafico(dados) {
                     'rgba(255, 193, 7, 1)'
                 ],
 
-                // 'Silver','grey31','SlateBlue','DarkCyan', 'MediumSlateBlue','DarkViolet'],
                 borderColor: 'rgba(220,220,220,0.3)',
-                // pointBorderColor: 'rgba(38,185,154,0.7)',
                 pointBackgroundColor: 'rgba(211,211,211,0.5)',
                 pointHoverBackgroundColor: ['write'],
                 // pointHoverBorderColor: 'rgba(220,220,220,1)',
@@ -113,17 +114,40 @@ function ImpostoGrafico(dados) {
         },
         options: {
             legend: {
-                position: 'right',
+                position: 'bottom',
                 label: {
                     boxerwidth: 12,
-                    fontSize: 16
+                    fontSize: 14
                 }
             },
             title: {
                 display: true,
-                text: 'Arrecadçaõ Mês'
+                fontSize: 16,
+                text: 'Arrecadçaõ Mês: ' + totalImpostos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+            },
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 5,
+                    bottom: 3
+                    // with: 10,
+                    // heigh: 10
+                }
             }
         },
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].labels || '';
+                       if (label) {
+                        label += ': ';
+                    }
+                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    return label;
+                }
+            }
+        }
 
     });
 
@@ -165,8 +189,10 @@ function ArrecadaGrafico(data, canvas) {
     var ArrecadaItcd = mapArrecadaItcd(data)
     var ArrecadaIrrf = mapArrecadaIrrf(data)
     var ArrecadaTaxas = mapArrecadaTaxas(data)
+    
+   
 
-
+   
     GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas,canvas)
 
 
@@ -183,7 +209,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     var valorItcd = []
     var valorIrrf = []
     var valorTaxas = []
-    console.log(ArrecadaIcms)
+ 
 
     for (var i in ArrecadaIcms) {
         labelIcms.push(meses[ArrecadaIcms[i].mes])
@@ -212,7 +238,21 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         valorTaxas.push(ArrecadaTaxas[i].taxas)
 
     }
-    console.log(canvas)
+   
+    var vtotalIcms = valorIcms.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+
+    var vtotalIpva = valorIpva.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+    var vtotalOutros = valorOutros.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+                                               
+    var vtotalItcd = valorItcd.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+                                               
+    var vtotalIrrf = valorIrrf.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+    
+    var vtotalTaxas = valorTaxas.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+                    
+    var TotalAno = vtotalIcms+vtotalIpva+vtotalOutros+vtotalItcd+vtotalIrrf+vtotalTaxas
+    
+    // console.log(TotalAno)
 
     var ctx = document.getElementById(canvas).getContext('2d');
     
@@ -222,8 +262,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         type: 'bar',
         data: {
             labels: labelIcms,
-
-
             datasets: [{
                 label: 'ICMS',
                 backgroundColor: 'rgba(0, 123, 255,1)',
@@ -295,10 +333,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorOutros
 
             },
-
-
-
-
             ]
         },
 
@@ -308,22 +342,22 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 position: 'bottom',
                 label: {
                     boxerwidth: 10,
-                    fontSize: 16,
+                    fontSize: 12,
                     fontColor: 'rgb(245, 245, 245)'
-                    
                 }
             },
             title: {
                 display: true,
-                text: 'Arrecadaçaõ Anual'
+                fontSize: 16,
+                text: 'Arrecadaçaõ Anual : '+ TotalAno.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             }
             ,
             layout: {
                 padding: {
-                    left: 50,
-                    right: 50,
+                    left: 10,
+                    right: 10,
                     top: 10,
-                    bottom: 10,
+                    bottom: 5,
                     with: 10,
                     heigh: 10
                 }
@@ -340,7 +374,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 callbacks: {
                     label: function (tooltipItem, data) {
                         return data.datasets[tooltipItem.datasetIndex]
-                            .label + ' : R$ ' + (data.datasets[tooltipItem.datasetIndex])
+                            .label + ' :' + (data.datasets[tooltipItem.datasetIndex])
                                 .data[tooltipItem.index]
                                 .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
                     }
@@ -490,35 +524,35 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
 
     var labelIcms = []
     var valorIcms = []
-    var labelIpva = []
     var valorIpva = []
-    var labelFundeIcms = []
     var valorFundeIcms = []
     var labelFundeIpva = []
     var valorFundeIpva = []
-    var labelFundef = []
-    var valorFundef = []
 
     for (var i in vIcms) {
-        labelIcms.push(vIcms[i].munId)
+        labelIcms.push(vIcms[i].munId.substr(0,6))
         valorIcms.push(vIcms[i].icms)
-
     }
     for (var i in vIpva) {
         valorIpva.push(vIpva[i].ipv)
-
     }
-
     for (var i in vFundebIcms) {
         valorFundeIcms.push(vFundebIcms[i].fundebicms)
-
     }
 
     for (var i in vFundebIpva) {
         valorFundeIpva.push(vFundebIpva[i].fundebipva)
-
     }
 
+    
+    var ttotalIcms = valorIcms.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+
+    var ttotalIpva = valorIpva.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+    var tvalorFundeIcms = valorFundeIcms.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+                                               
+    var tvalorFundeIpva = valorFundeIpva.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+          
+    var TotalPeriodo = ttotalIcms+ttotalIpva+tvalorFundeIcms+tvalorFundeIpva
 
     var ctx = document.getElementById('myChart').getContext('2d');
 
@@ -527,8 +561,6 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
         type: 'bar',
         data: {
             labels: labelIcms,
-
-
             datasets: [{
                 label: 'ICMS',
                 backgroundColor: 'rgba(0, 123, 255,1)',
@@ -574,34 +606,31 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
                 pointHoverBorderColor: 'rgba(138,43,226,1)',
                 pointBorderWidth: 1,
                 data: valorFundeIpva
-
             }
-
-
             ]
         },
-
         options: {
             legend: {
                 position: 'bottom',
                 label: {
                     boxerwidth: 10,
-                    fontSize: 16
+                    fontSize: 14
                 }
             },
             title: {
                 display: true,
-                text: 'Repasse aos Municípios'
+                fontSize: 16,
+                text: 'Repasses por Municipio : '+TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             } ,
                      
             layout: {
                 padding: {
-                    left: 50,
-                    right: 50,
-                    top: 10,
-                    bottom: 10,
-                    with: 10,
-                    heigh: 10
+                    left: 10,
+                    right: 15,
+                    top: 5,
+                    bottom: 5
+                    // with: 10,
+                    // heigh: 10
                 }
             },
             scales: {
@@ -616,7 +645,7 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
                 callbacks: {
                     label: function (tooltipItem, data) {
                         return data.datasets[tooltipItem.datasetIndex]
-                            .label + ' : R$ ' + (data.datasets[tooltipItem.datasetIndex])
+                            .label + ' :' + (data.datasets[tooltipItem.datasetIndex])
                                 .data[tooltipItem.index]
                                 .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
                     }
