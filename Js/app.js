@@ -134,21 +134,31 @@ function ImpostoGrafico(dados) {
                     // with: 10,
                     // heigh: 10
                 }
-            }
-        },
-        tooltips: {
-            callbacks: {
+            },
+        
+        
+            tooltips: {
+              callbacks: {
+                title: function(tooltipItem, data) {
+                  return data['labels'][tooltipItem[0]['index']];
+                },
                 label: function(tooltipItem, data) {
-                    var label = data.datasets[tooltipItem.datasetIndex].labels || '';
-                       if (label) {
-                        label += ': ';
-                    }
-                    label += Math.round(tooltipItem.yLabel * 100) / 100;
-                    return label;
+                  return data['datasets'][0]['data'][tooltipItem['index']].toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+                },
+                afterLabel: function(tooltipItem, data) {
+                  var dataset = data['datasets'][0];
+                  var percent = ((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100 ).toFixed(2)
+                                return '(' + percent + '%)';
                 }
+              },
+              backgroundColor: '#FFF',
+              titleFontSize: 16,
+              titleFontColor: '#0066ff',
+              bodyFontColor: '#000',
+              bodyFontSize: 14,
+              displayColors: false
             }
-        }
-
+          }
     });
 
 }
@@ -170,11 +180,21 @@ function GerarArrecadacao() {
 
 function getApiArrecada(mes, ano, canvas) {
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+    let tipo =''
+    
+    if(mes > 0) {
+       tipo = 'Arrecadaçaõ mes ' +meses[mes]+'/'+ano +' : '
+    }
+    else
+   
+       tipo = `Arrecadaçaõ anual de ${ano} :` 
+    
+
 
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => ArrecadaGrafico(data,canvas))
+                .then(data => ArrecadaGrafico(data,canvas,tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
 
@@ -182,7 +202,7 @@ function getApiArrecada(mes, ano, canvas) {
 }
 
 
-function ArrecadaGrafico(data, canvas) {
+function ArrecadaGrafico(data, canvas, tipo) {
     var ArrecadaIcms = mapArrecadaIcms(data)
     var ArrecadaIpva = mapArrecadaIpva(data)
     var ArrecadaOutros = mapArrecadaOutros(data)
@@ -193,14 +213,14 @@ function ArrecadaGrafico(data, canvas) {
    
 
    
-    GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas,canvas)
+    GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas,canvas, tipo)
 
 
 
 }
 
 
-function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas) {
+function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo) {
 
     var labelIcms = []
     var valorIcms = []
@@ -352,7 +372,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
             title: {
                 display: true,
                 fontSize: 16,
-                text: 'Arrecadaçaõ Anual : '+ TotalAno.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                text: tipo+ TotalAno.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             }
             ,
             layout: {
@@ -387,13 +407,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     });
 }
 
-function removeData(chart) {
-    chart.data.labels.pop();
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data.pop();
-    });
-    chart.update();
-}
 
 function mapArrecadaIcms(data) {
 
@@ -409,6 +422,23 @@ function mapArrecadaIcms(data) {
     // console.log(retorno)
     return retorno
 }
+
+// function mapTeste(data) {
+//     var portalarrecadacaoicms = 'portalarrecadacaoicms'
+
+//     var retorno = data.map(function (item) {
+//         return {
+
+//             mes: item.portalarrecadacaomes,
+//             icms: parseFloat2Decimals(item.['portalarrecadacaoicms])
+//         }
+
+//     }
+//     )
+//     // console.log(retorno)
+//     return retorno
+// }
+
 
 function mapArrecadaIpva(data) {
 
@@ -670,13 +700,6 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
     });
 }
 
-function parseFloat2Decimals(value) {
-    if (value != null) {
-        return parseFloat(parseFloat(value).toFixed(2));
-    }
-    else { return 0 }
-}
-
 function mapIcms(data) {
     var retorno = data.map(function (item) {
         return {
@@ -819,6 +842,14 @@ function leftPadZeros(value, totalWidth, paddingChar) {
     var length = totalWidth - value.toString().length + 1;
     return Array(length).join(paddingChar || '0') + value;
 };
+
+function parseFloat2Decimals(value) {
+    if (value != null) {
+        return parseFloat(parseFloat(value).toFixed(2));
+    }
+    else { return 0; }
+}
+
 
 function onlynumber(evt) {
     var theEvent = evt || window.event;
