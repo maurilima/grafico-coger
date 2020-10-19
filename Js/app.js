@@ -34,14 +34,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var mes = now.getMonth();
     var ano = now.getFullYear();
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
-
+    
     fetch(url, options)
         .then(response => {
             response.json()
                 .then(data => GerarImpostometro(data))
+                getApiArrecada(0,ano,'arrecadaChart') 
         })
         .catch(e => console.log('Erro :' + e.message));
-     getApiArrecada(0,ano,'arrecadaChart') 
 
 })
 // --------------------------------------
@@ -55,8 +55,7 @@ function GerarImpostometro(data) {
         return novoConteudo;
     });
 
-    // console.log(arrays, data) 
-
+  
     document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
@@ -72,8 +71,9 @@ function GerarImpostometro(data) {
 
     dados = arrays.map(a => parseFloat2Decimals(a, 2))
 
-    // console.log(data)
     ImpostoGrafico(dados)
+
+
 
 
 }
@@ -130,9 +130,9 @@ function ImpostoGrafico(dados) {
                     left: 10,
                     right: 10,
                     top: 5,
-                    bottom: 3
-                    // with: 10,
-                    // heigh: 10
+                    bottom: 3,
+                     with: 10,
+                    heigh: 10
                 }
             },
         
@@ -172,7 +172,7 @@ function GerarArrecadacao() {
     if (mes > 12) {
         alert('Mes de Esta entre "0" e "12" ')
     }
-    getApiArrecada(mes, ano, canvas)
+    getApiArrecada(parseInt(mes), parseInt(ano), canvas)
 
 
 
@@ -195,6 +195,7 @@ function getApiArrecada(mes, ano, canvas) {
         .then(response => {
             response.json()
                 .then(data => ArrecadaGrafico(data,canvas,tipo))
+                
         })
         .catch(e => console.log('Erro :' + e.message));
 
@@ -203,17 +204,20 @@ function getApiArrecada(mes, ano, canvas) {
 
 
 function ArrecadaGrafico(data, canvas, tipo) {
-    var ArrecadaIcms = mapArrecadaIcms(data)
-    var ArrecadaIpva = mapArrecadaIpva(data)
-    var ArrecadaOutros = mapArrecadaOutros(data)
-    var ArrecadaItcd = mapArrecadaItcd(data)
-    var ArrecadaIrrf = mapArrecadaIrrf(data)
-    var ArrecadaTaxas = mapArrecadaTaxas(data)
-    
-   
+    if ( data.length > 0  ){ 
+        var ArrecadaIcms = mapArrecadaIcms(data)
+        var ArrecadaIpva = mapArrecadaIpva(data)
+        var ArrecadaOutros = mapArrecadaOutros(data)
+        var ArrecadaItcd = mapArrecadaItcd(data)
+        var ArrecadaIrrf = mapArrecadaIrrf(data)
+        var ArrecadaTaxas = mapArrecadaTaxas(data)
+        GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas,canvas, tipo)
+    }else {
+        throw alert('Nenhuma Informação Seleionada para os dados Informados')
+    }
+
 
    
-    GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas,canvas, tipo)
 
 
 
@@ -230,6 +234,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     var valorIrrf = []
     var valorTaxas = []
  
+    // console.log(ArrecadaIcms)
 
     for (var i in ArrecadaIcms) {
         labelIcms.push(meses[ArrecadaIcms[i].mes])
@@ -258,7 +263,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         valorTaxas.push(ArrecadaTaxas[i].taxas)
 
     }
-   
+    // console.log(valorIcms)
     var vtotalIcms = valorIcms.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
 
     var vtotalIpva = valorIpva.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
@@ -408,144 +413,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 }
 
 
-function mapArrecadaIcms(data) {
-
-    var retorno = data.map(function (item) {
-        return {
-
-            mes: item.portalarrecadacaomes,
-            icms: parseFloat2Decimals(item.portalarrecadacaoicms)
-        }
-
-    }
-    )
-    // console.log(retorno)
-    return retorno
-}
-
-// function mapTeste(data) {
-//     var portalarrecadacaoicms = 'portalarrecadacaoicms'
-
-//     var retorno = data.map(function (item) {
-//         return {
-
-//             mes: item.portalarrecadacaomes,
-//             icms: parseFloat2Decimals(item.['portalarrecadacaoicms])
-//         }
-
-//     }
-//     )
-//     // console.log(retorno)
-//     return retorno
-// }
-
-
-function mapArrecadaIpva(data) {
-
-    var retorno = data.map(function (item) {
-        return {
-
-            mes: item.portalarrecadacaomes,
-            ipva: parseFloat2Decimals(item.portalarrecadacaoipva)
-        }
-
-    }
-    )
-    return retorno
-
-}
-
-
-function mapArrecadaOutros(data) {
-
-    var retorno = data.map(function (item) {
-        return {
-
-            mes: item.portalarrecadacaomes,
-            outros: parseFloat2Decimals(item.portalportalarrecadacaooutros)
-        }
-
-    }
-    )
-    return retorno
-
-}
-
-function mapArrecadaItcd(data) {
-
-    var retorno = data.map(function (item) {
-        return {
-
-            mes: item.portalarrecadacaomes,
-            itcd: parseFloat2Decimals(item.portalarrecadacaoitcd)
-
-        }
-
-
-    }
-    )
-    return retorno
-}
-
-function mapArrecadaIrrf(data) {
-
-    var retorno = data.map(function (item) {
-        return {
-
-            mes: item.portalarrecadacaomes,
-            irrf: parseFloat2Decimals(item.portalarrecadacaoirrf)
-        }
-
-    }
-    )
-    return retorno
-}
-
-function mapArrecadaTaxas(data) {
-
-    var retorno = data.map(function (item) {
-        return {
-
-            mes: item.portalarrecadacaomes,
-            taxas: parseFloat2Decimals(item.portalarrecadacaotaxas)
-        }
-
-    }
-    )
-    // console.log(retorno)
-    return retorno
-}
-
-
-
-
-
-
-function GerarRepasse() {
-    var dtInicial = document.getElementById("dtInicial").value;
-    var dtFinal = document.getElementById("dtFinal").value;
-    if (dtInicial > dtFinal) {
-        alert('Data Inical deve Ser Menor que Data Final!')
-    }
-    else {
-        ObterDadosRepase(dtInicial, dtFinal);
-    }
-
-}
-
-function ObterDadosRepase(dInicial, dFinal) {
-    var url = BASE_URL + 'getportalrepasse/' + dInicial + '/' + dFinal;
-
-
-    fetch(url, options)
-        .then(response => {
-            response.json()
-                .then(data => ShowGrafico(data))
-        })
-        .catch(e => console.log('Erro :' + e.message));
-
-
-};
 
 function ShowGrafico(data) {
     var vArrecadaIcms = mapIcms(data)
@@ -665,7 +532,7 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
             title: {
                 display: true,
                 fontSize: 16,
-                text: 'Repasses por Municipio : '+TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                text: 'Repasses por periodo : '+TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             } ,
                      
             layout: {
@@ -699,6 +566,139 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
         }
     });
 }
+function mapArrecadaIcms(data) {
+
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            icms: parseFloat2Decimals(item.portalarrecadacaoicms)
+        }
+
+    }
+    )
+    // console.log(retorno)
+    return retorno
+}
+
+// function mapTeste(data) {
+//     var portalarrecadacaoicms = 'portalarrecadacaoicms'
+
+//     var retorno = data.map(function (item) {
+//         return {
+
+//             mes: item.portalarrecadacaomes,
+//             icms: parseFloat2Decimals(item.['portalarrecadacaoicms])
+//         }
+
+//     }
+//     )
+//     // console.log(retorno)
+//     return retorno
+// }
+
+
+function mapArrecadaIpva(data) {
+
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            ipva: parseFloat2Decimals(item.portalarrecadacaoipva)
+        }
+
+    }
+    )
+    return retorno
+
+}
+
+
+function mapArrecadaOutros(data) {
+
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            outros: parseFloat2Decimals(item.portalportalarrecadacaooutros)
+        }
+
+    }
+    )
+    return retorno
+
+}
+
+function mapArrecadaItcd(data) {
+
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            itcd: parseFloat2Decimals(item.portalarrecadacaoitcd)
+
+        }
+
+
+    }
+    )
+    return retorno
+}
+
+function mapArrecadaIrrf(data) {
+
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            irrf: parseFloat2Decimals(item.portalarrecadacaoirrf)
+        }
+
+    }
+    )
+    return retorno
+}
+
+function mapArrecadaTaxas(data) {
+
+    var retorno = data.map(function (item) {
+        return {
+
+            mes: item.portalarrecadacaomes,
+            taxas: parseFloat2Decimals(item.portalarrecadacaotaxas)
+        }
+
+    }
+    )
+    // console.log(retorno)
+    return retorno
+}
+
+function GerarRepasse() {
+    var dtInicial = document.getElementById("dtInicial").value;
+    var dtFinal = document.getElementById("dtFinal").value;
+    if (dtInicial > dtFinal) {
+        alert('Data Inical deve Ser Menor que Data Final!')
+    }
+    else {
+        ObterDadosRepase(dtInicial, dtFinal);
+    }
+
+}
+
+function ObterDadosRepase(dInicial, dFinal) {
+    var url = BASE_URL + 'getportalrepasse/' + dInicial + '/' + dFinal;
+
+
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => ShowGrafico(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+
+
+};
 
 function mapIcms(data) {
     var retorno = data.map(function (item) {
