@@ -252,10 +252,13 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                     
     var TotalAno = vtotalIcms+vtotalIpva+vtotalOutros+vtotalItcd+vtotalIrrf+vtotalTaxas
     
-    // console.log(TotalAno)
-
-    var ctx = document.getElementById(canvas).getContext('2d');
     
+     if (canvas === 'impostoChartConsulta') {
+        document.getElementById("divcanvas").innerHTML = '&nbsp;';
+        document.getElementById('divcanvas').innerHTML = '<canvas id='+canvas+'></canvas>';
+     }
+   
+    var ctx = document.getElementById(canvas).getContext('2d');
 
     var chart = new Chart(ctx, {
 
@@ -384,6 +387,13 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     });
 }
 
+function removeData(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+    });
+    chart.update();
+}
 
 function mapArrecadaIcms(data) {
 
@@ -554,7 +564,12 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
           
     var TotalPeriodo = ttotalIcms+ttotalIpva+tvalorFundeIcms+tvalorFundeIpva
 
-    var ctx = document.getElementById('myChart').getContext('2d');
+
+    document.getElementById("divrepasse").innerHTML = '&nbsp;';
+    document.getElementById('divrepasse').innerHTML = '<canvas id="chartrepasse"></canvas>';
+   
+
+    var ctx = document.getElementById('chartrepasse').getContext('2d');
 
     var chart = new Chart(ctx, {
 

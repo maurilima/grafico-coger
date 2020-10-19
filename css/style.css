@@ -133,7 +133,7 @@ div.type {
     padding: 10px;
     margin-top: 20px;
     padding-bottom: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 
 }
 .dashboard-flex-parent-arrecada{
@@ -162,11 +162,11 @@ div.type {
     flex-direction: row;
     justify-content: space-around ;
     align-items: space-around;
-    height: 190px;
+    height: 180px;
 
     /* border: 1px solid red; */
     /* background-color: #faf6f5; */
-    margin-top: 20px;
+    margin-top: 5px;
     margin-bottom: 10px;
 }
 .entradas {
