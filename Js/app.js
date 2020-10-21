@@ -54,8 +54,6 @@ function GerarImpostometro(data) {
         });
         return novoConteudo;
     });
-
-  
     document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
@@ -68,26 +66,17 @@ function GerarImpostometro(data) {
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-
     dados = arrays.map(a => parseFloat2Decimals(a, 2))
-
     ImpostoGrafico(dados)
-
-
-
-
 }
 
 function ImpostoGrafico(dados) {
 
     var totalImpostos = dados.reduce(function(acumulador, valorAtual) {
-        return acumulador + valorAtual})
-         
+        return acumulador + valorAtual
+    })
     var ctx = document.getElementById('impostoChart').getContext('2d');
-    
-
     var chart = new Chart(ctx, {
-
         type: 'doughnut',
         data: {
             labels: LabelImpostos,
@@ -101,18 +90,15 @@ function ImpostoGrafico(dados) {
                     'rgba(23, 162, 184, 1)',
                     'rgba(255, 193, 7, 1)'
                 ],
-
                 borderColor: 'rgba(220,220,220,0.3)',
                 pointBackgroundColor: 'rgba(211,211,211,0.5)',
                 pointHoverBackgroundColor: ['write'],
                 // pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointBorderWidth: 1,
                 data: dados
-            }
-
-            ]
+                 }]
         },
-        options: {
+          options: {
             legend: {
                 position: 'bottom',
                 label: {
@@ -215,12 +201,6 @@ function ArrecadaGrafico(data, canvas, tipo) {
     }else {
         throw alert('Nenhuma Informação Seleionada para os dados Informados')
     }
-
-
-   
-
-
-
 }
 
 
@@ -414,26 +394,23 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 
 
 
-function ShowGrafico(data) {
+function Grafico(data) {
     var vArrecadaIcms = mapIcms(data)
     var vArrecadaIpva = mapIpva(data)
     var vFundebIcms = mapFundebIcms(data)
     var vFundebIpva = mapFundebIpva(data)
-    var vFundef = mapFundef(data)
-
-    GraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef);
-    // console.log(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, vFundef);
+    
+    GraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva);
 
 
 }
 
-function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
+function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva) {
 
     var labelIcms = []
     var valorIcms = []
     var valorIpva = []
     var valorFundeIcms = []
-    var labelFundeIpva = []
     var valorFundeIpva = []
 
     for (var i in vIcms) {
@@ -447,6 +424,9 @@ function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, vFundef) {
         valorFundeIcms.push(vFundebIcms[i].fundebicms)
     }
 
+    for (var i in vFundebIpva) {
+        valorFundeIpva.push(vFundebIpva[i].fundebipva)
+    }
     for (var i in vFundebIpva) {
         valorFundeIpva.push(vFundebIpva[i].fundebipva)
     }
@@ -580,23 +560,6 @@ function mapArrecadaIcms(data) {
     // console.log(retorno)
     return retorno
 }
-
-// function mapTeste(data) {
-//     var portalarrecadacaoicms = 'portalarrecadacaoicms'
-
-//     var retorno = data.map(function (item) {
-//         return {
-
-//             mes: item.portalarrecadacaomes,
-//             icms: parseFloat2Decimals(item.['portalarrecadacaoicms])
-//         }
-
-//     }
-//     )
-//     // console.log(retorno)
-//     return retorno
-// }
-
 
 function mapArrecadaIpva(data) {
 
