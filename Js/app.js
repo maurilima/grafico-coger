@@ -394,18 +394,18 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 
 
 
-function Grafico(data) {
+function prepareGraficoArrecada(data) {
     var vArrecadaIcms = mapIcms(data)
     var vArrecadaIpva = mapIpva(data)
     var vFundebIcms = mapFundebIcms(data)
     var vFundebIpva = mapFundebIpva(data)
     
-    GraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva);
+    renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva);
 
 
 }
 
-function GraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva) {
+function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva) {
 
     var labelIcms = []
     var valorIcms = []
@@ -656,7 +656,7 @@ function ObterDadosRepase(dInicial, dFinal) {
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => ShowGrafico(data))
+                .then(data => prepareGraficoArrecada(data))
         })
         .catch(e => console.log('Erro :' + e.message));
 
