@@ -18,86 +18,97 @@
   <body>
     <div class="container-charts">
       <div class="dashboard-contet-title">
-        <h3>Gráficos Arrecadação / Remessa</h3>
       </div>
       <div class="dashboard-content">
         <div class="dashboard-flex-parent">
-
           <div class="dashboard-box flex-icms">
             <div class="box-icon box-icms">
               <i class="fas fa-money-bill-wave"></i>
-
             </div>
             <div class="value">Icms</div>
+            <div class="value">Set/2020</div>
             <div id='icmsvalor' class="type">R$ 0,00</div>
           </div>
-
           <div class="dashboard-box flex-ipva">
             <div class="box-icon box-ipva">
               <i class="fas fa-truck"></i>
             </div>
             <div class="value">Ipva</div>
+            <div class="value">Set/2020</div>
             <div id='ipvavalor' class="type">R$ 0,00</div>
           </div>
-
           <div class="dashboard-box flex-itcd">
             <div class="box-icon box-itcd">
               <i class="fas fa-money-check-alt"></i>
             </div>
             <div class="value">Itcd</div>
+            <div class="value">Set/2020</div>
             <div id='itcdvalor' class="type">R$ 0,00</div>
           </div>
-
           <div class="dashboard-box flex-irrf">
             <div class="box-icon box-irrf">
               <i class="fab fa-wolf-pack-battalion"></i>
             </div>
             <div class="value">Irrf</div>
+            <div class="value">Set/2020</div>
             <div id='irrfvalor' class="type">R$ 0,00</div>
           </div>
-
           <div class="dashboard-box flex-taxas ">
             <div class="box-icon box-taxas">
               <i class="fas fa-hand-holding-usd"></i>
-
             </div>
             <div class="value">Taxas</div>
+            <div class="value">Set/2020</div>
             <div id='taxasvalor' class="type">R$ 0,00</div>
           </div>
-
           <div class="dashboard-box flex-outros">
             <div class="box-icon box-outros">
               <i class="fas fa-funnel-dollar"></i>
             </div>
             <div class="value">Outros</div>
+            <div class="value">Set/2020</div>
             <div id='outrosvalor' class="type">R$ 0,00</div>
           </div>
         </div>
-        <!-- Arrecadacao -->
         <div class="dashborad-content-arrecada">
           <div class="dashboard-flex-parent-arrecada">
-            <div class="dashboard-box-arrecada" > <!-- style="position: relative; height:40vh; width:40vw" -->
-              <canvas id="impostoChart" ></canvas>
+            <div class="dashboard-box-arrecada">
+              
+              <canvas id="impostoChart"></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
             </div>
             <div class="dashboard-box-arrecada">
               <canvas id="arrecadaChart"></canvas>
             </div>
           </div>
         </div>
-      </div>
-      <div class="charts-arrecada">
+      </div>        
+        <div class="dashborad-content-repasse-total">
+          <div class="dashboard-flex-parent-repasse">
+            <div class="dashboard-box-repasse">
+              
+              <canvas id="donnut-repasse"></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
+            </div>
+            <div class="dashboard-box-repasse">
+              <canvas id="bar-repasse"></canvas>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Arrecadacao -->
+
+      <!-- <div class="charts-arrecada">
         <div class="chart-box-arrecada">
           <div class="arrecada">
           </div>
           <div class="arrecada">
           </div>
         </div>
-      </div>
-      <!-- Arrecadaco / Remessa -->
+      </div> -->
       <div class="container-remessa">
         <div class="entradas">
           <form>
-            <label for="basic-url">Consulta Arrecadção Mensal/Anual</label>
+            <label for="basic-url">Consulta Arrecadação Mensal/Anual</label>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon3">Mes</span>
@@ -105,9 +116,7 @@
               <input id="mes" type="text" class="form-control" aria-describedby="basic-addon3" maxlength="2" range='12'
                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 placeholder="Apenas Numero, Zero para Emitir o Ano">
-    
             </div>
-
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon3">Ano</span>
@@ -117,9 +126,7 @@
                 placeholder="Apenas Numero. Ano com 4 Digitos ">
             </div>
             <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
-
           </form>
-
         </div>
         <div class="entradas">
           <form>
@@ -149,7 +156,7 @@
       <div class="charts-Content">
         <div class="charts-flex-parent">
           <div class="charts-box">
-            <div id='divcanvas'  class="remesa">
+            <div id='divcanvas' class="remesa">
               <canvas id="impostoChartConsulta"></canvas>
             </div>
           </div>

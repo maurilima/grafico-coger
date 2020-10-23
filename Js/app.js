@@ -17,37 +17,26 @@ var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoirrf',
     'portalarrecadacaotaxas'
 ]
-
 var meses = ['NUL','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
-
 var btnRepasse = document.getElementById("repasse");
 var btnArrecada = document.getElementById("arrecada");
-
-btnRepasse.addEventListener("click", GerarRepasse, false);
-
-btnArrecada.addEventListener('click', GerarArrecadacao, false);
-
-
-
+btnRepasse.addEventListener("click", prepareRepasse, false);
+btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
     var mes = now.getMonth();
     var ano = now.getFullYear();
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
-    
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => GerarImpostometro(data))
-                getApiArrecada(0,ano,'arrecadaChart') 
+                .then(data => prepareImpostoDonut(data, mes))
+                prepareArrecada(0,ano,'arrecadaChart') 
         })
         .catch(e => console.log('Erro :' + e.message));
 
 })
-// --------------------------------------
-
-function GerarImpostometro(data) {
-
+function prepareImpostoDonut(data, mes) {
     arrays = arrays.map(function (campo) {
         var novoConteudo = data.map(function (objeto) {
             return objeto[campo];
@@ -67,10 +56,10 @@ function GerarImpostometro(data) {
     document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     dados = arrays.map(a => parseFloat2Decimals(a, 2))
-    ImpostoGrafico(dados)
+    renderImpostGraficoDonut(dados, mes)
 }
 
-function ImpostoGrafico(dados) {
+function renderImpostGraficoDonut(dados, mes) {
 
     var totalImpostos = dados.reduce(function(acumulador, valorAtual) {
         return acumulador + valorAtual
@@ -109,7 +98,7 @@ function ImpostoGrafico(dados) {
             title: {
                 display: true,
                 fontSize: 16,
-                text: 'Arrecadçaõ Mês: ' + totalImpostos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                text: 'Arrecadação Mês '+meses[mes]+' : ' + totalImpostos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             },
             layout: {
                 padding: {
@@ -149,7 +138,7 @@ function ImpostoGrafico(dados) {
 
 }
 
-function GerarArrecadacao() {
+function renderArrecadacaoGrafico() {
     var mes = document.getElementById('mes').value;
     var ano = document.getElementById('ano').value;
     var canvas = 'impostoChartConsulta'
@@ -158,38 +147,28 @@ function GerarArrecadacao() {
     if (mes > 12) {
         alert('Mes de Esta entre "0" e "12" ')
     }
-    getApiArrecada(parseInt(mes), parseInt(ano), canvas)
+    prepareArrecada(parseInt(mes), parseInt(ano), canvas)
 
 
 
 }
 
-function getApiArrecada(mes, ano, canvas) {
+function prepareArrecada(mes, ano, canvas) {
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
     let tipo =''
-    
     if(mes > 0) {
-       tipo = 'Arrecadaçaõ mes ' +meses[mes]+'/'+ano +' : '
+       tipo = 'Arrecadação mes ' +meses[mes]+'/'+ano +' : '
     }
     else
-   
-       tipo = `Arrecadaçaõ anual de ${ano} :` 
-    
-
-
+       tipo = `Arrecadação anual de ${ano} :` 
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => ArrecadaGrafico(data,canvas,tipo))
-                
+                .then(data => renderArrecadaGraficoBar(data,canvas,tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
-
-
 }
-
-
-function ArrecadaGrafico(data, canvas, tipo) {
+function renderArrecadaGraficoBar(data, canvas, tipo) {
     if ( data.length > 0  ){ 
         var ArrecadaIcms = mapArrecadaIcms(data)
         var ArrecadaIpva = mapArrecadaIpva(data)
@@ -279,6 +258,9 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointBorderWidth: 1,
+                minBarLength: 2,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
                 data: valorIcms
             },
             {
@@ -290,6 +272,9 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(25,25,112,1)',
                 pointBorderWidth: 1,
+                minBarLength: 2,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
                 data: valorIpva
 
             },
@@ -302,6 +287,9 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(139,69,19,1)',
                 pointBorderWidth: 1,
+                minBarLength: 2,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
                 data: valorItcd
 
             },
@@ -314,6 +302,9 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(139,0,0,1)',
                 pointBorderWidth: 1,
+                minBarLength: 2,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
                 data: valorIrrf
 
             },
@@ -325,7 +316,9 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 pointBackgroundColor: 'rgba(255, 193, 7,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(255,140,0,1)',
-                pointBorderWidth: 1,
+                minBarLength: 2,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
                 data: valorTaxas
 
             },
@@ -337,7 +330,10 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 pointBackgroundColor: 'rgba(111, 66, 193,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(138,43,226,1)',
-                pointBorderWidth: 1,
+                minBarLength: 2,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+
                 data: valorOutros
 
             },
@@ -637,7 +633,7 @@ function mapArrecadaTaxas(data) {
     return retorno
 }
 
-function GerarRepasse() {
+function prepareRepasse() {
     var dtInicial = document.getElementById("dtInicial").value;
     var dtFinal = document.getElementById("dtFinal").value;
     if (dtInicial > dtFinal) {
