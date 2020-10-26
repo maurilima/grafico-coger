@@ -30,13 +30,14 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => prepareImpostoDonut(data, mes))
+                .then(data => prepareImpostoDonut(data, mes,ano,'impostoChart'))
                 prepareArrecada(0,ano,'arrecadaChart') 
+                prepareRepasseDonut(ano,'donnut-repasse')
         })
         .catch(e => console.log('Erro :' + e.message));
 
 })
-function prepareImpostoDonut(data, mes) {
+function prepareImpostoDonut(data, mes, ano, canvas) {
     arrays = arrays.map(function (campo) {
         var novoConteudo = data.map(function (objeto) {
             return objeto[campo];
@@ -55,16 +56,28 @@ function prepareImpostoDonut(data, mes) {
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
             .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    dados = arrays.map(a => parseFloat2Decimals(a, 2))
-    renderImpostGraficoDonut(dados, mes)
+    dados = arrays.map(a => parseFloat2Decimals(a, 2));
+
+    let mesano = document.querySelectorAll('.mesvalue');
+
+    mesano.forEach( ma => {
+        
+     ma.innerHTML = meses[mes]+'/'+ano
+    });     
+    renderImpostGraficoDonut(dados, mes,canvas)
 }
 
-function renderImpostGraficoDonut(dados, mes) {
+function prepareRepasseDonut(ano,canvas){
+
+
+}
+
+function renderImpostGraficoDonut(dados, mes, canvas) {
 
     var totalImpostos = dados.reduce(function(acumulador, valorAtual) {
         return acumulador + valorAtual
     })
-    var ctx = document.getElementById('impostoChart').getContext('2d');
+    var ctx = document.getElementById(canvas).getContext('2d');
     var chart = new Chart(ctx, {
         type: 'doughnut',
         data: {
