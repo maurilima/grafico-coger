@@ -1,8 +1,9 @@
 // "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2020-01-01/2020-12-31";
 // https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
 
-const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/'
-var LabelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS']
+const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
+var LabelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
+let LabelRepasses = ['ICMS', 'IPVA','FUNDEBICMS', 'FUNDEBIPVA'];
 
 var options = {
     method: 'GET',
@@ -74,19 +75,17 @@ function prepareRepasseDonut(mes,ano, canvas) {
     let lMes = mes+1
     var url = BASE_URL + 'getportalrepasse/' + ano+'-'+ lMes+'-01/' + ano +'-'+ lMes+'-31';
 
-    console.log(url)
-
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => prepareDadosRepasse(data))
+                .then(data => prepareDadosRepasse(data, mes))
 
         })
         .catch(e => console.log('Erro :' + e.message));
 
 }
 //
-function prepareDadosRepasse(data) {
+function prepareDadosRepasse(data, mes) {
 let repasse = data.map(item => item)
 
 let repasseIcms = mapRepasse(repasse, 'portalrepasseicms' )
@@ -98,14 +97,16 @@ let totalRepasseIcms =  repasseIcms.reduce((acumulador, valorAtual ) => { return
 let totalRepasseIpva =  repasseIpva.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
 let totalRepasseFundebIcms =  repasseFundebIcms.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
 let totalRepasseFundebIpva =  repasseFundebIpva.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
-
-
-
-    console.log(totalRepasseIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-    console.log(totalRepasseIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-    console.log(totalRepasseFundebIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-    console.log(totalRepasseFundebIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-
+    // console.log(totalRepasseIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+    // console.log(totalRepasseIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+    // console.log(totalRepasseFundebIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+    // console.log(totalRepasseFundebIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+   let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva) 
+   console.log(dados) 
+   let totalRepase = totalRepasseIcms+ totalRepasseIpva+ totalRepasseFundebIcms+totalRepasseFundebIpva
+   
+   renderRepasseDonut(dados, totalRepase, mes)
+ 
 }
 
 function mapRepasse (data, imposto  ){
@@ -114,6 +115,82 @@ function mapRepasse (data, imposto  ){
 })
 
 
+}
+
+function renderRepasseDonut(dados, totalRepasse, mes ){
+    {
+        var ctx = document.getElementById('donnut-repasse').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: LabelRepasses,
+                datasets: [{
+                    label: 'Donut',
+                    backgroundColor: [
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(108, 117, 125, 1)',
+                        'rgba(111, 66, 193, 1)',
+                        'rgba(40, 167, 69, 0.98)'
+                    ],
+                    borderColor: 'rgba(220,220,220,0.3)',
+                    pointBackgroundColor: 'rgba(211,211,211,0.5)',
+                    pointHoverBackgroundColor: ['write'],
+                    // pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointBorderWidth: 1,
+                    data: dados
+                }]
+            },
+            options: {
+                legend: {
+                    position: 'bottom',
+                    label: {
+                        boxerwidth: 12,
+                        fontSize: 14
+                    }
+                },
+                title: {
+                    display: true,
+                    fontSize: 16,
+                    text: 'Repasse do Mes :' + meses[mes] + ' : ' + totalRepasse.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                },
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 5,
+                        bottom: 3,
+                        with: 10,
+                        heigh: 10
+                    }
+                },
+    
+    
+                tooltips: {
+                    callbacks: {
+                        title: function (tooltipItem, data) {
+                            return data['labels'][tooltipItem[0]['index']];
+                        },
+                        label: function (tooltipItem, data) {
+                            return data['datasets'][0]['data'][tooltipItem['index']].toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+                        },
+                        afterLabel: function (tooltipItem, data) {
+                                    var dataset = data['datasets'][0];
+                            var percent = ((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100).toFixed(2)
+                            return '(' + percent + '%)';
+                        }
+                    },
+                    backgroundColor: '#FFF',
+                    titleFontSize: 16,
+                    titleFontColor: '#0066ff',
+                    bodyFontColor: '#000',
+                    bodyFontSize: 14,
+                    displayColors: false
+                }
+            }
+        });
+    
+    }
+   
 }
 
 
