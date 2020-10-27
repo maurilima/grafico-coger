@@ -60,10 +60,7 @@ function prepareImpostoDonut(data, mes, ano, canvas) {
 
     let mesano = document.querySelectorAll('.mesvalue');
 
-    mesano.forEach( ma => {
-        
-     ma.innerHTML = meses[mes]+'/'+ano
-    });     
+    mesano.forEach( ma => { ma.innerHTML = meses[mes]+'/'+ano });     
     renderImpostGraficoDonut(dados, mes,canvas)
 }
 
