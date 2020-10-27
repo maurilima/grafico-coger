@@ -1,4 +1,4 @@
-// "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2018-01-19/2018-12-30";
+// "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2020-01-01/2020-12-31";
 // https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
 
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/'
@@ -10,6 +10,12 @@ var options = {
     cache: 'default'
 }
 
+var arrayRepasse = ["portalrepasseicms",
+    "portalrepasseipva",
+    "portalrepassefundebicms",
+    "portalrepassefundebipva"
+]
+
 var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
     'portalportalarrecadacaooutros',
@@ -17,7 +23,7 @@ var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoirrf',
     'portalarrecadacaotaxas'
 ]
-var meses = ['NUL','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+var meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 var btnRepasse = document.getElementById("repasse");
 var btnArrecada = document.getElementById("arrecada");
 btnRepasse.addEventListener("click", prepareRepasse, false);
@@ -30,9 +36,9 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => prepareImpostoDonut(data, mes,ano,'impostoChart'))
-                prepareArrecada(0,ano,'arrecadaChart') 
-                prepareRepasseDonut(ano,'donnut-repasse')
+                .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
+            prepareArrecada(0, ano, 'arrecadaChart')
+            prepareRepasseDonut(mes,ano, 'donnut-repasse')
         })
         .catch(e => console.log('Erro :' + e.message));
 
@@ -45,33 +51,75 @@ function prepareImpostoDonut(data, mes, ano, canvas) {
         return novoConteudo;
     });
     document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
-            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
-            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"])
-            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('irrfvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"])
-            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('itcdvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"])
-            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
-            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     dados = arrays.map(a => parseFloat2Decimals(a, 2));
 
     let mesano = document.querySelectorAll('.mesvalue');
 
-    mesano.forEach( ma => { ma.innerHTML = meses[mes]+'/'+ano });     
-    renderImpostGraficoDonut(dados, mes,canvas)
+    mesano.forEach(ma => { ma.innerHTML = meses[mes] + '/' + ano });
+    renderImpostGraficoDonut(dados, mes, canvas)
 }
 
-function prepareRepasseDonut(ano,canvas){
+function prepareRepasseDonut(mes,ano, canvas) {
+    let lMes = mes+1
+    var url = BASE_URL + 'getportalrepasse/' + ano+'-'+ lMes+'-01/' + ano +'-'+ lMes+'-31';
+
+    console.log(url)
+
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => prepareDadosRepasse(data))
+
+        })
+        .catch(e => console.log('Erro :' + e.message));
+
+}
+//
+function prepareDadosRepasse(data) {
+let repasse = data.map(item => item)
+
+let repasseIcms = mapRepasse(repasse, 'portalrepasseicms' )
+let repasseIpva = mapRepasse(repasse, 'portalrepasseipva' )
+let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms') 
+let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva') 
+
+let totalRepasseIcms =  repasseIcms.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
+let totalRepasseIpva =  repasseIpva.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
+let totalRepasseFundebIcms =  repasseFundebIcms.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
+let totalRepasseFundebIpva =  repasseFundebIpva.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
+
+
+
+    console.log(totalRepasseIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+    console.log(totalRepasseIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+    console.log(totalRepasseFundebIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+    console.log(totalRepasseFundebIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
+}
+
+function mapRepasse (data, imposto  ){
+
+  return data.map(item => { return  parseFloat2Decimals(item[imposto])
+})
 
 
 }
+
 
 function renderImpostGraficoDonut(dados, mes, canvas) {
 
-    var totalImpostos = dados.reduce(function(acumulador, valorAtual) {
+    var totalImpostos = dados.reduce(function (acumulador, valorAtual) {
         return acumulador + valorAtual
     })
     var ctx = document.getElementById(canvas).getContext('2d');
@@ -95,9 +143,9 @@ function renderImpostGraficoDonut(dados, mes, canvas) {
                 // pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointBorderWidth: 1,
                 data: dados
-                 }]
+            }]
         },
-          options: {
+        options: {
             legend: {
                 position: 'bottom',
                 label: {
@@ -108,7 +156,7 @@ function renderImpostGraficoDonut(dados, mes, canvas) {
             title: {
                 display: true,
                 fontSize: 16,
-                text: 'Arrecadação Mês '+meses[mes]+' : ' + totalImpostos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                text: 'Arrecadação Mês ' + meses[mes] + ' : ' + totalImpostos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             },
             layout: {
                 padding: {
@@ -116,34 +164,34 @@ function renderImpostGraficoDonut(dados, mes, canvas) {
                     right: 10,
                     top: 5,
                     bottom: 3,
-                     with: 10,
+                    with: 10,
                     heigh: 10
                 }
             },
-        
-        
+
+
             tooltips: {
-              callbacks: {
-                title: function(tooltipItem, data) {
-                  return data['labels'][tooltipItem[0]['index']];
+                callbacks: {
+                    title: function (tooltipItem, data) {
+                        return data['labels'][tooltipItem[0]['index']];
+                    },
+                    label: function (tooltipItem, data) {
+                        return data['datasets'][0]['data'][tooltipItem['index']].toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+                    },
+                    afterLabel: function (tooltipItem, data) {
+                        var dataset = data['datasets'][0];
+                        var percent = ((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100).toFixed(2)
+                        return '(' + percent + '%)';
+                    }
                 },
-                label: function(tooltipItem, data) {
-                  return data['datasets'][0]['data'][tooltipItem['index']].toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-                },
-                afterLabel: function(tooltipItem, data) {
-                  var dataset = data['datasets'][0];
-                  var percent = ((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100 ).toFixed(2)
-                                return '(' + percent + '%)';
-                }
-              },
-              backgroundColor: '#FFF',
-              titleFontSize: 16,
-              titleFontColor: '#0066ff',
-              bodyFontColor: '#000',
-              bodyFontSize: 14,
-              displayColors: false
+                backgroundColor: '#FFF',
+                titleFontSize: 16,
+                titleFontColor: '#0066ff',
+                bodyFontColor: '#000',
+                bodyFontSize: 14,
+                displayColors: false
             }
-          }
+        }
     });
 
 }
@@ -165,29 +213,29 @@ function renderArrecadacaoGrafico() {
 
 function prepareArrecada(mes, ano, canvas) {
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
-    let tipo =''
-    if(mes > 0) {
-       tipo = 'Arrecadação mes ' +meses[mes]+'/'+ano +' : '
+    let tipo = ''
+    if (mes > 0) {
+        tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
     }
     else
-       tipo = `Arrecadação anual de ${ano} :` 
+        tipo = `Arrecadação anual de ${ano} :`
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => renderArrecadaGraficoBar(data,canvas,tipo))
+                .then(data => renderArrecadaGraficoBar(data, canvas, tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
 }
 function renderArrecadaGraficoBar(data, canvas, tipo) {
-    if ( data.length > 0  ){ 
+    if (data.length > 0) {
         var ArrecadaIcms = mapArrecadaIcms(data)
         var ArrecadaIpva = mapArrecadaIpva(data)
         var ArrecadaOutros = mapArrecadaOutros(data)
         var ArrecadaItcd = mapArrecadaItcd(data)
         var ArrecadaIrrf = mapArrecadaIrrf(data)
         var ArrecadaTaxas = mapArrecadaTaxas(data)
-        GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas,canvas, tipo)
-    }else {
+        GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo)
+    } else {
         throw alert('Nenhuma Informação Seleionada para os dados Informados')
     }
 }
@@ -202,7 +250,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     var valorItcd = []
     var valorIrrf = []
     var valorTaxas = []
- 
+
     // console.log(ArrecadaIcms)
 
     for (var i in ArrecadaIcms) {
@@ -233,25 +281,25 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 
     }
     // console.log(valorIcms)
-    var vtotalIcms = valorIcms.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
+    var vtotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
 
-    var vtotalIpva = valorIpva.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-    var vtotalOutros = valorOutros.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-                                               
-    var vtotalItcd = valorItcd.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-                                               
-    var vtotalIrrf = valorIrrf.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-    
-    var vtotalTaxas = valorTaxas.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-                    
-    var TotalAno = vtotalIcms+vtotalIpva+vtotalOutros+vtotalItcd+vtotalIrrf+vtotalTaxas
-    
-    
-     if (canvas === 'impostoChartConsulta') {
+    var vtotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+    var vtotalOutros = valorOutros.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var vtotalItcd = valorItcd.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var vtotalIrrf = valorIrrf.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var vtotalTaxas = valorTaxas.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var TotalAno = vtotalIcms + vtotalIpva + vtotalOutros + vtotalItcd + vtotalIrrf + vtotalTaxas
+
+
+    if (canvas === 'impostoChartConsulta') {
         document.getElementById("divcanvas").innerHTML = '&nbsp;';
-        document.getElementById('divcanvas').innerHTML = '<canvas id='+canvas+'></canvas>';
-     }
-   
+        document.getElementById('divcanvas').innerHTML = '<canvas id=' + canvas + '></canvas>';
+    }
+
     var ctx = document.getElementById(canvas).getContext('2d');
 
     var chart = new Chart(ctx, {
@@ -363,7 +411,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
             title: {
                 display: true,
                 fontSize: 16,
-                text: tipo+ TotalAno.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                text: tipo + TotalAno.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             }
             ,
             layout: {
@@ -405,7 +453,7 @@ function prepareGraficoArrecada(data) {
     var vArrecadaIpva = mapIpva(data)
     var vFundebIcms = mapFundebIcms(data)
     var vFundebIpva = mapFundebIpva(data)
-    
+
     renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva);
 
 
@@ -420,7 +468,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva) {
     var valorFundeIpva = []
 
     for (var i in vIcms) {
-        labelIcms.push(vIcms[i].munId.substr(0,6))
+        labelIcms.push(vIcms[i].munId.substr(0, 6))
         valorIcms.push(vIcms[i].icms)
     }
     for (var i in vIpva) {
@@ -437,20 +485,20 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva) {
         valorFundeIpva.push(vFundebIpva[i].fundebipva)
     }
 
-    
-    var ttotalIcms = valorIcms.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
 
-    var ttotalIpva = valorIpva.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-    var tvalorFundeIcms = valorFundeIcms.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-                                               
-    var tvalorFundeIpva = valorFundeIpva.reduce(function(acumulador, valorAtual) {return acumulador + valorAtual})
-          
-    var TotalPeriodo = ttotalIcms+ttotalIpva+tvalorFundeIcms+tvalorFundeIpva
+    var ttotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var ttotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+    var tvalorFundeIcms = valorFundeIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var tvalorFundeIpva = valorFundeIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var TotalPeriodo = ttotalIcms + ttotalIpva + tvalorFundeIcms + tvalorFundeIpva
 
 
     document.getElementById("divrepasse").innerHTML = '&nbsp;';
     document.getElementById('divrepasse').innerHTML = '<canvas id="chartrepasse"></canvas>';
-   
+
 
     var ctx = document.getElementById('chartrepasse').getContext('2d');
 
@@ -518,9 +566,9 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva) {
             title: {
                 display: true,
                 fontSize: 16,
-                text: 'Repasses por periodo : '+TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-            } ,
-                     
+                text: 'Repasses por periodo : ' + TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+            },
+
             layout: {
                 padding: {
                     left: 10,
