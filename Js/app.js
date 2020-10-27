@@ -102,7 +102,6 @@ let totalRepasseFundebIpva =  repasseFundebIpva.reduce((acumulador, valorAtual )
     // console.log(totalRepasseFundebIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
     // console.log(totalRepasseFundebIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
    let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva) 
-   console.log(dados) 
    let totalRepase = totalRepasseIcms+ totalRepasseIpva+ totalRepasseFundebIcms+totalRepasseFundebIpva
    
    renderRepasseDonut(dados, totalRepase, mes)
