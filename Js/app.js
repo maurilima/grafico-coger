@@ -3,19 +3,13 @@
 
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
 var LabelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
-let LabelRepasses = ['ICMS', 'IPVA','FUNDEBICMS', 'FUNDEBIPVA'];
+let LabelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
 
 var options = {
     method: 'GET',
     mode: 'cors',
     cache: 'default'
 }
-
-var arrayRepasse = ["portalrepasseicms",
-    "portalrepasseipva",
-    "portalrepassefundebicms",
-    "portalrepassefundebipva"
-]
 
 var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
@@ -39,11 +33,12 @@ document.addEventListener('DOMContentLoaded', function () {
             response.json()
                 .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
             prepareArrecada(0, ano, 'arrecadaChart')
-            prepareRepasseDonut(mes,ano, 'donnut-repasse')
+            prepareRepasseDonut(mes, ano, 'donnut-repasse')
         })
         .catch(e => console.log('Erro :' + e.message));
 
 })
+
 function prepareImpostoDonut(data, mes, ano, canvas) {
     arrays = arrays.map(function (campo) {
         var novoConteudo = data.map(function (objeto) {
@@ -67,56 +62,54 @@ function prepareImpostoDonut(data, mes, ano, canvas) {
 
     let mesano = document.querySelectorAll('.mesvalue');
 
-    mesano.forEach(ma => { ma.innerHTML = meses[mes] + '/' + ano });
+    mesano.forEach(ma => { ma.innerHTML = meses[mes] + ' / ' + ano });
     renderImpostGraficoDonut(dados, mes, canvas)
 }
 
-function prepareRepasseDonut(mes,ano, canvas) {
-    let lMes = mes+1
-    var url = BASE_URL + 'getportalrepasse/' + ano+'-'+ lMes+'-01/' + ano +'-'+ lMes+'-31';
+function prepareRepasseDonut(mes, ano, canvas) {
+    let lMes = mes + 1
+    var url = BASE_URL + 'getportalrepasse/' + ano + '-' + lMes + '-01/' + ano + '-' + lMes + '-31';
 
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => prepareDadosRepasse(data, mes))
+                .then(data => prepareDadosRepasse(data, lMes, ano))
 
         })
         .catch(e => console.log('Erro :' + e.message));
 
 }
 //
-function prepareDadosRepasse(data, mes) {
-let repasse = data.map(item => item)
+function prepareDadosRepasse(data, mes, ano) {
 
-let repasseIcms = mapRepasse(repasse, 'portalrepasseicms' )
-let repasseIpva = mapRepasse(repasse, 'portalrepasseipva' )
-let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms') 
-let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva') 
+    let repasse = data.map(item => item)
 
-let totalRepasseIcms =  repasseIcms.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
-let totalRepasseIpva =  repasseIpva.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
-let totalRepasseFundebIcms =  repasseFundebIcms.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
-let totalRepasseFundebIpva =  repasseFundebIpva.reduce((acumulador, valorAtual ) => { return acumulador + valorAtual },0)
-    // console.log(totalRepasseIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-    // console.log(totalRepasseIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-    // console.log(totalRepasseFundebIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-    // console.log(totalRepasseFundebIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-   let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva) 
-   let totalRepase = totalRepasseIcms+ totalRepasseIpva+ totalRepasseFundebIcms+totalRepasseFundebIpva
-   
-   renderRepasseDonut(dados, totalRepase, mes)
- 
-}
+    let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
+    let repasseIpva = mapRepasse(repasse, 'portalrepasseipva')
+    let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms')
+    let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva')
 
-function mapRepasse (data, imposto  ){
+    let totalRepasseIcms = parseFloat2Decimals(repasseIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+    let totalRepasseIpva = parseFloat2Decimals(repasseIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0) + .05)
+    let totalRepasseFundebIcms = parseFloat2Decimals(repasseFundebIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+    let totalRepasseFundebIpva = parseFloat2Decimals(repasseFundebIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+    let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva)
+    let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
 
-  return data.map(item => { return  parseFloat2Decimals(item[imposto])
-})
-
+    renderRepasseDonut(dados, totalRepase, mes, ano)
 
 }
 
-function renderRepasseDonut(dados, totalRepasse, mes ){
+function mapRepasse(data, imposto) {
+
+    return data.map(item => {
+        return parseFloat2Decimals(item[imposto])
+    })
+
+
+}
+
+function renderRepasseDonut(dados, totalRepasse, mes, ano) {
     {
         var ctx = document.getElementById('donnut-repasse').getContext('2d');
         var chart = new Chart(ctx, {
@@ -150,7 +143,7 @@ function renderRepasseDonut(dados, totalRepasse, mes ){
                 title: {
                     display: true,
                     fontSize: 16,
-                    text: 'Repasse do Mes :' + meses[mes] + ' : ' + totalRepasse.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                    text: 'Repasse do Mes :' + meses[mes] + '/' + ano + ' : ' + totalRepasse.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
                 },
                 layout: {
                     padding: {
@@ -162,8 +155,8 @@ function renderRepasseDonut(dados, totalRepasse, mes ){
                         heigh: 10
                     }
                 },
-    
-    
+
+
                 tooltips: {
                     callbacks: {
                         title: function (tooltipItem, data) {
@@ -172,11 +165,15 @@ function renderRepasseDonut(dados, totalRepasse, mes ){
                         label: function (tooltipItem, data) {
                             return data['datasets'][0]['data'][tooltipItem['index']].toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
                         },
-                        afterLabel: function (tooltipItem, data) {
-                                    var dataset = data['datasets'][0];
-                            var percent = ((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100).toFixed(2)
-                            return '(' + percent + '%)';
-                        }
+                        // afterLabel: function (tooltipItem, data) {
+                        //             var dataset = data['datasets'][0];
+                        //             console.log(dataset['data'][tooltipItem['index']])
+                        //             console.log(dataset["_meta"][0]['total'])
+
+                        // var percent = ((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100).toFixed(2)
+
+                        //     return '(' + percent + '%)';
+                        // }
                     },
                     backgroundColor: '#FFF',
                     titleFontSize: 16,
@@ -187,9 +184,9 @@ function renderRepasseDonut(dados, totalRepasse, mes ){
                 }
             }
         });
-    
+
     }
-   
+
 }
 
 
@@ -244,8 +241,6 @@ function renderImpostGraficoDonut(dados, mes, canvas) {
                     heigh: 10
                 }
             },
-
-
             tooltips: {
                 callbacks: {
                     title: function (tooltipItem, data) {
@@ -282,9 +277,6 @@ function renderArrecadacaoGrafico() {
         alert('Mes de Esta entre "0" e "12" ')
     }
     prepareArrecada(parseInt(mes), parseInt(ano), canvas)
-
-
-
 }
 
 function prepareArrecada(mes, ano, canvas) {
@@ -318,7 +310,6 @@ function renderArrecadaGraficoBar(data, canvas, tipo) {
 
 
 function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo) {
-
     var labelIcms = []
     var valorIcms = []
     var valorIpva = []
@@ -326,48 +317,35 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     var valorItcd = []
     var valorIrrf = []
     var valorTaxas = []
-
     // console.log(ArrecadaIcms)
-
     for (var i in ArrecadaIcms) {
         labelIcms.push(meses[ArrecadaIcms[i].mes])
         valorIcms.push(ArrecadaIcms[i].icms)
-
     }
     for (var i in ArrecadaIpva) {
         valorIpva.push(ArrecadaIpva[i].ipva)
-
     }
     for (var i in ArrecadaOutros) {
         valorOutros.push(ArrecadaOutros[i].outros)
-
     }
 
     for (var i in ArrecadaItcd) {
         valorItcd.push(ArrecadaItcd[i].itcd)
-
     }
 
     for (var i in ArrecadaIrrf) {
         valorIrrf.push(ArrecadaIrrf[i].irrf)
-
     }
     for (var i in ArrecadaTaxas) {
         valorTaxas.push(ArrecadaTaxas[i].taxas)
-
     }
     // console.log(valorIcms)
     var vtotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
     var vtotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
     var vtotalOutros = valorOutros.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
     var vtotalItcd = valorItcd.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
     var vtotalIrrf = valorIrrf.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
     var vtotalTaxas = valorTaxas.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
     var TotalAno = vtotalIcms + vtotalIpva + vtotalOutros + vtotalItcd + vtotalIrrf + vtotalTaxas
 
 
@@ -375,11 +353,8 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         document.getElementById("divcanvas").innerHTML = '&nbsp;';
         document.getElementById('divcanvas').innerHTML = '<canvas id=' + canvas + '></canvas>';
     }
-
     var ctx = document.getElementById(canvas).getContext('2d');
-
     var chart = new Chart(ctx, {
-
         type: 'bar',
         data: {
             labels: labelIcms,
@@ -410,7 +385,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 barPercentage: 1.1,
                 categoryPercentage: .98,
                 data: valorIpva
-
             },
             {
                 label: 'ITCD',
@@ -425,7 +399,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 barPercentage: 1.1,
                 categoryPercentage: .98,
                 data: valorItcd
-
             },
             {
                 label: 'IRRF',
@@ -440,7 +413,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 barPercentage: 1.1,
                 categoryPercentage: .98,
                 data: valorIrrf
-
             },
             {
                 label: 'TAXAS',
@@ -454,7 +426,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 barPercentage: 1.1,
                 categoryPercentage: .98,
                 data: valorTaxas
-
             },
             {
                 label: 'OUTROS',
@@ -467,15 +438,12 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 minBarLength: 2,
                 barPercentage: 1.1,
                 categoryPercentage: .98,
-
                 data: valorOutros
-
             },
             ]
         },
 
         options: {
-
             legend: {
                 position: 'bottom',
                 label: {
