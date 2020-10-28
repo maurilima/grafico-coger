@@ -18,6 +18,7 @@ var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoirrf',
     'portalarrecadacaotaxas'
 ]
+
 var meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 var btnRepasse = document.getElementById("repasse");
 var btnArrecada = document.getElementById("arrecada");
@@ -34,10 +35,215 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
             prepareArrecada(0, ano, 'arrecadaChart')
             prepareRepasseDonut(mes, ano, 'donnut-repasse')
+            prepareRepasseBarra(ano)
         })
         .catch(e => console.log('Erro :' + e.message));
 
 })
+
+function prepareRepasse() {
+    var dataInicial = document.getElementById("dtInicial").value;
+    var dataFinal = document.getElementById("dtFinal").value;
+    let tipo = 'Repasses entre :'+dataInicial +' a '+dataFinal + ' : '
+
+    if (dataInicial > dataFinal) {
+        alert('Data Inical deve Ser Menor que Data Final!')
+    }
+    else {
+        ObterDadosRepase(dataInicial, dataFinal, 'chartrepasse', tipo);
+    }
+
+}
+
+function prepareRepasseBarra(ano){
+    let dataInicial = ano +'-01-01';
+    let dataFinal    = ano + '-12-31';
+    let tipo = 'Repasses do Ano '+ano +' : '
+    ObterDadosRepase(dataInicial, dataFinal,'bar-repasse', tipo)
+
+}
+function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
+    var url = BASE_URL + 'getportalrepasse/' + dInicial + '/' + dFinal;
+
+
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => prepareGraficoRemessa(data, canvas, tipo))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+
+
+};
+
+
+function prepareGraficoRemessa(data, canvas, tipo) {
+    var vArrecadaIcms = mapIcms(data)
+    var vArrecadaIpva = mapIpva(data)
+    var vFundebIcms = mapFundebIcms(data)
+    var vFundebIpva = mapFundebIpva(data)
+
+    renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, canvas, tipo);
+
+
+}
+
+
+
+
+function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas,tipo) {
+
+    var labelIcms = []
+    var valorIcms = []
+    var valorIpva = []
+    var valorFundeIcms = []
+    var valorFundeIpva = []
+
+    for (var i in vIcms) {
+        labelIcms.push(vIcms[i].munId.substr(0, 6))
+        valorIcms.push(vIcms[i].icms)
+    }
+    for (var i in vIpva) {
+        valorIpva.push(vIpva[i].ipv)
+    }
+    for (var i in vFundebIcms) {
+        valorFundeIcms.push(vFundebIcms[i].fundebicms)
+    }
+
+    for (var i in vFundebIpva) {
+        valorFundeIpva.push(vFundebIpva[i].fundebipva)
+    }
+    for (var i in vFundebIpva) {
+        valorFundeIpva.push(vFundebIpva[i].fundebipva)
+    }
+
+
+    var ttotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var ttotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+    var tvalorFundeIcms = valorFundeIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var tvalorFundeIpva = valorFundeIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+    var TotalPeriodo = ttotalIcms + ttotalIpva + tvalorFundeIcms + tvalorFundeIpva
+
+
+    document.getElementById(canvas).innerHTML = '&nbsp;';
+    document.getElementById(canvas).innerHTML = '<canvas id='+chartrepasse+'></canvas>'
+
+    var ctx = document.getElementById(canvas).getContext('2d');
+
+    var chart = new Chart(ctx, {
+
+        type: 'bar',
+        data: {
+            labels: labelIcms,
+            datasets: [{
+                label: 'ICMS',
+                backgroundColor: 'rgba(0, 123, 255,1)',
+                borderColor: 'rgba(0, 123, 255,0.7)',
+                pointBorderColor: 'rgba(0, 123, 255,0.7)',
+                pointBackgroundColor: 'rgba(0, 123, 255,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(220,220,220,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorIcms
+            },
+            {
+                label: 'IPVA',
+                backgroundColor: 'rgba(108, 117, 125,1)',
+                borderColor: 'rgba(108, 117, 125,0.7)',
+                pointBorderColor: 'rgba(108, 117, 125,0.7)',
+                pointBackgroundColor: 'rgba(108, 117, 125,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(25,25,112,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorIpva
+
+            },
+            {
+                label: 'FUNDEBICMS',
+                backgroundColor: 'rgba(40, 167, 69,1)',
+                borderColor: 'rgba(40, 167, 69,0.7)',
+                pointBorderColor: 'rgba(40, 167, 69,0.7)',
+                pointBackgroundColor: 'rgba(40, 167, 69,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(138,43,226,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorFundeIcms
+
+            },
+            {
+                label: 'FUNDEBIPVA',
+                backgroundColor: 'rgba(23, 162, 184,1)',
+                borderColor: 'rgba(23, 162, 184,0.6)',
+                pointBorderColor: 'rgba(23, 162, 184,0.6)',
+                pointBackgroundColor: 'rgba(23, 162, 184,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(138,43,226,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorFundeIpva
+            }
+            ]
+        },
+        options: {
+            legend: {
+                position: 'bottom',
+                label: {
+                    boxerwidth: 10,
+                    fontSize: 14
+                }
+            },
+            title: {
+                display: true,
+                fontSize: 16,
+                text: tipo + TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+            },
+
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 15,
+                    top: 5,
+                    bottom: 5
+                    // with: 10,
+                    // heigh: 10
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            tooltips: {
+                mode: 'index',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return data.datasets[tooltipItem.datasetIndex]
+                            .label + ' :' + (data.datasets[tooltipItem.datasetIndex])
+                                .data[tooltipItem.index]
+                                .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                    }
+                }
+            }
+        }
+    });
+}
+
 
 function prepareImpostoDonut(data, mes, ano, canvas) {
     arrays = arrays.map(function (campo) {
@@ -101,12 +307,9 @@ function prepareDadosRepasse(data, mes, ano) {
 }
 
 function mapRepasse(data, imposto) {
-
     return data.map(item => {
         return parseFloat2Decimals(item[imposto])
     })
-
-
 }
 
 function renderRepasseDonut(dados, totalRepasse, mes, ano) {
@@ -492,158 +695,8 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 
 
 
-function prepareGraficoArrecada(data) {
-    var vArrecadaIcms = mapIcms(data)
-    var vArrecadaIpva = mapIpva(data)
-    var vFundebIcms = mapFundebIcms(data)
-    var vFundebIpva = mapFundebIpva(data)
-
-    renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva);
 
 
-}
-
-function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva) {
-
-    var labelIcms = []
-    var valorIcms = []
-    var valorIpva = []
-    var valorFundeIcms = []
-    var valorFundeIpva = []
-
-    for (var i in vIcms) {
-        labelIcms.push(vIcms[i].munId.substr(0, 6))
-        valorIcms.push(vIcms[i].icms)
-    }
-    for (var i in vIpva) {
-        valorIpva.push(vIpva[i].ipv)
-    }
-    for (var i in vFundebIcms) {
-        valorFundeIcms.push(vFundebIcms[i].fundebicms)
-    }
-
-    for (var i in vFundebIpva) {
-        valorFundeIpva.push(vFundebIpva[i].fundebipva)
-    }
-    for (var i in vFundebIpva) {
-        valorFundeIpva.push(vFundebIpva[i].fundebipva)
-    }
-
-
-    var ttotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
-    var ttotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-    var tvalorFundeIcms = valorFundeIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
-    var tvalorFundeIpva = valorFundeIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
-    var TotalPeriodo = ttotalIcms + ttotalIpva + tvalorFundeIcms + tvalorFundeIpva
-
-
-    document.getElementById("divrepasse").innerHTML = '&nbsp;';
-    document.getElementById('divrepasse').innerHTML = '<canvas id="chartrepasse"></canvas>';
-
-
-    var ctx = document.getElementById('chartrepasse').getContext('2d');
-
-    var chart = new Chart(ctx, {
-
-        type: 'bar',
-        data: {
-            labels: labelIcms,
-            datasets: [{
-                label: 'ICMS',
-                backgroundColor: 'rgba(0, 123, 255,1)',
-                borderColor: 'rgba(0, 123, 255,0.7)',
-                pointBorderColor: 'rgba(0, 123, 255,0.7)',
-                pointBackgroundColor: 'rgba(0, 123, 255,0.7)',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointBorderWidth: 1,
-                data: valorIcms
-            },
-            {
-                label: 'IPVA',
-                backgroundColor: 'rgba(108, 117, 125,1)',
-                borderColor: 'rgba(108, 117, 125,0.7)',
-                pointBorderColor: 'rgba(108, 117, 125,0.7)',
-                pointBackgroundColor: 'rgba(108, 117, 125,0.7)',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(25,25,112,1)',
-                pointBorderWidth: 1,
-                data: valorIpva
-
-            },
-            {
-                label: 'FUNDEBICMS',
-                backgroundColor: 'rgba(40, 167, 69,1)',
-                borderColor: 'rgba(40, 167, 69,0.7)',
-                pointBorderColor: 'rgba(40, 167, 69,0.7)',
-                pointBackgroundColor: 'rgba(40, 167, 69,0.7)',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(138,43,226,1)',
-                pointBorderWidth: 1,
-                data: valorFundeIcms
-
-            },
-            {
-                label: 'FUNDEBIPVA',
-                backgroundColor: 'rgba(23, 162, 184,1)',
-                borderColor: 'rgba(23, 162, 184,0.6)',
-                pointBorderColor: 'rgba(23, 162, 184,0.6)',
-                pointBackgroundColor: 'rgba(23, 162, 184,0.7)',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(138,43,226,1)',
-                pointBorderWidth: 1,
-                data: valorFundeIpva
-            }
-            ]
-        },
-        options: {
-            legend: {
-                position: 'bottom',
-                label: {
-                    boxerwidth: 10,
-                    fontSize: 14
-                }
-            },
-            title: {
-                display: true,
-                fontSize: 16,
-                text: 'Repasses por periodo : ' + TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-            },
-
-            layout: {
-                padding: {
-                    left: 10,
-                    right: 15,
-                    top: 5,
-                    bottom: 5
-                    // with: 10,
-                    // heigh: 10
-                }
-            },
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            },
-            tooltips: {
-                mode: 'index',
-                callbacks: {
-                    label: function (tooltipItem, data) {
-                        return data.datasets[tooltipItem.datasetIndex]
-                            .label + ' :' + (data.datasets[tooltipItem.datasetIndex])
-                                .data[tooltipItem.index]
-                                .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-                    }
-                }
-            }
-        }
-    });
-}
 function mapArrecadaIcms(data) {
 
     var retorno = data.map(function (item) {
@@ -735,31 +788,6 @@ function mapArrecadaTaxas(data) {
     return retorno
 }
 
-function prepareRepasse() {
-    var dtInicial = document.getElementById("dtInicial").value;
-    var dtFinal = document.getElementById("dtFinal").value;
-    if (dtInicial > dtFinal) {
-        alert('Data Inical deve Ser Menor que Data Final!')
-    }
-    else {
-        ObterDadosRepase(dtInicial, dtFinal);
-    }
-
-}
-
-function ObterDadosRepase(dInicial, dFinal) {
-    var url = BASE_URL + 'getportalrepasse/' + dInicial + '/' + dFinal;
-
-
-    fetch(url, options)
-        .then(response => {
-            response.json()
-                .then(data => prepareGraficoArrecada(data))
-        })
-        .catch(e => console.log('Erro :' + e.message));
-
-
-};
 
 function mapIcms(data) {
     var retorno = data.map(function (item) {
