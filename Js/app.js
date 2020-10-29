@@ -13,7 +13,7 @@ var options = {
 let dados = null;
 
 let mesArrecada = 0;
-let anoArrecada  = 0; 
+let anoArrecada = 0;
 var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
     'portalportalarrecadacaooutros',
@@ -27,13 +27,17 @@ let btnRepasse = document.getElementById("repasse");
 let btnArrecada = document.getElementById("arrecada");
 let btnArrecadaPdf = document.getElementById("arrecada-pdf");
 let btnArrecadaCvs = document.getElementById("arrecada-cvs")
+let btnArrecadaJson = document.getElementById("arrecada-json")
 
 btnRepasse.addEventListener("click", prepareRepasse, false);
 btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
 document.getElementById('arrecada-pdf').disabled = true;
 document.getElementById('arrecada-cvs').disabled = true;
-btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false );
-btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false );
+document.getElementById('arrecada-json').disabled = true;
+
+btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false);
+btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false);
+btnArrecadaJson.addEventListener('click', gerarJsonArrecada, false);
 
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
@@ -52,70 +56,84 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })
 
-function gerarCvsArrecada ()  {
-     var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
-     let tipo = ''
-     if (mes > 0) {
-         tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
-     }
-     else
-         tipo = `Arrecadação anual de ${ano} :`
-     fetch(url, options)
-         .then(response => {
-             response.json()
-         .then(data => renderArrecadaCvs(data))
-         })
-         .catch(e => console.log('Erro :' + e.message));     
+function gerarJsonArrecada() {
+    var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
+    let tipo = ''
+    if (mes > 0) {
+        tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
+    }
+    else
+        tipo = `Arrecadação anual de ${ano} :`
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => renderArrecadaJson(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+
 
 }
 
-function renderArrecadaCvs(data){
-    // // let fileCvs = ConvertToCSV(data);
-    // DownloadJSON2CSV(data)
-    // // console.log(data)
-    // // console.log(fileCvs)
-    // var json = data.items
-    // var fields = Object.keys(data[0])
-    // var replacer = function(key, value) { return value === null ? '' : value } 
-    // var csv = data.map(function(row){
-    //   return fields.map(function(fieldName){
-    //     return JSON.stringify(row[fieldName], replacer)
-    //   }).join(',')
-    // })
-    // csv.unshift(fields.join(',')) // add header column
-    //  csv = csv.join('\r\n');
-    // console.log(csv)    
-    // var item = data.items
+function renderArrecadaJson(data) {
+    let mes = 'Todos';
+    let dados = JSON.stringify(data)
+    if (mesArrecada != 0) {
+        mes = meses[mesArrecada]
+    }
+    
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(dados);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'arrecadacao-' + mes + '-' + anoArrecada + '.json';
+    hiddenElement.click();
+}
+
+function gerarCvsArrecada() {
+    var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
+    let tipo = ''
+    if (mes > 0) {
+        tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
+    }
+    else
+        tipo = `Arrecadação anual de ${ano} :`
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => renderArrecadaCvs(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+
+}
+
+function renderArrecadaCvs(data) {
+
+    let dados = data.map(item => item)
+    console.log(dados)
     var json = data.item
     const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
     const header = Object.keys(data[0])
-    let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
-    csv.unshift(header.join(','))
+    let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(';'))
+    csv.unshift(header.join(';'))
     csv = csv.join('\r\n')
-    
-    console.log(csv)  
-    downloadCSV(csv)  
+    downloadCSV(csv)
 }
 
 function downloadCSV(csvStr) {
 
     let mes = 'Todos';
 
-    if (mesArrecada != 0){
+    if (mesArrecada != 0) {
         mes = meses[mesArrecada]
-
     }
-      
-
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvStr);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'arrecadaco-'+mes+'-'+anoArrecada+'.csv';
+    hiddenElement.download = 'arrecadaco-' + mes + '-' + anoArrecada + '.csv';
     hiddenElement.click();
 }
 
 
-function gerarPdfArrecada(){
+function gerarPdfArrecada() {
     var newCanvas = document.getElementById('impostoChartConsulta');
     console.log(newCanvas)
     var newCanvasImg = newCanvas.toDataURL("image/png", 1.0);
@@ -128,7 +146,7 @@ function gerarPdfArrecada(){
 function prepareRepasse() {
     var dataInicial = document.getElementById("dtInicial").value;
     var dataFinal = document.getElementById("dtFinal").value;
-    let tipo = 'Repasses entre :' + formata_data(dataInicial) + ' a ' +formata_data(dataFinal) + ' : '
+    let tipo = 'Repasses entre :' + formata_data(dataInicial) + ' a ' + formata_data(dataFinal) + ' : '
 
     if (dataInicial > dataFinal) {
         alert('Data Inical deve Ser Menor que Data Final!')
@@ -559,11 +577,12 @@ function renderArrecadacaoGrafico() {
         alert('Mes de Esta entre "0" e "12" ')
     }
     mesArrecada = mes
-    anoArrecada =parseInt(ano)
+    anoArrecada = parseInt(ano)
     prepareArrecada(parseInt(mes), parseInt(ano), canvas)
     document.getElementById('arrecada-pdf').disabled = false;
     document.getElementById('arrecada-cvs').disabled = false;
-    
+    document.getElementById('arrecada-json').disabled = false;
+
 }
 
 function prepareArrecada(mes, ano, canvas) {
@@ -577,7 +596,7 @@ function prepareArrecada(mes, ano, canvas) {
     fetch(url, options)
         .then(response => {
             response.json()
-        .then(data => renderArrecadaGraficoBar(data, canvas, tipo))
+                .then(data => renderArrecadaGraficoBar(data, canvas, tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
 }
@@ -1010,31 +1029,30 @@ function ConvertToCSV(objArray) {
     return str;
 }
 
-function DownloadJSON2CSV(objArray)
-    {
-        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+function DownloadJSON2CSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
-        var str = '';
+    var str = '';
 
-        for (var i = 0; i < array.length; i++) {
-            var line = '';
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
 
-            for (var index in array[i]) {
-                line += array[i][index] + ',';
-            }
-
-            // Here is an example where you would wrap the values in double quotes
-            // for (var index in array[i]) {
-            //    line += '"' + array[i][index] + '",';
-            // }
-
-            line.slice(0,line.Length-1); 
-
-            str += line + '\r\n';
+        for (var index in array[i]) {
+            line += array[i][index] + ',';
         }
-        console.log(str)
-//         window.open( "data:text/csv;charset=utf-8," + escape(str))
+
+        // Here is an example where you would wrap the values in double quotes
+        // for (var index in array[i]) {
+        //    line += '"' + array[i][index] + '",';
+        // }
+
+        line.slice(0, line.Length - 1);
+
+        str += line + '\r\n';
     }
+    console.log(str)
+    //         window.open( "data:text/csv;charset=utf-8," + escape(str))
+}
 
 
 function FormataStringData(data) {
@@ -1047,7 +1065,7 @@ function FormataStringData(data) {
 }
 
 function formata_data(data) { //yyyy-mm-dd dd/mm/yyyy -> 
-    data_formatada = data.substr(8, 2) + '-' + data.substr(5, 2) + '-' + data.substr(0, 4) ;
+    data_formatada = data.substr(8, 2) + '-' + data.substr(5, 2) + '-' + data.substr(0, 4);
     return data_formatada;
 }
 
