@@ -99,10 +99,18 @@ function renderArrecadaCvs(data){
 
 function downloadCSV(csvStr) {
 
+    let mes = 'Todos';
+
+    if (mesArrecada != 0){
+        mes = meses[mesArrecada]
+
+    }
+      
+
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvStr);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'output.csv';
+    hiddenElement.download = 'arrecadaco-'+mes+'-'+anoArrecada+'.csv';
     hiddenElement.click();
 }
 
