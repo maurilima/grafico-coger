@@ -10,7 +10,10 @@ var options = {
     mode: 'cors',
     cache: 'default'
 }
+let dados = null;
 
+let mesArrecada = 0;
+let anoArrecada  = 0; 
 var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
     'portalportalarrecadacaooutros',
@@ -19,11 +22,19 @@ var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaotaxas'
 ]
 
-var meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-var btnRepasse = document.getElementById("repasse");
-var btnArrecada = document.getElementById("arrecada");
+let meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+let btnRepasse = document.getElementById("repasse");
+let btnArrecada = document.getElementById("arrecada");
+let btnArrecadaPdf = document.getElementById("arrecada-pdf");
+let btnArrecadaCvs = document.getElementById("arrecada-cvs")
+
 btnRepasse.addEventListener("click", prepareRepasse, false);
 btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
+document.getElementById('arrecada-pdf').disabled = true;
+document.getElementById('arrecada-cvs').disabled = true;
+btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false );
+btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false );
+
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
     var mes = now.getMonth();
@@ -41,10 +52,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })
 
+function gerarCvsArrecada ()  {
+     console.log(mesArrecada, anoArrecada)
+
+}
+
+function gerarPdfArrecada(){
+    var newCanvas = document.getElementById('impostoChartConsulta');
+    console.log(newCanvas)
+    var newCanvasImg = newCanvas.toDataURL("image/png", 1.0);
+    var doc = new jsPDF('landscape');
+    doc.addImage(newCanvasImg, 'PNG', 10, 10, 280, 150);
+    doc.save('new-canvas.pdf');
+
+}
+
 function prepareRepasse() {
     var dataInicial = document.getElementById("dtInicial").value;
     var dataFinal = document.getElementById("dtFinal").value;
-    let tipo = 'Repasses entre :' + dataInicial + ' a ' + dataFinal + ' : '
+    let tipo = 'Repasses entre :' + formata_data(dataInicial) + ' a ' +formata_data(dataFinal) + ' : '
 
     if (dataInicial > dataFinal) {
         alert('Data Inical deve Ser Menor que Data Final!')
@@ -474,7 +500,12 @@ function renderArrecadacaoGrafico() {
     if (mes > 12) {
         alert('Mes de Esta entre "0" e "12" ')
     }
+    mesArrecada = mes
+    anoArrecada =parseInt(ano)
     prepareArrecada(parseInt(mes), parseInt(ano), canvas)
+    document.getElementById('arrecada-pdf').disabled = false;
+    document.getElementById('arrecada-cvs').disabled = false;
+    
 }
 
 function prepareArrecada(mes, ano, canvas) {
@@ -488,7 +519,7 @@ function prepareArrecada(mes, ano, canvas) {
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => renderArrecadaGraficoBar(data, canvas, tipo))
+        .then(data => renderArrecadaGraficoBar(data, canvas, tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
 }
@@ -503,7 +534,7 @@ function renderArrecadaGraficoBar(data, canvas, tipo) {
         var ArrecadaTaxas = mapArrecadaTaxas(data)
         GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo)
     } else {
-        throw alert('Nenhuma Informação Seleionada para os dados Informados')
+        throw alert('Nenhuma Informação Selecionada para os dados Informados')
     }
 }
 
@@ -902,6 +933,24 @@ function totalFundef(data) {
     return retorno
 }
 
+function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ','
+
+            line += array[i][index];
+        }
+
+        str += line + '\r\n';
+    }
+
+    return str;
+}
+
 function FormataStringData(data) {
     var dia = data.split("/")[0];
     var mes = data.split("/")[1];
@@ -911,9 +960,9 @@ function FormataStringData(data) {
     // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
 }
 
-function formata_data(data) { // dd/mm/yyyy -> yyyy-mm-dd
-    data_formatada = data.substr(6, 4) + '-' + data.substr(3, 2) + '-' + data.substr(0, 2) + ' 00:00:00';
-    return new Date(data_formatada);
+function formata_data(data) { //yyyy-mm-dd dd/mm/yyyy -> 
+    data_formatada = data.substr(8, 2) + '-' + data.substr(5, 2) + '-' + data.substr(0, 4) ;
+    return data_formatada;
 }
 
 function leftPadZeros(value, totalWidth, paddingChar) {

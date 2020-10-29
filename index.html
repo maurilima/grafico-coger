@@ -73,7 +73,7 @@
         <div class="dashborad-content-arrecada">
           <div class="dashboard-flex-parent-arrecada">
             <div class="dashboard-box-arrecada">
-              
+
               <canvas id="impostoChart"></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
             </div>
             <div class="dashboard-box-arrecada">
@@ -81,30 +81,20 @@
             </div>
           </div>
         </div>
-      </div>        
-        <div class="dashborad-content-repasse-total">  <!--Repasse Anual e Mensal  -->
-          <div class="dashboard-flex-parent-repasse">
-            <div class="dashboard-box-repasse">
-              
-              <canvas id="donnut-repasse"></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
-            </div>
-            <div class="dashboard-box-repasse">
-              <canvas id="bar-repasse"></canvas>
-            </div>
+      </div>
+      <div class="dashborad-content-repasse-total">
+        <!--Repasse Anual e Mensal  -->
+        <div class="dashboard-flex-parent-repasse">
+          <div class="dashboard-box-repasse">
+
+            <canvas id="donnut-repasse"></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
+          </div>
+          <div class="dashboard-box-repasse">
+            <canvas id="bar-repasse"></canvas>
           </div>
         </div>
-
-
-        <!-- Arrecadacao -->
-
-      <!-- <div class="charts-arrecada">
-        <div class="chart-box-arrecada">
-          <div class="arrecada">
-          </div>
-          <div class="arrecada">
-          </div>
-        </div>
-      </div> -->
+      </div>
+      <!-- Arrecadacao -->
       <div class="container-remessa">
         <div class="entradas">
           <form>
@@ -126,6 +116,12 @@
                 placeholder="Apenas Numero. Ano com 4 Digitos ">
             </div>
             <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
+            <!-- <button id="arrecada-pdf" type="button" disabled class="btn btn-outline-primary">Gerar PDF</button> -->
+            <div id="grp-btn"  class="btn-group" role="group" aria-label="Exporta Dados">
+              <button id="arrecada-pdf" disabled type="button" class="btn btn-outline-primary">PDF</button>
+              <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CVS</button>
+            </div>
+
           </form>
         </div>
         <div class="entradas">
@@ -148,9 +144,7 @@
             </div>
             <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary">Enviar</button>
           </form>
-
         </div>
-
       </div>
 
       <div class="charts-Content">
@@ -172,6 +166,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
     <script src="js/app.js"></script>
   </body>
 
