@@ -80,7 +80,7 @@ function renderArrecadaJson(data) {
     if (mesArrecada != 0) {
         mes = meses[mesArrecada]
     }
-    
+
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(dados);
     hiddenElement.target = '_blank';
@@ -128,18 +128,22 @@ function downloadCSV(csvStr) {
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvStr);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'arrecadaco-' + mes + '-' + anoArrecada + '.csv';
+    hiddenElement.download = 'arrecadacao-' + mes + '-' + anoArrecada + '.csv';
     hiddenElement.click();
 }
 
 
 function gerarPdfArrecada() {
     var newCanvas = document.getElementById('impostoChartConsulta');
-    console.log(newCanvas)
+    let mes = 'Todos'
+    if (mesArrecada != 0) {
+        mes = meses[mesArrecada]
+    }
+
     var newCanvasImg = newCanvas.toDataURL("image/png", 1.0);
     var doc = new jsPDF('landscape');
     doc.addImage(newCanvasImg, 'PNG', 10, 10, 280, 150);
-    doc.save('new-canvas.pdf');
+    doc.save('arrecadacao-'+mes+'-'+anoArrecada+'.pdf');
 
 }
 
