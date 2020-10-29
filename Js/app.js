@@ -53,9 +53,59 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function gerarCvsArrecada ()  {
-     console.log(mesArrecada, anoArrecada)
+     var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
+     let tipo = ''
+     if (mes > 0) {
+         tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
+     }
+     else
+         tipo = `Arrecadação anual de ${ano} :`
+     fetch(url, options)
+         .then(response => {
+             response.json()
+         .then(data => renderArrecadaCvs(data))
+         })
+         .catch(e => console.log('Erro :' + e.message));     
 
 }
+
+function renderArrecadaCvs(data){
+    // // let fileCvs = ConvertToCSV(data);
+    // DownloadJSON2CSV(data)
+    // // console.log(data)
+    // // console.log(fileCvs)
+    // var json = data.items
+    // var fields = Object.keys(data[0])
+    // var replacer = function(key, value) { return value === null ? '' : value } 
+    // var csv = data.map(function(row){
+    //   return fields.map(function(fieldName){
+    //     return JSON.stringify(row[fieldName], replacer)
+    //   }).join(',')
+    // })
+    // csv.unshift(fields.join(',')) // add header column
+    //  csv = csv.join('\r\n');
+    // console.log(csv)    
+    // var item = data.items
+    var json = data.item
+    const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+    const header = Object.keys(data[0])
+    let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+    csv.unshift(header.join(','))
+    csv = csv.join('\r\n')
+    
+    console.log(csv)  
+    downloadCSV(csv)  
+}
+
+function downloadCSV(csvStr) {
+
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvStr);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'output.csv';
+    hiddenElement.click();
+}
+
 
 function gerarPdfArrecada(){
     var newCanvas = document.getElementById('impostoChartConsulta');
@@ -936,6 +986,7 @@ function totalFundef(data) {
 function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
     var str = '';
+    console.log(objArray, array)
 
     for (var i = 0; i < array.length; i++) {
         var line = '';
@@ -950,6 +1001,33 @@ function ConvertToCSV(objArray) {
 
     return str;
 }
+
+function DownloadJSON2CSV(objArray)
+    {
+        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+        var str = '';
+
+        for (var i = 0; i < array.length; i++) {
+            var line = '';
+
+            for (var index in array[i]) {
+                line += array[i][index] + ',';
+            }
+
+            // Here is an example where you would wrap the values in double quotes
+            // for (var index in array[i]) {
+            //    line += '"' + array[i][index] + '",';
+            // }
+
+            line.slice(0,line.Length-1); 
+
+            str += line + '\r\n';
+        }
+        console.log(str)
+//         window.open( "data:text/csv;charset=utf-8," + escape(str))
+    }
+
 
 function FormataStringData(data) {
     var dia = data.split("/")[0];
