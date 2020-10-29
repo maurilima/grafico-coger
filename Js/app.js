@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function prepareRepasse() {
     var dataInicial = document.getElementById("dtInicial").value;
     var dataFinal = document.getElementById("dtFinal").value;
-    let tipo = 'Repasses entre :'+dataInicial +' a '+dataFinal + ' : '
+    let tipo = 'Repasses entre :' + dataInicial + ' a ' + dataFinal + ' : '
 
     if (dataInicial > dataFinal) {
         alert('Data Inical deve Ser Menor que Data Final!')
@@ -55,11 +55,11 @@ function prepareRepasse() {
 
 }
 
-function prepareRepasseBarra(ano){
-    let dataInicial = ano +'-01-01';
-    let dataFinal    = ano + '-12-31';
-    let tipo = 'Repasses do Ano '+ano +' : '
-    ObterDadosRepase(dataInicial, dataFinal,'bar-repasse', tipo)
+function prepareRepasseBarra(ano) {
+    let dataInicial = ano + '-01-01';
+    let dataFinal = ano + '-12-31';
+    let tipo = 'Repasses do Ano ' + ano + ' : '
+    ObterDadosRepase(dataInicial, dataFinal, 'bar-repasse', tipo)
 
 }
 function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
@@ -88,10 +88,7 @@ function prepareGraficoRemessa(data, canvas, tipo) {
 
 }
 
-
-
-
-function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas,tipo) {
+function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, tipo) {
 
     var labelIcms = []
     var valorIcms = []
@@ -129,7 +126,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas,tip
 
 
     document.getElementById(canvas).innerHTML = '&nbsp;';
-    document.getElementById(canvas).innerHTML = '<canvas id='+chartrepasse+'></canvas>'
+    document.getElementById(canvas).innerHTML = '<canvas id=' + chartrepasse + '></canvas>'
 
     var ctx = document.getElementById(canvas).getContext('2d');
 
@@ -243,7 +240,6 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas,tip
         }
     });
 }
-
 
 function prepareImpostoDonut(data, mes, ano, canvas) {
     arrays = arrays.map(function (campo) {
@@ -392,7 +388,6 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
 
 }
 
-
 function renderImpostGraficoDonut(dados, mes, canvas) {
 
     var totalImpostos = dados.reduce(function (acumulador, valorAtual) {
@@ -497,6 +492,7 @@ function prepareArrecada(mes, ano, canvas) {
         })
         .catch(e => console.log('Erro :' + e.message));
 }
+
 function renderArrecadaGraficoBar(data, canvas, tipo) {
     if (data.length > 0) {
         var ArrecadaIcms = mapArrecadaIcms(data)
@@ -510,7 +506,6 @@ function renderArrecadaGraficoBar(data, canvas, tipo) {
         throw alert('Nenhuma Informação Seleionada para os dados Informados')
     }
 }
-
 
 function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo) {
     var labelIcms = []
@@ -693,10 +688,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     });
 }
 
-
-
-
-
 function mapArrecadaIcms(data) {
 
     var retorno = data.map(function (item) {
@@ -726,7 +717,6 @@ function mapArrecadaIpva(data) {
     return retorno
 
 }
-
 
 function mapArrecadaOutros(data) {
 
@@ -787,7 +777,6 @@ function mapArrecadaTaxas(data) {
     // console.log(retorno)
     return retorno
 }
-
 
 function mapIcms(data) {
     var retorno = data.map(function (item) {
@@ -939,7 +928,6 @@ function parseFloat2Decimals(value) {
     else { return 0; }
 }
 
-
 function onlynumber(evt) {
     var theEvent = evt || window.event;
     var key = theEvent.keyCode || theEvent.which;
@@ -951,40 +939,37 @@ function onlynumber(evt) {
         if (theEvent.preventDefault) theEvent.preventDefault();
     }
 }
- //
+
+// afterLabel: function(tooltipItem, data) {
+//     var procento = 0;
+//     for (i = 0; i < 4; i++) {
+//         procento += data.datasets[tooltipItem.datasetIndex].data[i]
+//     }
+//     return 'Equivale a:' +
+//         parseInt((data.datasets[tooltipItems.datasetIndex]
+//             .data[tooltipItem.index] / procento) * 100) + '%'
+// },
+// label: function(tooltipItem, data) {
+//     return data.datasets[tooltipItem.datasetIndex].
+//         label + ': R$ ' +
+//         data.datasets[tooltipItem.datasetIndex]
+//             .data[tooltipItem.index]
+//     label: function(tooltipItems, data) {
+//         return data.datasets[tooltipItem.datasetIndex].labels[tooltipItem.index] +
+//             ' : R$ ' + data.datasets[tooltipItem.datasetIndex]
+//                 .data
 
 
-
-                // afterLabel : function(tooltipItem,data) {
-                //     var procento = 0;
-                //     for(i =0; i < 4; i++){
-                //         procento += data.datasets[tooltipItem.datasetIndex].data[i]
-                //     }
-                //     return 'Equivale a:' + 
-                //      parseInt((data.datasets[tooltipItems.datasetIndex]
-                //                 .data[tooltipItem.index] / procento) * 100 ) + '%'
-                // },
-                // label: function(tooltipItem, data) {
-                //     return data.datasets[tooltipItem.datasetIndex].
-                //             label +': R$ '+
-                //             data.datasets[tooltipItem.datasetIndex]
-                //             .data[tooltipItem.index]                
-                // label: function(tooltipItems, data ){
-                //     return data.datasets[tooltipItem.datasetIndex].labels[tooltipItem.index] + 
-                //     ' : R$ ' + data.datasets[tooltipItem.datasetIndex]
-                //     .data
-
-
-                // function totalArrecadaIcms(data) {
-//     var retorno = data.reduce(function (acumulador, valor) {
-//         var indice = acumulador.map((o) => o.munId).indexOf(valor.mes);
-//         if (indice == -1) {
-//             acumulador.push(valor);
-//         } else {
-//             acumulador[indice].icms += valor.icms;
+//         function totalArrecadaIcms(data) {
+//             var retorno = data.reduce(function (acumulador, valor) {
+//                 var indice = acumulador.map((o) => o.munId).indexOf(valor.mes);
+//                 if (indice == -1) {
+//                     acumulador.push(valor);
+//                 } else {
+//                     acumulador[indice].icms += valor.icms;
+//                 }
+//                 return acumulador;
+//             }, []);
+//             console.log(retorno)
+//             return retorno
 //         }
-//         return acumulador;
-//     }, []);
-//     console.log(retorno)
-//     return retorno
-// }
