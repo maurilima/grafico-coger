@@ -128,7 +128,7 @@ function downloadCSV(csvStr) {
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvStr);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'arrecadacao-' + mes + '-' + anoArrecada + '.csv';
+    hiddenElement.download = 'arrecadaco-' + mes + '-' + anoArrecada + '.csv';
     hiddenElement.click();
 }
 
@@ -575,17 +575,21 @@ function renderArrecadacaoGrafico() {
     var mes = document.getElementById('mes').value;
     var ano = document.getElementById('ano').value;
     var canvas = 'impostoChartConsulta'
-    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
-    if (mes > 12) {
-        alert('Mes de Esta entre "0" e "12" ')
+    // var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+
+    if (mes === '0' && mes <= '12') {
+        mesArrecada = mes
+        anoArrecada = parseInt(ano)
+        prepareArrecada(parseInt(mes), parseInt(ano), canvas)
+        document.getElementById('arrecada-pdf').disabled = false;
+        document.getElementById('arrecada-cvs').disabled = false;
+        document.getElementById('arrecada-json').disabled = false;
+    
     }
-    mesArrecada = mes
-    anoArrecada = parseInt(ano)
-    prepareArrecada(parseInt(mes), parseInt(ano), canvas)
-    document.getElementById('arrecada-pdf').disabled = false;
-    document.getElementById('arrecada-cvs').disabled = false;
-    document.getElementById('arrecada-json').disabled = false;
+    else{
+        throw  alert('Mes deve Estar entre "0" e "12" ')
+    }
 
 }
 
