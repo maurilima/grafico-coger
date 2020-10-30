@@ -108,7 +108,6 @@ function gerarCvsArrecada() {
 function renderArrecadaCvs(data) {
 
     let dados = data.map(item => item)
-    console.log(dados)
     var json = data.item
     const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
     const header = Object.keys(data[0])
@@ -1021,7 +1020,6 @@ function totalFundef(data) {
 function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
     var str = '';
-    console.log(objArray, array)
 
     for (var i = 0; i < array.length; i++) {
         var line = '';
