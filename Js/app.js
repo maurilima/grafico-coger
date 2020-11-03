@@ -45,9 +45,6 @@ btnRepasseCvs.disabled = true;
 btnRepasseJson.disabled = true;
 
 
-btnRepasse.addEventListener("click", prepareRepasse, false);
-btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
-
 
 btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false);
 btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false);
@@ -56,6 +53,11 @@ btnArrecadaJson.addEventListener('click', gerarJsonArrecada, false);
 btnRepassePdf.addEventListener('click', gerarPdfRepasse, false);
 btnRepasseCvs.addEventListener('click', gerarCvsRepasse, false);
 btnRepasseJson.addEventListener('click', gerarJsonRepasse, false);
+
+
+btnRepasse.addEventListener("click", prepareRepasse, false);
+btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
+
 
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
@@ -193,7 +195,10 @@ function prepareRepasse() {
     }
     else {
         ObterDadosRepase(dataInicial, dataFinal, 'chartrepasse', tipo);
-    }
+        btnRepassePdf.disabled  = false;
+        btnRepasseCvs.disabled  = false;
+        btnRepasseJson.disabled = false;
+}
 
 }
 
@@ -211,9 +216,6 @@ function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
         .then(response => {
             response.json()
                 .then(data => prepareGraficoRemessa(data, canvas, tipo))
-                btnRepassePdf.disabled  = false;
-                btnRepasseCvs.disabled  = false;
-                btnRepasseJson.disabled = false;
                 
         })
         .catch(e => console.log('Erro :' + e.message));
