@@ -8,9 +8,10 @@
   <title>Chart</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 </head>
 
 <body>
@@ -116,9 +117,9 @@
                 placeholder="Apenas Numero. Ano com 4 Digitos ">
             </div>
             <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
-            <div id="grp-btn"  class="btn-group" role="group" aria-label="Exporta Dados">
+            <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
               <button id="arrecada-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
-              <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CVS(Excel)</button>
+              <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
               <button id="arrecada-json" disabled type="button" class="btn btn-secondary">Json</button>
             </div>
 
@@ -142,7 +143,14 @@
               <input id="dtFinal" name="dtFinal" type="date" class="form-control" id="basic-url"
                 aria-describedby="basic-addon3">
             </div>
-            <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary">Enviar</button>
+            <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary" data-toggle="tooltip"
+              data-placement="bottom" title="Tooltip na parte superior">Enviar</button>
+            <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
+              <button id="repasse-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
+              <button id="repasse-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
+              <button id="repasse-json" disabled type="button" class="btn btn-secondary">Json</button>
+            </div>
+
           </form>
         </div>
       </div>

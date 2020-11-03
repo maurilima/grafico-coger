@@ -11,7 +11,6 @@ var options = {
     cache: 'default'
 }
 let dados = null;
-
 let mesArrecada = 0;
 let anoArrecada = 0;
 var arrays = ['portalarrecadacaoicms',
@@ -25,35 +24,52 @@ var arrays = ['portalarrecadacaoicms',
 let meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 let btnRepasse = document.getElementById("repasse");
 let btnArrecada = document.getElementById("arrecada");
-let btnArrecadaPdf = document.getElementById("arrecada-pdf");
+
+let btnArrecadaPdf = document.getElementById("arrecada-pdf")
 let btnArrecadaCvs = document.getElementById("arrecada-cvs")
 let btnArrecadaJson = document.getElementById("arrecada-json")
 
+let btnRepassePdf = document.getElementById("repasse-pdf")
+let btnRepasseCvs = document.getElementById("repasse-cvs")
+let btnRepasseJson = document.getElementById("repasse-json")
+
+btnArrecadaPdf.disabled = true;
+btnArrecadaCvs.disabled = true;
+btnArrecadaJson.disabled = true;
+
+btnRepassePdf.disabled =  true;
+btnRepasseCvs.disabled =  true;
+btnRepasseJson.disabled =  true;
+
+
 btnRepasse.addEventListener("click", prepareRepasse, false);
 btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
-document.getElementById('arrecada-pdf').disabled = true;
-document.getElementById('arrecada-cvs').disabled = true;
-document.getElementById('arrecada-json').disabled = true;
+
 
 btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false);
 btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false);
 btnArrecadaJson.addEventListener('click', gerarJsonArrecada, false);
 
+// btnArrecadaPdf.addEventListener('click', gerarPdfRepasse, false);
+// btnArrecadaCvs.addEventListener('click', gerarCvsRepasse, false);
+// btnArrecadaJson.addEventListener('click', gerarJsonRepasse, false);
+
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
-    var mes = now.getMonth();
+    let mes = now.getMonth();
     var ano = now.getFullYear();
-    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+    let mMesResolver = mes - 1
+    var url = BASE_URL + 'getportalarrecadacao/' + mMesResolver + '/' + ano;
+
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
+                .then(data => prepareImpostoDonut(data, mMesResolver, ano, 'impostoChart'))
             prepareArrecada(0, ano, 'arrecadaChart')
             prepareRepasseDonut(mes, ano, 'donnut-repasse')
             prepareRepasseBarra(ano)
         })
         .catch(e => console.log('Erro :' + e.message));
-
 })
 
 function gerarJsonArrecada() {
@@ -70,8 +86,6 @@ function gerarJsonArrecada() {
                 .then(data => renderArrecadaJson(data))
         })
         .catch(e => console.log('Erro :' + e.message));
-
-
 }
 
 function renderArrecadaJson(data) {
@@ -102,7 +116,6 @@ function gerarCvsArrecada() {
                 .then(data => renderArrecadaCvs(data))
         })
         .catch(e => console.log('Erro :' + e.message));
-
 }
 
 function renderArrecadaCvs(data) {
@@ -118,7 +131,6 @@ function renderArrecadaCvs(data) {
 }
 
 function downloadCSV(csvStr) {
-
     let mes = 'Todos';
 
     if (mesArrecada != 0) {
@@ -142,8 +154,7 @@ function gerarPdfArrecada() {
     var newCanvasImg = newCanvas.toDataURL("image/png", 1.0);
     var doc = new jsPDF('landscape');
     doc.addImage(newCanvasImg, 'PNG', 10, 10, 280, 150);
-    doc.save('arrecadacao-'+mes+'-'+anoArrecada+'.pdf');
-
+    doc.save('arrecadacao-' + mes + '-' + anoArrecada + '.pdf');
 }
 
 function prepareRepasse() {
@@ -170,15 +181,12 @@ function prepareRepasseBarra(ano) {
 function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
     var url = BASE_URL + 'getportalrepasse/' + dInicial + '/' + dFinal;
 
-
     fetch(url, options)
         .then(response => {
             response.json()
                 .then(data => prepareGraficoRemessa(data, canvas, tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
-
-
 };
 
 
@@ -577,17 +585,17 @@ function renderArrecadacaoGrafico() {
 
     // var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
-    if (mes === '0' && mes <= '12') {
+    if (mes >= 0 && mes <= 12) {
         mesArrecada = mes
         anoArrecada = parseInt(ano)
         prepareArrecada(parseInt(mes), parseInt(ano), canvas)
         document.getElementById('arrecada-pdf').disabled = false;
         document.getElementById('arrecada-cvs').disabled = false;
         document.getElementById('arrecada-json').disabled = false;
-    
+
     }
-    else{
-        throw  alert('Mes deve Estar entre "0" e "12" ')
+    else {
+        throw alert('Mes deve Estar entre "0" e "12" ')
     }
 
 }
