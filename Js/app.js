@@ -36,10 +36,6 @@ let btnRepassePdf = document.getElementById("repasse-pdf")
 let btnRepasseCvs = document.getElementById("repasse-cvs")
 let btnRepasseJson = document.getElementById("repasse-json")
 
-// document.getElementById('arrecada-pdf').disabled =  true;
-// document.getElementById('arrecada-cvs').disabled =  true;
-// document.getElementById('arrecada-json').disabled =  true;
-
 btnArrecadaPdf.disabled = true;
 btnArrecadaCvs.disabled = true;
 btnArrecadaJson.disabled = true;
@@ -57,9 +53,9 @@ btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false);
 btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false);
 btnArrecadaJson.addEventListener('click', gerarJsonArrecada, false);
 
-btnArrecadaPdf.addEventListener('click', gerarPdfRepasse, false);
-btnArrecadaCvs.addEventListener('click', gerarCvsRepasse, false);
-btnArrecadaJson.addEventListener('click', gerarJsonRepasse, false);
+btnRepassePdf.addEventListener('click', gerarPdfRepasse, false);
+btnRepasseCvs.addEventListener('click', gerarCvsRepasse, false);
+btnRepasseJson.addEventListener('click', gerarJsonRepasse, false);
 
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
@@ -78,73 +74,74 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(e => console.log('Erro :' + e.message));
 })
 function gerarJsonRepasse() {
-    
-}
-
-function gerarJsonArrecada() {
-    var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
-    let tipo = ''
-    if (mes > 0) {
-        tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
-    }
-    else
-        tipo = `Arrecadação anual de ${ano} :`
+    var url = BASE_URL + 'getportalrepasse/' + dataInicial + '/' + dataFinal;
+    var fileName = 'Repasse-entre'+formata_data(dataInicial) + '-'+formata_data(dataFinal)
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => renderArrecadaJson(data))
+                .then(data => downloadJson(data,fileName))
+        })
+        .catch(e => console.log('Erro :' + e.message));    
+}    
+
+
+function gerarJsonArrecada() {
+    var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
+    let fileName = ''
+    if (mes > 0) {
+        fileName = 'Arrecadacao-mes-' + meses[mesArrecada] + '/' + anoArrecada 
+    }
+    else
+    fileName = `Arrecadacao-ano-${anoArrecada}`
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => downloadJson(data,fileName))
         })
         .catch(e => console.log('Erro :' + e.message));
 }
 
-function renderArrecadaJson(data) {
-    let mes = 'Todos';
+function downloadJson(data, fileName) {
     let dados = JSON.stringify(data)
-    if (mesArrecada != 0) {
-        mes = meses[mesArrecada]
-    }
 
     var hiddenElement = document.createElement('a');
-    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(dados);
+    hiddenElement.href = 'data:text/json;charset=utf-8,' + encodeURI(dados);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'arrecadacao-' + mes + '-' + anoArrecada + '.json';
+    hiddenElement.download = fileName + '.json';
     hiddenElement.click();
 }
 
 function gerarCvsRepasse() {
-
-
-
-    var url = BASE_URL + 'getportalrepasse/' + mesArrecada + '/' + anoArrecada;
-    let tipo = ''
-    if (mes > 0) {
-        tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
-    }
-    else
-        tipo = `Arrecadação anual de ${ano} :`
+    var url = BASE_URL + 'getportalrepasse/' + dataInicial + '/' + dataFinal;
+    var tipo = 'Repasse-entre'+dataInicial + '-'+dataFinal
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => renderCvs(data))
+                .then(data => renderCvs(data, tipo))
         })
-        .catch(e => console.log('Erro :' + e.message));
+        .catch(e => console.log('Erro :' + e.message));    
 }
 
 
 
 function gerarCvsArrecada() {
-    var url = BASE_URL + 'getportalrepasse/' + dataInicial + '/' + dataFinal;
+    var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
+    let tipo = ''
+    if (mes > 0) {
+        tipo = 'Arrecadacao-mes ' + meses[mesArrecada] + '/' + ano 
+    }
+    else
+        tipo = `Arrecadacao-anual-de ${anoArrecada}`    
 
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => renderCvs(data))
+                .then(data => renderCvs(data, tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
 }
 
-function renderCvs(data) {
-
+function renderCvs(data, fileName) {
     let dados = data.map(item => item)
     var json = data.item
     const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
@@ -152,19 +149,15 @@ function renderCvs(data) {
     let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(';'))
     csv.unshift(header.join(';'))
     csv = csv.join('\r\n')
-    downloadCSV(csv)
+    downloadCSV(csv, fileName)
 }
 
-function downloadCSV(csvStr) {
-    let mes = 'Todos';
-
-    if (mesArrecada != 0) {
-        mes = meses[mesArrecada]
-    }
+function downloadCSV(csvStr, fileName) {
+  
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvStr);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'arrecadaco-' + mes + '-' + anoArrecada + '.csv';
+    hiddenElement.download = fileName +'.csv';
     hiddenElement.click();
 }
 
@@ -218,6 +211,10 @@ function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
         .then(response => {
             response.json()
                 .then(data => prepareGraficoRemessa(data, canvas, tipo))
+                btnRepassePdf.disabled  = false;
+                btnRepasseCvs.disabled  = false;
+                btnRepasseJson.disabled = false;
+                
         })
         .catch(e => console.log('Erro :' + e.message));
 };
@@ -388,7 +385,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
 }
 
 function prepareImpostoDonut(data, mes, ano, canvas) {
-    console.log(data)
+    if (data.length > 0) {
     arrays = arrays.map(function (campo) {
         var novoConteudo = data.map(function (objeto) {
             return objeto[campo];
@@ -414,11 +411,12 @@ function prepareImpostoDonut(data, mes, ano, canvas) {
     mesano.forEach(ma => { ma.innerHTML = meses[mes] + ' / ' + ano });
     renderImpostGraficoDonut(dados, mes, canvas)
 }
+}
 
 function prepareRepasseDonut(mes, ano, canvas) {
     let lMes = mes + 1
-    var url = BASE_URL + 'getportalrepasse/' + ano + '-' + lMes + '-01/' + ano + '-' + lMes + '-31';
-
+    var url = BASE_URL + 'getportalrepasse/' + ano + '-' + lMes + '-01/' + ano + '-' + lMes + '-'+ lastDay(ano,lMes);
+ 
     fetch(url, options)
         .then(response => {
             response.json()
@@ -430,7 +428,6 @@ function prepareRepasseDonut(mes, ano, canvas) {
 }
 //
 function prepareDadosRepasse(data, mes, ano) {
-
     let repasse = data.map(item => item)
 
     let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
@@ -513,8 +510,6 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
                         },
                         // afterLabel: function (tooltipItem, data) {
                         //             var dataset = data['datasets'][0];
-                        //             console.log(dataset['data'][tooltipItem['index']])
-                        //             console.log(dataset["_meta"][0]['total'])
 
                         // var percent = ((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100).toFixed(2)
 
@@ -651,7 +646,6 @@ function prepareArrecada(mes, ano, canvas) {
 }
 
 function renderArrecadaGraficoBar(data, canvas, tipo) {
-    console.log(data)
     if (data.length > 0) {
         var ArrecadaIcms = mapArrecadaIcms(data)
         var ArrecadaIpva = mapArrecadaIpva(data)
@@ -673,7 +667,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     var valorItcd = []
     var valorIrrf = []
     var valorTaxas = []
-    // console.log(ArrecadaIcms)
     for (var i in ArrecadaIcms) {
         labelIcms.push(meses[ArrecadaIcms[i].mes])
         valorIcms.push(ArrecadaIcms[i].icms)
@@ -695,7 +688,6 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     for (var i in ArrecadaTaxas) {
         valorTaxas.push(ArrecadaTaxas[i].taxas)
     }
-    // console.log(valorIcms)
     var vtotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
     var vtotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
     var vtotalOutros = valorOutros.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
@@ -857,7 +849,6 @@ function mapArrecadaIcms(data) {
 
     }
     )
-    // console.log(retorno)
     return retorno
 }
 
@@ -932,7 +923,6 @@ function mapArrecadaTaxas(data) {
 
     }
     )
-    // console.log(retorno)
     return retorno
 }
 
@@ -1099,10 +1089,12 @@ function DownloadJSON2CSV(objArray) {
 
         str += line + '\r\n';
     }
-    console.log(str)
     //         window.open( "data:text/csv;charset=utf-8," + escape(str))
 }
-
+function lastDay(year, month){
+    var ultimoDia = (new Date(year, month, 0)).getDate();
+    return ultimoDia;
+    }
 
 function FormataStringData(data) {
     var dia = data.split("/")[0];
