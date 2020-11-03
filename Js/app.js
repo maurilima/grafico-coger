@@ -13,6 +13,9 @@ var options = {
 let dados = null;
 let mesArrecada = 0;
 let anoArrecada = 0;
+let dataInicial = null;
+let dataFinal = null;
+
 var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
     'portalportalarrecadacaooutros',
@@ -33,13 +36,17 @@ let btnRepassePdf = document.getElementById("repasse-pdf")
 let btnRepasseCvs = document.getElementById("repasse-cvs")
 let btnRepasseJson = document.getElementById("repasse-json")
 
+// document.getElementById('arrecada-pdf').disabled =  true;
+// document.getElementById('arrecada-cvs').disabled =  true;
+// document.getElementById('arrecada-json').disabled =  true;
+
 btnArrecadaPdf.disabled = true;
 btnArrecadaCvs.disabled = true;
 btnArrecadaJson.disabled = true;
 
-btnRepassePdf.disabled =  true;
-btnRepasseCvs.disabled =  true;
-btnRepasseJson.disabled =  true;
+btnRepassePdf.disabled = true;
+btnRepasseCvs.disabled = true;
+btnRepasseJson.disabled = true;
 
 
 btnRepasse.addEventListener("click", prepareRepasse, false);
@@ -50,27 +57,29 @@ btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false);
 btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false);
 btnArrecadaJson.addEventListener('click', gerarJsonArrecada, false);
 
-// btnArrecadaPdf.addEventListener('click', gerarPdfRepasse, false);
-// btnArrecadaCvs.addEventListener('click', gerarCvsRepasse, false);
-// btnArrecadaJson.addEventListener('click', gerarJsonRepasse, false);
+btnArrecadaPdf.addEventListener('click', gerarPdfRepasse, false);
+btnArrecadaCvs.addEventListener('click', gerarCvsRepasse, false);
+btnArrecadaJson.addEventListener('click', gerarJsonRepasse, false);
 
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
     let mes = now.getMonth();
     var ano = now.getFullYear();
-    let mMesResolver = mes - 1
-    var url = BASE_URL + 'getportalarrecadacao/' + mMesResolver + '/' + ano;
+    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => prepareImpostoDonut(data, mMesResolver, ano, 'impostoChart'))
+                .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
             prepareArrecada(0, ano, 'arrecadaChart')
             prepareRepasseDonut(mes, ano, 'donnut-repasse')
             prepareRepasseBarra(ano)
         })
         .catch(e => console.log('Erro :' + e.message));
 })
+function gerarJsonRepasse() {
+    
+}
 
 function gerarJsonArrecada() {
     var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
@@ -102,8 +111,11 @@ function renderArrecadaJson(data) {
     hiddenElement.click();
 }
 
-function gerarCvsArrecada() {
-    var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
+function gerarCvsRepasse() {
+
+
+
+    var url = BASE_URL + 'getportalrepasse/' + mesArrecada + '/' + anoArrecada;
     let tipo = ''
     if (mes > 0) {
         tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
@@ -113,12 +125,25 @@ function gerarCvsArrecada() {
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => renderArrecadaCvs(data))
+                .then(data => renderCvs(data))
         })
         .catch(e => console.log('Erro :' + e.message));
 }
 
-function renderArrecadaCvs(data) {
+
+
+function gerarCvsArrecada() {
+    var url = BASE_URL + 'getportalrepasse/' + dataInicial + '/' + dataFinal;
+
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => renderCvs(data))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+}
+
+function renderCvs(data) {
 
     let dados = data.map(item => item)
     var json = data.item
@@ -143,9 +168,17 @@ function downloadCSV(csvStr) {
     hiddenElement.click();
 }
 
-
 function gerarPdfArrecada() {
-    var newCanvas = document.getElementById('impostoChartConsulta');
+    gerarPdf('impostoChartConsulta', 'A')
+}
+
+function gerarPdfRepasse() {
+    gerarPdf('chartrepasse')
+
+}
+
+function gerarPdf(canvas) {
+    var newCanvas = document.getElementById(canvas);
     let mes = 'Todos'
     if (mesArrecada != 0) {
         mes = meses[mesArrecada]
@@ -158,8 +191,8 @@ function gerarPdfArrecada() {
 }
 
 function prepareRepasse() {
-    var dataInicial = document.getElementById("dtInicial").value;
-    var dataFinal = document.getElementById("dtFinal").value;
+    dataInicial = document.getElementById("dtInicial").value;
+    dataFinal = document.getElementById("dtFinal").value;
     let tipo = 'Repasses entre :' + formata_data(dataInicial) + ' a ' + formata_data(dataFinal) + ' : '
 
     if (dataInicial > dataFinal) {
@@ -355,6 +388,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
 }
 
 function prepareImpostoDonut(data, mes, ano, canvas) {
+    console.log(data)
     arrays = arrays.map(function (campo) {
         var novoConteudo = data.map(function (objeto) {
             return objeto[campo];
@@ -617,6 +651,7 @@ function prepareArrecada(mes, ano, canvas) {
 }
 
 function renderArrecadaGraficoBar(data, canvas, tipo) {
+    console.log(data)
     if (data.length > 0) {
         var ArrecadaIcms = mapArrecadaIcms(data)
         var ArrecadaIpva = mapArrecadaIpva(data)
