@@ -91,10 +91,28 @@ var fim = car.map(item => { return item['portalrepasseicms']})
 
 console.log(car,fim)
 
+
+const grouped = groupBy(arrecJson, arrecJson => arrecJson.municipionome);
+    
+console.log(grouped.get("BONFIM")); // -> [{type:"Dog", name:"Spot"}, {type:"Dog", name:"Rover"}]
+    
+
 // console.log(arJs['portalrepasseicms']);
 
 
- 
+function groupBy(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+       const key = keyGetter(item);
+       const collection = map.get(key);
+       if (!collection) {
+           map.set(key, [item]);
+       } else {
+           collection.push(item);
+       }
+  });
+  return map;
+} 
 
 function GerarImpostometro(data) {
   arrays = arrays.map(function (campo) {
