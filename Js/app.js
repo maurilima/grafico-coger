@@ -345,7 +345,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
                 position: 'bottom',
                 label: {
                     boxerwidth: 10,
-                    fontSize: 14
+                    fontSize: 11
                 }
             },
             title: {
@@ -482,7 +482,7 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
                     position: 'bottom',
                     label: {
                         boxerwidth: 12,
-                        fontSize: 14
+                        fontSize: 11
                     }
                 },
                 title: {
@@ -500,8 +500,6 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
                         heigh: 10
                     }
                 },
-
-
                 tooltips: {
                     callbacks: {
                         title: function (tooltipItem, data) {
@@ -522,7 +520,7 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
                     titleFontSize: 16,
                     titleFontColor: '#0066ff',
                     bodyFontColor: '#000',
-                    bodyFontSize: 14,
+                    bodyFontSize: 11,
                     displayColors: false
                 }
             }
@@ -533,7 +531,6 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
 }
 
 function renderImpostGraficoDonut(dados, mes, canvas) {
-
     var totalImpostos = dados.reduce(function (acumulador, valorAtual) {
         return acumulador + valorAtual
     })
@@ -565,7 +562,7 @@ function renderImpostGraficoDonut(dados, mes, canvas) {
                 position: 'bottom',
                 label: {
                     boxerwidth: 12,
-                    fontSize: 14
+                    fontSize: 11
                 }
             },
             title: {
@@ -601,7 +598,7 @@ function renderImpostGraficoDonut(dados, mes, canvas) {
                 titleFontSize: 16,
                 titleFontColor: '#0066ff',
                 bodyFontColor: '#000',
-                bodyFontSize: 14,
+                bodyFontSize: 11,
                 displayColors: false
             }
         }
@@ -623,7 +620,6 @@ function renderArrecadacaoGrafico() {
         document.getElementById('arrecada-pdf').disabled = false;
         document.getElementById('arrecada-cvs').disabled = false;
         document.getElementById('arrecada-json').disabled = false;
-
     }
     else {
         throw alert('Mes deve Estar entre "0" e "12" ')
@@ -798,7 +794,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 position: 'bottom',
                 label: {
                     boxerwidth: 10,
-                    fontSize: 12,
+                    fontSize: 11,
                     fontColor: 'rgb(245, 245, 245)'
                 }
             },
@@ -841,51 +837,40 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
 }
 
 function mapArrecadaIcms(data) {
-
     var retorno = data.map(function (item) {
         return {
-
             mes: item.portalarrecadacaomes,
             icms: parseFloat2Decimals(item.portalarrecadacaoicms)
         }
-
     }
     )
     return retorno
 }
 
 function mapArrecadaIpva(data) {
-
     var retorno = data.map(function (item) {
         return {
-
             mes: item.portalarrecadacaomes,
             ipva: parseFloat2Decimals(item.portalarrecadacaoipva)
         }
-
     }
     )
     return retorno
-
 }
 
 function mapArrecadaOutros(data) {
-
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
             outros: parseFloat2Decimals(item.portalportalarrecadacaooutros)
         }
-
     }
     )
     return retorno
-
 }
 
 function mapArrecadaItcd(data) {
-
     var retorno = data.map(function (item) {
         return {
 
@@ -893,36 +878,29 @@ function mapArrecadaItcd(data) {
             itcd: parseFloat2Decimals(item.portalarrecadacaoitcd)
 
         }
-
-
     }
     )
     return retorno
 }
 
 function mapArrecadaIrrf(data) {
-
     var retorno = data.map(function (item) {
         return {
 
             mes: item.portalarrecadacaomes,
             irrf: parseFloat2Decimals(item.portalarrecadacaoirrf)
         }
-
     }
     )
     return retorno
 }
 
 function mapArrecadaTaxas(data) {
-
     var retorno = data.map(function (item) {
         return {
-
             mes: item.portalarrecadacaomes,
             taxas: parseFloat2Decimals(item.portalarrecadacaotaxas)
         }
-
     }
     )
     return retorno
@@ -931,11 +909,9 @@ function mapArrecadaTaxas(data) {
 function mapIcms(data) {
     var retorno = data.map(function (item) {
         return {
-
             munId: item.municipionome,
             icms: parseFloat2Decimals(item.portalrepasseicms),
         }
-
     }
     )
     return totalIcms(retorno)
