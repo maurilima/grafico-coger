@@ -96,37 +96,42 @@
     <!-- Arrecadacao -->
     <!-- <div class="container-imposto"> -->
     <div class="entradas-imposto">
-      <form>
-        <label for="basic-url">Consulta Arrecadação Mensal/Anual</label>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">Mes</span>
+      <!-- <div class="entrada-impostos-div"> -->
+        <form>
+          <label for="basic-url">Consulta Arrecadação Mensal/Anual</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon3">Mes</span>
+            </div>
+            <input id="mes" type="text" class="form-control" aria-describedby="basic-addon3" maxlength="2" range='12'
+              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+              placeholder="Numero, Zero para Emitir o Ano">
           </div>
-          <input id="mes" type="text" class="form-control" aria-describedby="basic-addon3" maxlength="2" range='12'
-            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-            placeholder="Numero, Zero para Emitir o Ano">
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">Ano</span>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon3">Ano</span>
+            </div>
+            <input type="text" class="form-control" id="ano" aria-describedby="basic-addon3" maxlength="4"
+              onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Ano com 4 Digitos ">
           </div>
-          <input type="text" class="form-control" id="ano" aria-describedby="basic-addon3" maxlength="4"
-            onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Ano com 4 Digitos ">
-        </div>
-        <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
-        <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
-          <button id="arrecada-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
-          <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
-          <button id="arrecada-json" disabled type="button" class="btn btn-secondary">Json</button>
-        </div>
-      </form>
+          <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
+          <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
+            <button id="arrecada-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
+            <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
+            <button id="arrecada-json" disabled type="button" class="btn btn-secondary">Json</button>
+          </div>
+        </form>
+      <!-- </div> -->
+      <!-- <div class="entrada-impostos-div"> -->
 
-      <div class="charts-box-imposto">
-        <div id='divcanvas' class="remesa">
-          <canvas id="impostoChartConsulta" style="position: relative; height:40vh; width:60vw" ></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
+        <div class="charts-box-imposto">
+          <div id='divcanvas' class="remesa">
+            <canvas id="impostoChartConsulta" style="position: relative; height:40vh; width:60vw"></canvas>
+            <!-- style="position: relative; height:40vh; width:40vw" -->
+          </div>
         </div>
-        </div>
-      </div>
+      <!-- </div> -->
+    </div>
     </div>
     <!-- </div> -->
     <!-- <div class="container-repasse"> -->
@@ -157,8 +162,8 @@
         </div>
       </form>
       <!-- <div class="charts-box-imposto"> -->
-        <div class="remesa">
-          <canvas id="chartrepasse"></canvas>
+      <div class="remesa">
+        <canvas id="chartrepasse"></canvas>
         <!-- </div> -->
       </div>
       <!-- </div> -->

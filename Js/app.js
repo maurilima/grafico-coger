@@ -1112,6 +1112,21 @@ function onlynumber(evt) {
     }
 }
 
+//  Retronando Valor de uma fecth
+
+// function fetchDictionary() {
+//     const URL_TO_FETCH = './lang-portuguese.txt';
+//     return fetch(URL_TO_FETCH).then(res => res.text())
+//     .then(data => obj = data).then((data) => {
+//         console.log(data);
+//         return data;
+//     })
+// }
+
+// function buildWords() {   
+//     fetchDictionary()then(console.log);
+// }
+
 // afterLabel: function(tooltipItem, data) {
 //     var procento = 0;
 //     for (i = 0; i < 4; i++) {
