@@ -155,13 +155,15 @@ div.type {
     padding: 10px;
     grid-template-columns: repeat(auto-fit, minmax(49%, 1fr));
     gap: 15px;
-    margin: 10px;
     height: 480px;
+    padding: 10px;
     border: 1px solid #007bff;
 }
 
 .dashboard-box-repasse {
     border-radius: 8px;
+    margin: 10px;
+
     color: #f5f5f5;
     background-color: #F8F8FF;
     /* padding: 10px; */
@@ -221,24 +223,24 @@ form.input {
     outline: 0;
 }
 
-@media (max-width: 890px) {
+@media (max-width: 800px) {
     .dashboard-flex-parent-arrecada {
         display: flex;
         flex-direction: column;
-        height: 800px;
+        height: 630px;
     }
     .dashboard-flex-parent-repasse {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: 630px;
         align-items: center;
-        justify-items: stretch;
-        flex-basis: auto;
+        /* justify-items: stretch; */
+        /* flex-basis: auto; */
     }
     .entradas-imposto {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: 550px;
     }
     .entradas-repasse {
         display: flex;

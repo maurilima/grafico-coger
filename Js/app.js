@@ -61,7 +61,7 @@ btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
 
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
-    let mes = now.getMonth();
+    let mes = now.getMonth() -1;
     var ano = now.getFullYear();
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
