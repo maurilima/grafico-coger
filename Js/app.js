@@ -61,44 +61,129 @@ btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
 
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
-    let mes = now.getMonth() -1;
+    let mes = now.getMonth();
     var ano = now.getFullYear();
-    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
+    getApiArrecadaco(mes, ano);
+})
+
+function getApiArrecadaco(mes, ano) {
+    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
     fetch(url, options)
         .then(response => {
             response.json()
                 .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
             prepareArrecada(0, ano, 'arrecadaChart')
-            prepareRepasseDonut(mes, ano, 'donnut-repasse')
+            prepareRepasseDonut(mes, ano)
             prepareRepasseBarra(ano)
         })
         .catch(e => console.log('Erro :' + e.message));
-})
-function gerarJsonRepasse() {
-    var url = BASE_URL + 'getportalrepasse/' + dataInicial + '/' + dataFinal;
-    var fileName = 'Repasse-entre'+formata_data(dataInicial) + '-'+formata_data(dataFinal)
+
+}
+
+
+function prepareRepasseDonut(mes, ano) {
+    let lMes = mes + 1
+    var url = BASE_URL + 'getportalrepasse/' + ano + '-' + lMes + '-01/' + ano + '-' + lMes + '-' + lastDay(ano, lMes);
+
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => downloadJson(data,fileName))
+                .then(data => prepareDadosRepasse(data, lMes, ano))
+
         })
-        .catch(e => console.log('Erro :' + e.message));    
-}    
+        .catch(e => console.log('Erro :' + e.message));
+
+}
+//
+function prepareDadosRepasse(data, mes, ano) {
+    console.log('Data entrada:'+data + 'Mes:'+mes)
+    
+    if (data.length <= 0) {
+        let mMes = mes -1;
+        prepareRepasseDonut(mMes, ano); 
+    }    
+    else {
+    let repasse = data.map(item => item)
+
+    let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
+    let repasseIpva = mapRepasse(repasse, 'portalrepasseipva')
+    let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms')
+    let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva')
+
+    let totalRepasseIcms = parseFloat2Decimals(repasseIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+    let totalRepasseIpva = parseFloat2Decimals(repasseIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0) + .05)
+    let totalRepasseFundebIcms = parseFloat2Decimals(repasseFundebIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+    let totalRepasseFundebIpva = parseFloat2Decimals(repasseFundebIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+    let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva)
+    let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
+
+    renderRepasseDonut(dados, totalRepase, mes, ano)
+    }
+
+}
+
+
+function prepareImpostoDonut(data, mes, ano, canvas) {
+    if ( data.length <= 0 ) {
+        let mMes= mes -1;
+        getApiArrecadaco(mMes,ano) 
+
+    }
+
+    if (data.length > 0) {
+        arrays = arrays.map(function (campo) {
+            var novoConteudo = data.map(function (objeto) {
+                return objeto[campo];
+            });
+            return novoConteudo;
+        });
+        document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('irrfvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('itcdvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        dados = arrays.map(a => parseFloat2Decimals(a, 2));
+
+        let mesano = document.querySelectorAll('.mesvalue');
+
+        mesano.forEach(ma => { ma.innerHTML = meses[mes] + ' / ' + ano });
+        renderImpostGraficoDonut(dados, mes, canvas)
+    }
+}
+
+
+function gerarJsonRepasse() {
+    var url = BASE_URL + 'getportalrepasse/' + dataInicial + '/' + dataFinal;
+    var fileName = 'Repasse-entre' + formata_data(dataInicial) + '-' + formata_data(dataFinal)
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => downloadJson(data, fileName))
+        })
+        .catch(e => console.log('Erro :' + e.message));
+}
 
 
 function gerarJsonArrecada() {
     var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
     let fileName = ''
     if (mes > 0) {
-        fileName = 'Arrecadacao-mes-' + meses[mesArrecada] + '/' + anoArrecada 
+        fileName = 'Arrecadacao-mes-' + meses[mesArrecada] + '/' + anoArrecada
     }
     else
-    fileName = `Arrecadacao-ano-${anoArrecada}`
+        fileName = `Arrecadacao-ano-${anoArrecada}`
     fetch(url, options)
         .then(response => {
             response.json()
-                .then(data => downloadJson(data,fileName))
+                .then(data => downloadJson(data, fileName))
         })
         .catch(e => console.log('Erro :' + e.message));
 }
@@ -115,13 +200,13 @@ function downloadJson(data, fileName) {
 
 function gerarCvsRepasse() {
     var url = BASE_URL + 'getportalrepasse/' + dataInicial + '/' + dataFinal;
-    var tipo = 'Repasse-entre'+dataInicial + '-'+dataFinal
+    var tipo = 'Repasse-entre' + dataInicial + '-' + dataFinal
     fetch(url, options)
         .then(response => {
             response.json()
                 .then(data => renderCvs(data, tipo))
         })
-        .catch(e => console.log('Erro :' + e.message));    
+        .catch(e => console.log('Erro :' + e.message));
 }
 
 
@@ -130,10 +215,10 @@ function gerarCvsArrecada() {
     var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
     let tipo = ''
     if (mes > 0) {
-        tipo = 'Arrecadacao-mes ' + meses[mesArrecada] + '/' + ano 
+        tipo = 'Arrecadacao-mes ' + meses[mesArrecada] + '/' + ano
     }
     else
-        tipo = `Arrecadacao-anual-de ${anoArrecada}`    
+        tipo = `Arrecadacao-anual-de ${anoArrecada}`
 
     fetch(url, options)
         .then(response => {
@@ -155,11 +240,11 @@ function renderCvs(data, fileName) {
 }
 
 function downloadCSV(csvStr, fileName) {
-  
+
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvStr);
     hiddenElement.target = '_blank';
-    hiddenElement.download = fileName +'.csv';
+    hiddenElement.download = fileName + '.csv';
     hiddenElement.click();
 }
 
@@ -195,10 +280,10 @@ function prepareRepasse() {
     }
     else {
         ObterDadosRepase(dataInicial, dataFinal, 'chartrepasse', tipo);
-        btnRepassePdf.disabled  = false;
-        btnRepasseCvs.disabled  = false;
+        btnRepassePdf.disabled = false;
+        btnRepasseCvs.disabled = false;
         btnRepasseJson.disabled = false;
-}
+    }
 
 }
 
@@ -216,7 +301,7 @@ function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
         .then(response => {
             response.json()
                 .then(data => prepareGraficoRemessa(data, canvas, tipo))
-                
+
         })
         .catch(e => console.log('Erro :' + e.message));
 };
@@ -386,67 +471,6 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
     });
 }
 
-function prepareImpostoDonut(data, mes, ano, canvas) {
-    if (data.length > 0) {
-    arrays = arrays.map(function (campo) {
-        var novoConteudo = data.map(function (objeto) {
-            return objeto[campo];
-        });
-        return novoConteudo;
-    });
-    document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
-        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
-        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"])
-        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('irrfvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"])
-        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('itcdvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"])
-        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
-        .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    dados = arrays.map(a => parseFloat2Decimals(a, 2));
-
-    let mesano = document.querySelectorAll('.mesvalue');
-
-    mesano.forEach(ma => { ma.innerHTML = meses[mes] + ' / ' + ano });
-    renderImpostGraficoDonut(dados, mes, canvas)
-}
-}
-
-function prepareRepasseDonut(mes, ano, canvas) {
-    let lMes = mes + 1
-    var url = BASE_URL + 'getportalrepasse/' + ano + '-' + lMes + '-01/' + ano + '-' + lMes + '-'+ lastDay(ano,lMes);
- 
-    fetch(url, options)
-        .then(response => {
-            response.json()
-                .then(data => prepareDadosRepasse(data, lMes, ano))
-
-        })
-        .catch(e => console.log('Erro :' + e.message));
-
-}
-//
-function prepareDadosRepasse(data, mes, ano) {
-    let repasse = data.map(item => item)
-
-    let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
-    let repasseIpva = mapRepasse(repasse, 'portalrepasseipva')
-    let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms')
-    let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva')
-
-    let totalRepasseIcms = parseFloat2Decimals(repasseIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-    let totalRepasseIpva = parseFloat2Decimals(repasseIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0) + .05)
-    let totalRepasseFundebIcms = parseFloat2Decimals(repasseFundebIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-    let totalRepasseFundebIpva = parseFloat2Decimals(repasseFundebIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-    let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva)
-    let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
-
-    renderRepasseDonut(dados, totalRepase, mes, ano)
-
-}
 
 function mapRepasse(data, imposto) {
     return data.map(item => {
@@ -1058,21 +1082,16 @@ function DownloadJSON2CSV(objArray) {
             line += array[i][index] + ',';
         }
 
-        // Here is an example where you would wrap the values in double quotes
-        // for (var index in array[i]) {
-        //    line += '"' + array[i][index] + '",';
-        // }
 
         line.slice(0, line.Length - 1);
 
         str += line + '\r\n';
     }
-    //         window.open( "data:text/csv;charset=utf-8," + escape(str))
 }
-function lastDay(year, month){
+function lastDay(year, month) {
     var ultimoDia = (new Date(year, month, 0)).getDate();
     return ultimoDia;
-    }
+}
 
 function FormataStringData(data) {
     var dia = data.split("/")[0];

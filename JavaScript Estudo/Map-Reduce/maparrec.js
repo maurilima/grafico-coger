@@ -94,18 +94,18 @@ mes -=1
 var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
 // console.log(url);
-let dados = fetchApiLer();
+// let dados = fetchApiLer();
 
-// console.log(dados)
+// // console.log(dados)
 
-async function fetchApi(url) {
-    // const URL_TO_FETCH = './lang-portuguese.txt';
-    // console.log(' aqui'+url);
-    const body = await fetch(url, options);
-    const data = await body.json();
+// async function fetchApi(url) {
+//     // const URL_TO_FETCH = './lang-portuguese.txt';
+//     // console.log(' aqui'+url);
+//     const body = await fetch(url, options);
+//     const data = await body.json();
     
-    // O valor retornado será algo como `Promise<object>`.
-    return data
+//     // O valor retornado será algo como `Promise<object>`.
+//     return data
 
 
 
@@ -114,20 +114,52 @@ async function fetchApi(url) {
   // const data_1 = obj = data;
   // console.log(data_1)
   // return data_1;
-}
+// }
 
-function fetchApiLer() {   
-  fetchApi(url)
-  .then((resolvedJson) => {
-    console.log(resolvedJson.origin);
+// function fetchApiLer() {   
+//   fetchApi(url)
+//   .then((resolvedJson) => {
+//     console.log(resolvedJson.origin);
+//   })
+//   .catch((error) => {
+//     console.error('Opa! Houve um erro:', error.message);
+//   });
+
+
+//     //  .then(console.log())
+// }
+ 
+function obtenerJSON(url) {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        reject(
+          "No hemos podido recuperar ese json. El código de respuesta del servidor es: " +
+            response.status
+        );
+      })
+      .then((json) => resolve(json))
+      .catch((err) => reject(err));
+  });
+}
+// Pero claro, como esta función te devuelve una promesa, realmente la necesitas procesar como tal, y hacer la estructura del then/catch, con un código que podría ser así:
+const dados =   obtenerJSON(url)
+  .then((json) => {
+     return json 
   })
-  .catch((error) => {
-    console.error('Opa! Houve um erro:', error.message);
+  .catch((err) => {
+    console.log("Error encontrado:", err);
   });
 
+  console.log(dados)
 
-    //  .then(console.log())
-}
+
+
+
+
 
 // function buildWords() {   
 //     fetchDictionary()then(console.log);
