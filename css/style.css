@@ -139,7 +139,7 @@ div.type {
     padding: 10px;
     margin: 10px;
     height: 480px;
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .dashboard-box-arrecada {
@@ -157,7 +157,7 @@ div.type {
     gap: 15px;
     height: 480px;
     padding: 10px;
-    border: 1px solid #007bff;
+    /* border: 1px solid #007bff; */
 }
 
 .dashboard-box-repasse {
@@ -179,7 +179,7 @@ div.type {
     gap: 15px;
     margin: 10px;
     height: 750px;
-    border: 1px solid #ffee00;
+    /* border: 1px solid #ffee00; */
 
 }
 
@@ -198,7 +198,7 @@ div.type {
     margin: 10px;
     padding: 10px;
     height: 700px;
-    border: 1px solid #d40b98;
+    /* border: 1px solid #d40b98; */
 
 }
 
