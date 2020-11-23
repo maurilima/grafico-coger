@@ -227,12 +227,12 @@ form.input {
     .dashboard-flex-parent-arrecada {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: 400px;
     }
     .dashboard-flex-parent-repasse {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: 400px;
         align-items: center;
         /* justify-items: stretch; */
         /* flex-basis: auto; */
@@ -240,12 +240,12 @@ form.input {
     .entradas-imposto {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: 4000px;
     }
     .entradas-repasse {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: 400px;
         grid-column: 1fr;
     }
 }
