@@ -97,8 +97,7 @@ function prepareRepasseDonut(mes, ano) {
 }
 //
 function prepareDadosRepasse(data, mes, ano) {
-    console.log('Data entrada:'+data + 'Mes:'+mes)
-    
+   
     if (data.length <= 0) {
         let mMes = mes -1;
         prepareRepasseDonut(mMes, ano); 
@@ -636,6 +635,8 @@ function renderArrecadacaoGrafico() {
     var canvas = 'impostoChartConsulta'
 
     // var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+
+    console.log(mes, ano, canvas)
 
     if (mes >= 0 && mes <= 12) {
         mesArrecada = mes

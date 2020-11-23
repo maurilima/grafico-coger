@@ -178,8 +178,8 @@ div.type {
     grid-template-columns: 1.6fr 5fr;
     gap: 15px;
     margin: 10px;
-    height: 750px;
-    /* border: 1px solid #ffee00; */
+    height: 500px;
+    border: 1px solid #ffee00;
 
 }
 
@@ -198,7 +198,7 @@ div.type {
     margin: 10px;
     padding: 10px;
     height: 700px;
-    /* border: 1px solid #d40b98; */
+    border: 1px solid #d40b98;
 
 }
 
@@ -223,16 +223,16 @@ form.input {
     outline: 0;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1080px) {
     .dashboard-flex-parent-arrecada {
         display: flex;
         flex-direction: column;
-        height: 400px;
+        height: 340px;
     }
     .dashboard-flex-parent-repasse {
         display: flex;
         flex-direction: column;
-        height: 400px;
+        height: 380px;
         align-items: center;
         /* justify-items: stretch; */
         /* flex-basis: auto; */
@@ -240,12 +240,11 @@ form.input {
     .entradas-imposto {
         display: flex;
         flex-direction: column;
-        height: 4000px;
+        height: 400px;
     }
     .entradas-repasse {
         display: flex;
         flex-direction: column;
         height: 400px;
-        grid-column: 1fr;
     }
 }
