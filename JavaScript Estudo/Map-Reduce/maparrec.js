@@ -6,92 +6,52 @@ var options = {
   cache: 'default'
 }
   
-  var arrecJson = [
-    {
-      "portalrepassedata": "2018-06-19 00:00:00",
-      "portalrepassemunicipiocod": "141",
-      "portalrepasseicms": "8502.21",
-      "portalrepasseipva": "812.45",
-      "portalrepassefundebicms": null,
-      "portalrepassefundebipva": null,
-      "municipiocod": "141",
-      "municipionome": "BONFIM"
-   
-    },
-    {
-      "portalrepassedata": "2018-06-19 00:00:00",
-      "portalrepassemunicipiocod": "301",
-      "portalrepasseicms": "6968.52",
-      "portalrepasseipva": "662.55",
-      "portalrepassefundebicms": null,
-      "portalrepassefundebipva": null,
-      "municipiocod": "301",
-      "municipionome": "SÃO LUIZ DO ANAUÁ"
-    },
-    {
-      "portalrepassedata": "2018-06-19 00:00:00",
-      "portalrepassemunicipiocod": "321",
-      "portalrepasseicms": "6480.38",
-      "portalrepasseipva": "0",
-      "portalrepassefundebicms": null,
-      "portalrepassefundebipva": null,
-      "municipiocod": "321",
-      "municipionome": "UIRAMUTÃ"
-    },
-    {
-      "portalrepassedata": "2018-06-26 00:00:00",
-      "portalrepassemunicipiocod": "101",
-      "portalrepasseicms": "135816.79",
-      "portalrepasseipva": "6549.21",
-      "portalrepassefundebicms": null,
-      "portalrepassefundebipva": null,
-      "municipiocod": "101",
-      "municipionome": "ALTO ALEGRE"
-    },
-    {
-      "portalrepassedata": "2018-06-26 00:00:00",
-      "portalrepassemunicipiocod": "121",
-      "portalrepasseicms": "95474.8",
-      "portalrepasseipva": "870.93",
-      "portalrepassefundebicms": null,
-      "portalrepassefundebipva": null,
-      "municipiocod": "121",
-      "municipionome": "AMAJARI"
-    },
-    {
-      "portalrepassedata": "2018-06-26 00:00:00",
-      "portalrepassemunicipiocod": "81",
-      "portalrepasseicms": "3907219.54",
-      "portalrepasseipva": "616591.92",
-      "portalrepassefundebicms": null,
-      "portalrepassefundebipva": null,
-      "municipiocod": "81",
-      "municipionome": "BOA VISTA"
-    }
-  ]
-  
-var arraysImpostos = ['portalarrecadacaoicms',
-    'portalarrecadacaoipva',
-    'portalportalarrecadacaooutros',
-    'portalarrecadacaoitcd',
-    'portalarrecadacaoirrf',
-    'portalarrecadacaotaxas'
-]
-var arJs = { "portalrepassedata": "2018-06-26 00:00:00", 
-  "portalrepassemunicipiocod": "121",
-  "portalrepasseicms": "95474.8",
-  "portalrepasseipva": "870.93",
-  "portalrepassefundebicms": null,
-  "portalrepassefundebipva": null,
-  "municipiocod": "121",
-  "municipionome": "AMAJARI"
-}
 var objeto = {"atributo1": "valor 1", "atributo2": 23};
 var now = new Date;
 let mes = now.getMonth();
 var ano = now.getFullYear();
 mes -=1
-var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+var url = "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2020-01-01/2020-12-31";
+let dados = null;
+
+
+function filtrarMunicipio(data) {
+  
+  //  console.log(dados)
+   console.log(filterMunicipio('201',data))
+}
+
+function filterMunicipio(munid,data) {
+  return data.filter(function(el) {
+      return el.municipiocod.indexOf(munid) > -1;
+  })
+}
+
+
+
+// function filterItems(query) {
+//   return fruits.filter(function(el) {
+//       return el.toLowerCase().indexOf(query.toLowerCase()) > -1;
+//   })
+// }
+// var indice = acumulador.map((o) => o.munId).indexOf(valor.munId);
+// if (indice == -1) {
+//     acumulador.push(valor);
+// } else {
+//     acumulador[indice].fundef += valor.fundef;
+// }
+
+
+fetch(url, options)
+.then(response => {
+    response.json()
+        .then(data => filtrarMunicipio(data))
+})
+.catch(e => console.log('Erro :' + e.message));
+
+
+
+
 
 // console.log(url);
 // let dados = fetchApiLer();
@@ -129,32 +89,32 @@ var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 //     //  .then(console.log())
 // }
  
-function obtenerJSON(url) {
-  return new Promise((resolve, reject) => {
-    fetch(url)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        reject(
-          "No hemos podido recuperar ese json. El código de respuesta del servidor es: " +
-            response.status
-        );
-      })
-      .then((json) => resolve(json))
-      .catch((err) => reject(err));
-  });
-}
-// Pero claro, como esta función te devuelve una promesa, realmente la necesitas procesar como tal, y hacer la estructura del then/catch, con un código que podría ser así:
-const dados =   obtenerJSON(url)
-  .then((json) => {
-     return json 
-  })
-  .catch((err) => {
-    console.log("Error encontrado:", err);
-  });
+// function obtenerJSON(url) {
+//   return new Promise((resolve, reject) => {
+//     fetch(url)
+//       .then((response) => {
+//         if (response.ok) {
+//           return response.json();
+//         }
+//         reject(
+//           "No hemos podido recuperar ese json. El código de respuesta del servidor es: " +
+//             response.status
+//         );
+//       })
+//       .then((json) => resolve(json))
+//       .catch((err) => reject(err));
+//   });
+// }
+// // Pero claro, como esta función te devuelve una promesa, realmente la necesitas procesar como tal, y hacer la estructura del then/catch, con un código que podría ser así:
+// const dados =   obtenerJSON(url)
+//   .then((json) => {
+//      return json 
+//   })
+//   .catch((err) => {
+//     console.log("Error encontrado:", err);
+//   });
 
-  console.log(dados)
+//   console.log(dados)
 
 
 
