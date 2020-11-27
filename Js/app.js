@@ -1,6 +1,24 @@
 // "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2020-01-01/2020-12-31";
 // https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
 
+let listMuncipios = 
+[ {municipiocod: "201", municipionome: "CAROEBE"},
+{municipiocod: "221", municipionome: "IRACEMA"},
+ {municipiocod: "241", municipionome: "MUCAJAÍ"},
+ {municipiocod: "242", municipionome: "NORMANDIA"},
+ {municipiocod: "243", municipionome: "PACARAIMA"},
+ {municipiocod: "261", municipionome: "RORAINÓPOLIS"},
+ {municipiocod: "281", municipionome: "SÃO JOÃO DA BALIZA"},
+ {municipiocod: "301", municipionome: "SÃO LUIZ DO ANAUÁ"},
+ {municipiocod: "101", municipionome: "ALTO ALEGRE"},
+ {municipiocod: "121", municipionome: "AMAJARI"},
+ {municipiocod: "81", municipionome: "BOA VISTA"},
+ {municipiocod: "141", municipionome: "BONFIM"},
+ {municipiocod: "161", municipionome: "CANTÁ"},
+ {municipiocod: "181", municipionome: "CARACARAÍ"},
+ {municipiocod: "321", municipionome: "UIRAMUTÃ"}
+];
+
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
 var LabelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
 let LabelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
@@ -23,6 +41,11 @@ var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoirrf',
     'portalarrecadacaotaxas'
 ]
+
+listMuncipios.sort(function(a,b) {
+    return a.municipionome < b.municipionome ? -1 : a.municipionome > b.municipionome ? 1 : 0;
+});
+
 
 let meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 let btnRepasse = document.getElementById("repasse");
