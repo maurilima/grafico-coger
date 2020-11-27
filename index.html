@@ -113,12 +113,15 @@
           <input type="text" class="form-control" id="ano" aria-describedby="basic-addon3" maxlength="4"
             onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Ano com 4 Digitos ">
         </div>
-        <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
-        <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
-          <button id="arrecada-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
-          <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
-          <button id="arrecada-json" disabled type="button" class="btn btn-secondary">Json</button>
-        </div>
+        <div class="form-group">
+          <div class="form-group">
+            <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
+            <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
+              <button id="arrecada-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
+              <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
+              <button id="arrecada-json" disabled type="button" class="btn btn-secondary">Json</button>
+            </div>
+          </div>
 
       </form>
       <!-- </div> -->
@@ -153,25 +156,22 @@
           <input id="dtFinal" name="dtFinal" type="date" class="form-control" id="basic-url"
             aria-describedby="basic-addon3">
         </div>
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Todos Municípios
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
+        <div class="form-group">
+          <label for="municipio"> Município</label>
+          <select name="municipios" id="municipios" class="custom-select">
+            <option selected disables> Todos </option>
+          </select>
         </div>
 
-        <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary" data-toggle="tooltip"
-          data-placement="bottom" title="Tooltip na parte superior">Enviar</button>
-        <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
-          <button id="repasse-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
-          <button id="repasse-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
-          <button id="repasse-json" disabled type="button" class="btn btn-secondary">Json</button>
-        </div>
+        <div class="form-group">
+          <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary" data-toggle="tooltip"
+            data-placement="bottom" title="Tooltip na parte superior">Enviar</button>
+          <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
+            <button id="repasse-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
+            <button id="repasse-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
+            <button id="repasse-json" disabled type="button" class="btn btn-secondary">Json</button>
+          </div>
+      </form>
 
       </form>
       <!-- <div class="charts-box-imposto"> -->

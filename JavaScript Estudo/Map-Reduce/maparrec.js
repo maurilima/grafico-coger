@@ -7351,9 +7351,9 @@
     "municipionome": "CARACARAÍ"
   }
 ] 
-let listMuncipios = 
-[ {municipiocod: "201", municipionome: "CAROEBE"},
-{municipiocod: "221", municipionome: "IRACEMA"},
+
+let listMuncipios = [ {municipiocod: "201", municipionome: "CAROEBE"},
+ {municipiocod: "221", municipionome: "IRACEMA"},
  {municipiocod: "241", municipionome: "MUCAJAÍ"},
  {municipiocod: "242", municipionome: "NORMANDIA"},
  {municipiocod: "243", municipionome: "PACARAIMA"},

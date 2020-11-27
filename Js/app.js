@@ -1,24 +1,23 @@
 // "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2020-01-01/2020-12-31";
 // https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
 
-let listMuncipios = 
-[ {municipiocod: "201", municipionome: "CAROEBE"},
-{municipiocod: "221", municipionome: "IRACEMA"},
- {municipiocod: "241", municipionome: "MUCAJAÍ"},
- {municipiocod: "242", municipionome: "NORMANDIA"},
- {municipiocod: "243", municipionome: "PACARAIMA"},
- {municipiocod: "261", municipionome: "RORAINÓPOLIS"},
- {municipiocod: "281", municipionome: "SÃO JOÃO DA BALIZA"},
- {municipiocod: "301", municipionome: "SÃO LUIZ DO ANAUÁ"},
- {municipiocod: "101", municipionome: "ALTO ALEGRE"},
- {municipiocod: "121", municipionome: "AMAJARI"},
- {municipiocod: "81", municipionome: "BOA VISTA"},
- {municipiocod: "141", municipionome: "BONFIM"},
- {municipiocod: "161", municipionome: "CANTÁ"},
- {municipiocod: "181", municipionome: "CARACARAÍ"},
- {municipiocod: "321", municipionome: "UIRAMUTÃ"}
+let listMuncipio = [
+    { municipiocod: "201", municipionome: "CAROEBE" },
+    { municipiocod: "221", municipionome: "IRACEMA" },
+    { municipiocod: "241", municipionome: "MUCAJAÍ" },
+    { municipiocod: "242", municipionome: "NORMANDIA" },
+    { municipiocod: "243", municipionome: "PACARAIMA" },
+    { municipiocod: "261", municipionome: "RORAINÓPOLIS" },
+    { municipiocod: "281", municipionome: "SÃO JOÃO DA BALIZA" },
+    { municipiocod: "301", municipionome: "SÃO LUIZ DO ANAUÁ" },
+    { municipiocod: "101", municipionome: "ALTO ALEGRE" },
+    { municipiocod: "121", municipionome: "AMAJARI" },
+    { municipiocod: "81", municipionome: "BOA VISTA" },
+    { municipiocod: "141", municipionome: "BONFIM" },
+    { municipiocod: "161", municipionome: "CANTÁ" },
+    { municipiocod: "181", municipionome: "CARACARAÍ" },
+    { municipiocod: "321", municipionome: "UIRAMUTÃ" }
 ];
-
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
 var LabelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
 let LabelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
@@ -33,6 +32,7 @@ let mesArrecada = 0;
 let anoArrecada = 0;
 let dataInicial = null;
 let dataFinal = null;
+let selectedMunicipio = '0'
 
 var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
@@ -42,7 +42,7 @@ var arrays = ['portalarrecadacaoicms',
     'portalarrecadacaotaxas'
 ]
 
-listMuncipios.sort(function(a,b) {
+listMuncipio.sort(function (a, b) {
     return a.municipionome < b.municipionome ? -1 : a.municipionome > b.municipionome ? 1 : 0;
 });
 
@@ -58,6 +58,10 @@ let btnArrecadaJson = document.getElementById("arrecada-json")
 let btnRepassePdf = document.getElementById("repasse-pdf")
 let btnRepasseCvs = document.getElementById("repasse-cvs")
 let btnRepasseJson = document.getElementById("repasse-json")
+
+let selectMunicipio = document.getElementById('municipios');
+
+
 
 btnArrecadaPdf.disabled = true;
 btnArrecadaCvs.disabled = true;
@@ -81,12 +85,24 @@ btnRepasseJson.addEventListener('click', gerarJsonRepasse, false);
 btnRepasse.addEventListener("click", prepareRepasse, false);
 btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
 
+selectMunicipio.addEventListener('change', municipioSelecionado,false);
+
+function municipioSelecionado(){
+     selectedMunicipio = selectMunicipio.value;
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
     let mes = now.getMonth();
     var ano = now.getFullYear();
+    let elementos = '<option value = "0"  selected disables> Todos </option>';
 
+    // Carregar lista de Municipios
+    for (let i = 0; i < listMuncipio.length; i++) {
+        elementos += '<option value="' + listMuncipio[i].municipiocod + '">' + listMuncipio[i].municipionome + '</option>'
+    }
+    selectMunicipio.innerHTML = elementos;
     getApiArrecadaco(mes, ano);
 })
 
@@ -101,7 +117,6 @@ function getApiArrecadaco(mes, ano) {
             prepareRepasseBarra(ano)
         })
         .catch(e => console.log('Erro :' + e.message));
-
 }
 
 
@@ -120,36 +135,36 @@ function prepareRepasseDonut(mes, ano) {
 }
 //
 function prepareDadosRepasse(data, mes, ano) {
-   
+
     if (data.length <= 0) {
-        let mMes = mes -1;
-        prepareRepasseDonut(mMes, ano); 
-    }    
+        let mMes = mes - 1;
+        prepareRepasseDonut(mMes, ano);
+    }
     else {
-    let repasse = data.map(item => item)
+        let repasse = data.map(item => item)
 
-    let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
-    let repasseIpva = mapRepasse(repasse, 'portalrepasseipva')
-    let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms')
-    let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva')
+        let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
+        let repasseIpva = mapRepasse(repasse, 'portalrepasseipva')
+        let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms')
+        let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva')
 
-    let totalRepasseIcms = parseFloat2Decimals(repasseIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-    let totalRepasseIpva = parseFloat2Decimals(repasseIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0) + .05)
-    let totalRepasseFundebIcms = parseFloat2Decimals(repasseFundebIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-    let totalRepasseFundebIpva = parseFloat2Decimals(repasseFundebIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-    let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva)
-    let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
+        let totalRepasseIcms = parseFloat2Decimals(repasseIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+        let totalRepasseIpva = parseFloat2Decimals(repasseIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0) + .05)
+        let totalRepasseFundebIcms = parseFloat2Decimals(repasseFundebIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+        let totalRepasseFundebIpva = parseFloat2Decimals(repasseFundebIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+        let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva)
+        let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
 
-    renderRepasseDonut(dados, totalRepase, mes, ano)
+        renderRepasseDonut(dados, totalRepase, mes, ano)
     }
 
 }
 
 
 function prepareImpostoDonut(data, mes, ano, canvas) {
-    if ( data.length <= 0 ) {
-        let mMes= mes -1;
-        getApiArrecadaco(mMes,ano) 
+    if (data.length <= 0) {
+        let mMes = mes - 1;
+        getApiArrecadaco(mMes, ano)
 
     }
 
@@ -328,12 +343,30 @@ function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
         .catch(e => console.log('Erro :' + e.message));
 };
 
+function filterMunicipio(cod, municpios)  {
+     let filteredMunicpios = []; 
+     municpios.forEach(category => {
+        if (!filteredMunicpios.find(cat => cod == category.municipiocod )) {
+            const { municipiocod, municipionome } = category;
+            filteredMunicpios.push({ municipiocod, municipionome });
+        }
+      });
+      console.log(municipios)
+}
+
 
 function prepareGraficoRemessa(data, canvas, tipo) {
-    var vArrecadaIcms = mapIcms(data)
-    var vArrecadaIpva = mapIpva(data)
-    var vFundebIcms = mapFundebIcms(data)
-    var vFundebIpva = mapFundebIpva(data)
+    let dados = null;
+
+    console.log(selectedMunicipio)
+    if ( selectedMunicipio != '0' ){
+        dados = filterMunicipio(selectedMunicipio, data)
+    } else { dados = data }
+  console.log(dados)
+    var vArrecadaIcms = mapIcms(dados)
+    var vArrecadaIpva = mapIpva(dados)
+    var vFundebIcms = mapFundebIcms(dados)
+    var vFundebIpva = mapFundebIpva(dados)
 
     renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, canvas, tipo);
 
