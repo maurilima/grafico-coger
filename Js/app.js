@@ -46,7 +46,7 @@ listMuncipio.sort(function (a, b) {
     return a.municipionome < b.municipionome ? -1 : a.municipionome > b.municipionome ? 1 : 0;
 });
 
-
+// 
 let meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 let btnRepasse = document.getElementById("repasse");
 let btnArrecada = document.getElementById("arrecada");
@@ -77,10 +77,10 @@ btnRepasseJson.addEventListener('click', gerarJsonRepasse, false);
 btnRepasse.addEventListener("click", prepareRepasse, false);
 btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
 
-selectMunicipio.addEventListener('change', municipioSelecionado,false);
+selectMunicipio.addEventListener('change', municipioSelecionado, false);
 
-function municipioSelecionado(){
-     selectedMunicipio = selectMunicipio.value;
+function municipioSelecionado() {
+    selectedMunicipio = selectMunicipio.value;
 }
 
 
@@ -98,6 +98,128 @@ document.addEventListener('DOMContentLoaded', function () {
     getApiArrecadaco(mes, ano);
 })
 
+
+function renderGhartBarRepasseMuncipio() {
+    document.getElementById(canvas).innerHTML = '&nbsp;';
+    document.getElementById(canvas).innerHTML = '<canvas id=' + chartrepasse + '></canvas>'
+
+    var ctx = document.getElementById(canvas).getContext('2d');
+
+    var chart = new Chart(ctx, {
+
+        type: 'bar',
+        data: {
+            labels: labelIcms,
+            datasets: [{
+                label: 'ICMS',
+                backgroundColor: 'rgba(0, 123, 255,1)',
+                borderColor: 'rgba(0, 123, 255,0.7)',
+                pointBorderColor: 'rgba(0, 123, 255,0.7)',
+                pointBackgroundColor: 'rgba(0, 123, 255,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(220,220,220,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorIcms
+            },
+            {
+                label: 'IPVA',
+                backgroundColor: 'rgba(108, 117, 125,1)',
+                borderColor: 'rgba(108, 117, 125,0.7)',
+                pointBorderColor: 'rgba(108, 117, 125,0.7)',
+                pointBackgroundColor: 'rgba(108, 117, 125,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(25,25,112,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorIpva
+
+            },
+            {
+                label: 'FUNDEBICMS',
+                backgroundColor: 'rgba(40, 167, 69,1)',
+                borderColor: 'rgba(40, 167, 69,0.7)',
+                pointBorderColor: 'rgba(40, 167, 69,0.7)',
+                pointBackgroundColor: 'rgba(40, 167, 69,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(138,43,226,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorFundeIcms
+
+            },
+            {
+                label: 'FUNDEBIPVA',
+                backgroundColor: 'rgba(23, 162, 184,1)',
+                borderColor: 'rgba(23, 162, 184,0.6)',
+                pointBorderColor: 'rgba(23, 162, 184,0.6)',
+                pointBackgroundColor: 'rgba(23, 162, 184,0.7)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(138,43,226,1)',
+                pointBorderWidth: 1,
+                minBarLength: 3,
+                barPercentage: 1.1,
+                categoryPercentage: .98,
+                data: valorFundeIpva
+            }
+            ]
+        },
+        options: {
+            legend: {
+                position: 'bottom',
+                label: {
+                    boxerwidth: 10,
+                    fontSize: 11
+                }
+            },
+            title: {
+                display: true,
+                fontSize: 16,
+                text: tipo + TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+            },
+
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 15,
+                    top: 5,
+                    bottom: 5
+                    // with: 10,
+                    // heigh: 10
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            tooltips: {
+                mode: 'index',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return data.datasets[tooltipItem.datasetIndex]
+                            .label + ' :' + (data.datasets[tooltipItem.datasetIndex])
+                                .data[tooltipItem.index]
+                                .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                    }
+                }
+            }
+        }
+    })
+
+
+
+}
+
+
 function getApiArrecadaco(mes, ano) {
     var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
     fetch(url, options)
@@ -110,7 +232,6 @@ function getApiArrecadaco(mes, ano) {
         })
         .catch(e => console.log('Erro :' + e.message));
 }
-
 
 function prepareRepasseDonut(mes, ano) {
     let lMes = mes + 1
@@ -335,15 +456,15 @@ function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
         .catch(e => console.log('Erro :' + e.message));
 };
 
-function filterMunicipio(cod, municpios)  {
-     let filteredMunicpios = []; 
-     municpios.forEach(category => {
-        if (!filteredMunicpios.find(cat => cod == category.municipiocod )) {
+function filterMunicipio(cod, municpios) {
+    let filteredMunicpios = [];
+    municpios.forEach(category => {
+        if (!filteredMunicpios.find(cat => cod == category.municipiocod)) {
             const { municipiocod, municipionome } = category;
             filteredMunicpios.push({ municipiocod, municipionome });
         }
-      });
-      console.log(municipios)
+    });
+    console.log(municipios)
 }
 
 
@@ -351,10 +472,10 @@ function prepareGraficoRemessa(data, canvas, tipo) {
     let dados = null;
 
     console.log(selectedMunicipio)
-    if ( selectedMunicipio != '0' ){
+    if (selectedMunicipio != '0') {
         dados = filterMunicipio(selectedMunicipio, data)
     } else { dados = data }
-  console.log(dados)
+    console.log(dados)
     var vArrecadaIcms = mapIcms(dados)
     var vArrecadaIpva = mapIpva(dados)
     var vFundebIcms = mapFundebIcms(dados)

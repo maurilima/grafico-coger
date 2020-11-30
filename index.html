@@ -136,53 +136,52 @@
 
     </div>
     <!-- </div> -->
-    <!-- <div class="container-repasse"> -->
-    <div class="entradas-repasse">
-      <form>
+    <div>
+      <div class="entradas-repasse">
 
-        <label for="basic-url">Consulta Repasses por Periodo Aos Municipios</label>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">Data Inicial</span>
+        <form>
+          <label for="basic-url">Consulta Repasses por Periodo Aos Municipios</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon3">Data Inicial</span>
+            </div>
+            <input id="dtInicial" name="dtInicial" type="date" class="form-control" id="basic-url"
+              aria-describedby="basic-addon3">
           </div>
-          <input id="dtInicial" name="dtInicial" type="date" class="form-control" id="basic-url"
-            aria-describedby="basic-addon3">
-        </div>
 
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">Data Final . </span>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon3">Data Final . </span>
+            </div>
+            <input id="dtFinal" name="dtFinal" type="date" class="form-control" id="basic-url"
+              aria-describedby="basic-addon3">
           </div>
-          <input id="dtFinal" name="dtFinal" type="date" class="form-control" id="basic-url"
-            aria-describedby="basic-addon3">
-        </div>
-        <div class="form-group">
+          <!-- <div class="form-group"> -->
           <label for="municipio"> Município</label>
           <select name="municipios" id="municipios" class="custom-select">
             <option selected disables> Todos </option>
           </select>
-        </div>
 
-        <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary" data-toggle="tooltip"
-          data-placement="bottom" title="Tooltip na parte superior">Enviar</button>
-        <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
-          <button id="repasse-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
-          <button id="repasse-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
-          <button id="repasse-json" disabled type="button" class="btn btn-secondary">Json</button>
-        </div>
+          <!-- <div class="form-group"> -->
 
-
-
-
-      </form>
-      <div class="form-group">
-        <!-- <div class="charts-box-imposto"> -->
-        <div class="remesa">
-          <canvas id="chartrepasse"></canvas>
+          <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary" data-toggle="tooltip"
+            data-placement="bottom" title="Tooltip na parte superior">Enviar</button>
+          <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
+            <button id="repasse-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
+            <button id="repasse-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
+            <button id="repasse-json" disabled type="button" class="btn btn-secondary">Json</button>
+          </div>
           <!-- </div> -->
+        </form>
+
+        <div class="charts-box-repasse">
+          <div class="remesa">
+            <canvas id="chartrepasse"></canvas>
+          </div>
         </div>
-        <!-- </div> -->
       </div>
+    </div>
+    </div>
     </div>
 
 
