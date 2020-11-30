@@ -50,18 +50,13 @@ listMuncipio.sort(function (a, b) {
 let meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 let btnRepasse = document.getElementById("repasse");
 let btnArrecada = document.getElementById("arrecada");
-
 let btnArrecadaPdf = document.getElementById("arrecada-pdf")
 let btnArrecadaCvs = document.getElementById("arrecada-cvs")
 let btnArrecadaJson = document.getElementById("arrecada-json")
-
 let btnRepassePdf = document.getElementById("repasse-pdf")
 let btnRepasseCvs = document.getElementById("repasse-cvs")
 let btnRepasseJson = document.getElementById("repasse-json")
-
 let selectMunicipio = document.getElementById('municipios');
-
-
 
 btnArrecadaPdf.disabled = true;
 btnArrecadaCvs.disabled = true;
@@ -71,8 +66,6 @@ btnRepassePdf.disabled = true;
 btnRepasseCvs.disabled = true;
 btnRepasseJson.disabled = true;
 
-
-
 btnArrecadaPdf.addEventListener('click', gerarPdfArrecada, false);
 btnArrecadaCvs.addEventListener('click', gerarCvsArrecada, false);
 btnArrecadaJson.addEventListener('click', gerarJsonArrecada, false);
@@ -80,7 +73,6 @@ btnArrecadaJson.addEventListener('click', gerarJsonArrecada, false);
 btnRepassePdf.addEventListener('click', gerarPdfRepasse, false);
 btnRepasseCvs.addEventListener('click', gerarCvsRepasse, false);
 btnRepasseJson.addEventListener('click', gerarJsonRepasse, false);
-
 
 btnRepasse.addEventListener("click", prepareRepasse, false);
 btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);

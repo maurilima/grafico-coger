@@ -114,14 +114,13 @@
             onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Ano com 4 Digitos ">
         </div>
         <div class="form-group">
-          <div class="form-group">
-            <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
-            <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
-              <button id="arrecada-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
-              <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
-              <button id="arrecada-json" disabled type="button" class="btn btn-secondary">Json</button>
-            </div>
+          <button id="arrecada" type="button" class="btn btn-outline-primary">Enviar</button>
+          <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
+            <button id="arrecada-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
+            <button id="arrecada-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
+            <button id="arrecada-json" disabled type="button" class="btn btn-secondary">Json</button>
           </div>
+        </div>
 
       </form>
       <!-- </div> -->
@@ -134,12 +133,13 @@
         </div>
       </div>
       <!-- </div> -->
-    </div>
+
     </div>
     <!-- </div> -->
     <!-- <div class="container-repasse"> -->
     <div class="entradas-repasse">
       <form>
+
         <label for="basic-url">Consulta Repasses por Periodo Aos Municipios</label>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -163,24 +163,28 @@
           </select>
         </div>
 
-        <div class="form-group">
-          <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary" data-toggle="tooltip"
-            data-placement="bottom" title="Tooltip na parte superior">Enviar</button>
-          <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
-            <button id="repasse-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
-            <button id="repasse-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
-            <button id="repasse-json" disabled type="button" class="btn btn-secondary">Json</button>
-          </div>
-      </form>
+        <button id="repasse" name="repasse" type="button" class="btn btn-outline-primary" data-toggle="tooltip"
+          data-placement="bottom" title="Tooltip na parte superior">Enviar</button>
+        <div id="grp-btn" class="btn-group" role="group" aria-label="Exporta Dados">
+          <button id="repasse-pdf" disabled type="button" class="btn btn-secondary">PDF</button>
+          <button id="repasse-cvs" disabled type="button" class="btn btn-secondary">CSV(Excel)</button>
+          <button id="repasse-json" disabled type="button" class="btn btn-secondary">Json</button>
+        </div>
+
+
+
 
       </form>
-      <!-- <div class="charts-box-imposto"> -->
-      <div class="remesa">
-        <canvas id="chartrepasse"></canvas>
+      <div class="form-group">
+        <!-- <div class="charts-box-imposto"> -->
+        <div class="remesa">
+          <canvas id="chartrepasse"></canvas>
+          <!-- </div> -->
+        </div>
         <!-- </div> -->
       </div>
-      <!-- </div> -->
     </div>
+
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

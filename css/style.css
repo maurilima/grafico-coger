@@ -178,7 +178,7 @@ div.type {
     grid-template-columns: 1.6fr 5fr;
     gap: 15px;
     margin: 10px;
-    height: 500px;
+    height: 780px;
     border: 1px solid #ffee00;
 
 }
@@ -197,7 +197,7 @@ div.type {
     margin-top: 15px;
     margin: 10px;
     padding: 10px;
-    height: 700px;
+    height: 780px;
     border: 1px solid #d40b98;
 
 }
@@ -245,6 +245,6 @@ form.input {
     .entradas-repasse {
         display: flex;
         flex-direction: column;
-        height: 400px;
+        height: 580px;
     }
 }
