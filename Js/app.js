@@ -19,8 +19,8 @@ let listMuncipio = [
     { municipiocod: "321", municipionome: "UIRAMUTÃ" }
 ];
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
-var LabelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
-let LabelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
+var labelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
+let labelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
 
 var options = {
     method: 'GET',
@@ -99,9 +99,29 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 
-function renderGhartBarRepasseMuncipio() {
+
+function renderGhartBarRepasseMuncipio(data, canvas, texto) {
+    let tipo = 'Municipio :'+selectedMunicipio + ' ' +texto
+
+    let valorIcms = mapRepasse(data, 'portalrepasseicms')
+    let valorIpva = mapRepasse(data, 'portalrepasseipva')
+    let valorFundeIcms = mapRepasse(data, 'portalrepassefundebicms')
+    let valorFundeIpva = mapRepasse(data, 'portalrepassefundebipva')
+
+    var totalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+    var totalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+    var tvalorFundeIcms = valorFundeIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+    var tvalorFundeIpva = valorFundeIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
+
+
+    var totalPeriodo = (totalIcms + totalIpva + tvalorFundeIcms + tvalorFundeIpva)
+
+    
+
+
+
     document.getElementById(canvas).innerHTML = '&nbsp;';
-    document.getElementById(canvas).innerHTML = '<canvas id=' + chartrepasse + '></canvas>'
+    document.getElementById(canvas).innerHTML = '<canvas id=' + canvas + '></canvas>'
 
     var ctx = document.getElementById(canvas).getContext('2d');
 
@@ -109,7 +129,7 @@ function renderGhartBarRepasseMuncipio() {
 
         type: 'bar',
         data: {
-            labels: labelIcms,
+            labels: '',
             datasets: [{
                 label: 'ICMS',
                 backgroundColor: 'rgba(0, 123, 255,1)',
@@ -118,11 +138,7 @@ function renderGhartBarRepasseMuncipio() {
                 pointBackgroundColor: 'rgba(0, 123, 255,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointBorderWidth: 1,
-                minBarLength: 3,
-                barPercentage: 1.1,
-                categoryPercentage: .98,
-                data: valorIcms
+                data: [totalIcms]
             },
             {
                 label: 'IPVA',
@@ -132,11 +148,7 @@ function renderGhartBarRepasseMuncipio() {
                 pointBackgroundColor: 'rgba(108, 117, 125,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(25,25,112,1)',
-                pointBorderWidth: 1,
-                minBarLength: 3,
-                barPercentage: 1.1,
-                categoryPercentage: .98,
-                data: valorIpva
+                data: [totalIpva]
 
             },
             {
@@ -147,11 +159,7 @@ function renderGhartBarRepasseMuncipio() {
                 pointBackgroundColor: 'rgba(40, 167, 69,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(138,43,226,1)',
-                pointBorderWidth: 1,
-                minBarLength: 3,
-                barPercentage: 1.1,
-                categoryPercentage: .98,
-                data: valorFundeIcms
+                data: [tvalorFundeIcms]
 
             },
             {
@@ -162,11 +170,7 @@ function renderGhartBarRepasseMuncipio() {
                 pointBackgroundColor: 'rgba(23, 162, 184,0.7)',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(138,43,226,1)',
-                pointBorderWidth: 1,
-                minBarLength: 3,
-                barPercentage: 1.1,
-                categoryPercentage: .98,
-                data: valorFundeIpva
+                data: [tvalorFundeIpva]
             }
             ]
         },
@@ -181,7 +185,7 @@ function renderGhartBarRepasseMuncipio() {
             title: {
                 display: true,
                 fontSize: 16,
-                text: tipo + TotalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                text: tipo + totalPeriodo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             },
 
             layout: {
@@ -226,9 +230,9 @@ function getApiArrecadaco(mes, ano) {
         .then(response => {
             response.json()
                 .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
-            prepareArrecada(0, ano, 'arrecadaChart')
-            prepareRepasseDonut(mes, ano)
-            prepareRepasseBarra(ano)
+            // prepareArrecada(0, ano, 'arrecadaChart')
+            // prepareRepasseDonut(mes, ano)
+            // prepareRepasseBarra(ano)
         })
         .catch(e => console.log('Erro :' + e.message));
 }
@@ -269,6 +273,7 @@ function prepareDadosRepasse(data, mes, ano) {
         let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
 
         renderRepasseDonut(dados, totalRepase, mes, ano)
+
     }
 
 }
@@ -306,6 +311,10 @@ function prepareImpostoDonut(data, mes, ano, canvas) {
 
         mesano.forEach(ma => { ma.innerHTML = meses[mes] + ' / ' + ano });
         renderImpostGraficoDonut(dados, mes, canvas)
+        prepareArrecada(0, ano, 'arrecadaChart')
+        prepareRepasseDonut(mes, ano)
+        prepareRepasseBarra(ano)
+
     }
 }
 
@@ -456,32 +465,29 @@ function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
         .catch(e => console.log('Erro :' + e.message));
 };
 
-function filterMunicipio(cod, municpios) {
-    let filteredMunicpios = [];
-    municpios.forEach(category => {
-        if (!filteredMunicpios.find(cat => cod == category.municipiocod)) {
-            const { municipiocod, municipionome } = category;
-            filteredMunicpios.push({ municipiocod, municipionome });
+function filterMunicipio(munid, municpios) {
+          return municpios.filter(function(el) {
+              return el.municipiocod.indexOf(munid) > -1;
+          })
         }
-    });
-    console.log(municipios)
-}
 
 
 function prepareGraficoRemessa(data, canvas, tipo) {
     let dados = null;
 
-    console.log(selectedMunicipio)
     if (selectedMunicipio != '0') {
         dados = filterMunicipio(selectedMunicipio, data)
-    } else { dados = data }
-    console.log(dados)
+      renderGhartBarRepasseMuncipio(dados,canvas, tipo)
+
+    } else { 
+        dados = data 
     var vArrecadaIcms = mapIcms(dados)
     var vArrecadaIpva = mapIpva(dados)
     var vFundebIcms = mapFundebIcms(dados)
     var vFundebIpva = mapFundebIpva(dados)
 
     renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, canvas, tipo);
+    }
 
 
 }
@@ -652,7 +658,7 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
         var chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: LabelRepasses,
+                labels: labelRepasses,
                 datasets: [{
                     label: 'Donut',
                     backgroundColor: [
@@ -730,7 +736,7 @@ function renderImpostGraficoDonut(dados, mes, canvas) {
     var chart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: LabelImpostos,
+            labels: labelImpostos,
             datasets: [{
                 label: 'Donut',
                 backgroundColor: [
@@ -805,7 +811,6 @@ function renderArrecadacaoGrafico() {
 
     // var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
 
-    console.log(mes, ano, canvas)
 
     if (mes >= 0 && mes <= 12) {
         mesArrecada = mes
@@ -846,6 +851,9 @@ function renderArrecadaGraficoBar(data, canvas, tipo) {
         var ArrecadaIrrf = mapArrecadaIrrf(data)
         var ArrecadaTaxas = mapArrecadaTaxas(data)
         GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo)
+        // prepareRepasseDonut(mes, ano)
+        // prepareRepasseBarra(ano)
+
     } else {
         throw alert('Nenhuma Informação Selecionada para os dados Informados')
     }
