@@ -450,7 +450,7 @@ function prepareRepasseBarra(ano) {
     let dataInicial = ano + '-01-01';
     let dataFinal = ano + '-12-31';
     let tipo = 'Repasses do Ano ' + ano + ' : '
-    ObterDadosRepase(dataInicial, dataFinal, 'bar-repasse', tipo)
+    ObterDadosRepase(dataInicial, dataFinal, 'chartrepasse', tipo)
 
 }
 function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
@@ -528,9 +528,10 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
 
     var TotalPeriodo = ttotalIcms + ttotalIpva + tvalorFundeIcms + tvalorFundeIpva
 
-
+    console.log(canvas) 
     document.getElementById(canvas).innerHTML = '&nbsp;';
-    document.getElementById(canvas).innerHTML = '<canvas id=' + chartrepasse + '></canvas>'
+    // console.log(getElementById(canvas).value)
+    document.getElementById(canvas).innerHTML = '<canvas id=' + canvas + '></canvas>'
 
     var ctx = document.getElementById(canvas).getContext('2d');
 
