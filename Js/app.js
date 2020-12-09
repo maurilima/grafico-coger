@@ -74,8 +74,8 @@ btnRepassePdf.addEventListener('click', gerarPdfRepasse, false);
 btnRepasseCvs.addEventListener('click', gerarCvsRepasse, false);
 btnRepasseJson.addEventListener('click', gerarJsonRepasse, false);
 
-btnRepasse.addEventListener("click", prepareRepasse, false);
 btnArrecada.addEventListener('click', renderArrecadacaoGrafico, false);
+btnRepasse.addEventListener("click", prepareRepasse, false);
 
 selectMunicipio.addEventListener('change', municipioSelecionado, false);
 
@@ -118,10 +118,13 @@ function renderGhartBarRepasseMuncipio(data, canvas, texto) {
 
     
 
+    // document.getElementById("divcanvas").innerHTML = '&nbsp;';
+    // document.getElementById('divcanvas').innerHTML = '<canvas id=' + canvas + '></canvas>';
 
 
-    document.getElementById(canvas).innerHTML = '&nbsp;';
-    document.getElementById(canvas).innerHTML = '<canvas id=' + canvas + '></canvas>'
+    document.getElementById("divremesa").innerHTML = '&nbsp;';
+
+    document.getElementById("divremesa").innerHTML = '<canvas id=' + canvas + '></canvas>'
 
     var ctx = document.getElementById(canvas).getContext('2d');
 
@@ -412,7 +415,7 @@ function gerarPdfArrecada() {
 }
 
 function gerarPdfRepasse() {
-    gerarPdf('chartrepasse')
+    gerarPdf('charBartrepasse')
 
 }
 
@@ -438,7 +441,7 @@ function prepareRepasse() {
         alert('Data Inical deve Ser Menor que Data Final!')
     }
     else {
-        ObterDadosRepase(dataInicial, dataFinal, 'chartrepasse', tipo);
+        ObterDadosRepase(dataInicial, dataFinal, 'charBartrepasse', tipo);
         btnRepassePdf.disabled = false;
         btnRepasseCvs.disabled = false;
         btnRepasseJson.disabled = false;
@@ -450,7 +453,7 @@ function prepareRepasseBarra(ano) {
     let dataInicial = ano + '-01-01';
     let dataFinal = ano + '-12-31';
     let tipo = 'Repasses do Ano ' + ano + ' : '
-    ObterDadosRepase(dataInicial, dataFinal, 'chartrepasse', tipo)
+    ObterDadosRepase(dataInicial, dataFinal, 'bar-repasse', tipo)
 
 }
 function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
@@ -475,12 +478,14 @@ function filterMunicipio(munid, municpios) {
 function prepareGraficoRemessa(data, canvas, tipo) {
     let dados = null;
 
+
     if (selectedMunicipio != '0') {
         dados = filterMunicipio(selectedMunicipio, data)
-      renderGhartBarRepasseMuncipio(dados,canvas, tipo)
+      renderGhartBarRepasseMuncipio(dados,"charBartrepasse", tipo)
 
     } else { 
         dados = data 
+        console.log(data)
     var vArrecadaIcms = mapIcms(dados)
     var vArrecadaIpva = mapIpva(dados)
     var vFundebIcms = mapFundebIcms(dados)
@@ -514,11 +519,10 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
     for (var i in vFundebIpva) {
         valorFundeIpva.push(vFundebIpva[i].fundebipva)
     }
-    for (var i in vFundebIpva) {
-        valorFundeIpva.push(vFundebIpva[i].fundebipva)
-    }
-
-
+    // for (var i in vFundebIpva) {
+    //     valorFundeIpva.push(vFundebIpva[i].fundebipva)
+    // }
+ 
     var ttotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
 
     var ttotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
@@ -527,11 +531,10 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
     var tvalorFundeIpva = valorFundeIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
 
     var TotalPeriodo = ttotalIcms + ttotalIpva + tvalorFundeIcms + tvalorFundeIpva
-
-    console.log(canvas) 
-    document.getElementById(canvas).innerHTML = '&nbsp;';
+    console.log(canvas)
+    document.getElementById("divremesa").innerHTML = '&nbsp;';
     // console.log(getElementById(canvas).value)
-    document.getElementById(canvas).innerHTML = '<canvas id=' + canvas + '></canvas>'
+    document.getElementById("divremesa").innerHTML = '<canvas id=' + canvas + '></canvas>'
 
     var ctx = document.getElementById(canvas).getContext('2d');
 
