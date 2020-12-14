@@ -233,9 +233,6 @@ function getApiArrecadaco(mes, ano) {
         .then(response => {
             response.json()
                 .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
-            // prepareArrecada(0, ano, 'arrecadaChart')
-            // prepareRepasseDonut(mes, ano)
-            // prepareRepasseBarra(ano)
         })
         .catch(e => console.log('Erro :' + e.message));
 }
@@ -900,7 +897,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
     var vtotalTaxas = valorTaxas.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
     var TotalAno = vtotalIcms + vtotalIpva + vtotalOutros + vtotalItcd + vtotalIrrf + vtotalTaxas
 
-
+    console.log(canvas) 
     if (canvas === 'impostoChartConsulta') {
         document.getElementById("divcanvas").innerHTML = '&nbsp;';
         document.getElementById('divcanvas').innerHTML = '<canvas id=' + canvas + '></canvas>';
