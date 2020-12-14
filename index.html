@@ -15,7 +15,6 @@
 <body>
 
   <body>
-    <h1>Testo</h1>
     <div class="container-charts">
       <div class="dashboard-flex-parent">
         <div class="dashboard-box flex-icms">
@@ -72,29 +71,24 @@
     <!-- <div class="dashborad-content-arrecada"> -->
     <div class="dashboard-flex-parent-arrecada">
       <div class="dashboard-box-arrecada">
-        <canvas id="impostoChart"></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
+        <canvas id="impostoChart"></canvas>
       </div>
+      <div class="dashboard-box-repasse">
+        <canvas id="donnut-repasse"></canvas>
+      </div>
+
+    </div>
+    <div class="dashboard-flex-parent-arrecadacao">
+      <!-- style="position: relative; height:30vh; width:50vw" -->
       <div class="dashboard-box-arrecada">
         <canvas id="arrecadaChart"></canvas>
       </div>
     </div>
-    <!-- </div> -->
-    <!-- <div class="dashborad-content-repasse-total"> -->
-    <!--Repasse Anual e Mensal  -->
     <div class="dashboard-flex-parent-repasse">
-      <div class="dashboard-box-repasse">
-
-        <canvas id="donnut-repasse"></canvas> <!-- style="position: relative; height:40vh; width:40vw" -->
-        <!-- style="position: relative; height:75vh; width:75vw" -->
-      </div>
       <div class="dashboard-box-repasse">
         <canvas id="bar-repasse"></canvas>
       </div>
     </div>
-    <!-- </div> -->
-
-    <!-- Arrecadacao -->
-    <!-- <div class="container-imposto"> -->
     <div class="entradas-imposto">
       <!-- <div class="entrada-impostos-div"> -->
       <form>
@@ -176,7 +170,7 @@
         </form>
 
         <div class="charts-box-repasse">
-          <div class="divremesa" id = "divremesa">
+          <div class="divremesa" id="divremesa">
             <canvas id="charBartrepasse"></canvas>
           </div>
         </div>

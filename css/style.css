@@ -138,7 +138,7 @@ div.type {
     gap: 15px;
     padding: 10px;
     margin: 10px;
-    height: 480px;
+    height: 400px;
     /* border: 1px solid red; */
 }
 
@@ -150,15 +150,25 @@ div.type {
 
 /* -------------------------------- */
 
-.dashboard-flex-parent-repasse {
-    display: grid;
-    padding: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(49%, 1fr));
-    gap: 15px;
-    height: 480px;
-    padding: 10px;
-    /* border: 1px solid #007bff; */
+.dashboard-flex-parent-arrecadacao {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
+    height: auto;
 }
+.dashboard-flex-parent-repasse {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    margin-left: 30px;
+    margin-right: 30px;
+    height: 950px;
+}
+
 
 .dashboard-box-repasse {
     border-radius: 8px;

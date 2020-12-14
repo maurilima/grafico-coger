@@ -314,8 +314,8 @@ function prepareImpostoDonut(data, mes, ano, canvas) {
 
         mesano.forEach(ma => { ma.innerHTML = meses[mes] + ' / ' + ano });
         renderImpostGraficoDonut(dados, mes, canvas)
-        prepareArrecada(0, ano, 'arrecadaChart')
         prepareRepasseDonut(mes, ano)
+        prepareArrecada(0, ano, 'arrecadaChart')
         prepareRepasseBarra(ano)
 
     }
@@ -906,6 +906,8 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         document.getElementById('divcanvas').innerHTML = '<canvas id=' + canvas + '></canvas>';
     }
     var ctx = document.getElementById(canvas).getContext('2d');
+    // ctx.heigh = 500;
+    // ctx.width = 900;
     var chart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -996,6 +998,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         },
 
         options: {
+            // maintainAspectRatio: false,
             legend: {
                 position: 'bottom',
                 label: {
