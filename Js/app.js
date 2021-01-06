@@ -1312,7 +1312,7 @@ function onlynumber(evt) {
         if (theEvent.preventDefault) theEvent.preventDefault();
     }
 }
-
+/*
 //  Retronando Valor de uma fecth
 
 // function fetchDictionary() {
@@ -1361,3 +1361,4 @@ function onlynumber(evt) {
 //             console.log(retorno)
 //             return retorno
 //         }
+*/

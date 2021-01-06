@@ -7374,7 +7374,59 @@ var options = {
   mode: 'cors',
   cache: 'default'
 }
+console.log(municpios)
   
+// municpios.sort(function(a,b) {
+//   return a.portalrepasseicms < b.portalrepasseicms ? -1 : a.portalrepasseicms > b.portalrepasseicms ?  1: 0;
+// });
+var data = sortJSON(municpios, 'desc','portalrepasseicms')
+
+console.log(data)
+
+
+
+listMuncipios.sort(function(a,b) {
+  return a.municipionome < b.municipionome ? -1 : a.municipionome > b.municipionome ? 1 : 0;
+});
+
+function sortJSON(data, key, orden) {
+  return data.sort(function (a, b) {
+      var x = a[key],
+      y = b[key];
+
+      if (orden === 'asc') {
+          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      }
+
+      if (orden === 'desc') {
+          return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+      }
+  });
+}
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  // Carregar lista de Municipios
+   linha = document.getElementById('linha')
+ 
+   texto = document.createTextNode(municpios);
+
+
+   var divNova = document.createElement("div");
+  var conteudoNovo = document.createTextNode(JSON.stringify(municpios));
+  divNova.appendChild(conteudoNovo); //adiciona o nó de texto à nova div criada
+
+  // adiciona o novo elemento criado e seu conteúdo ao DOM
+  var divAtual = document.getElementById("div1");
+  document.body.insertBefore(divNova, divAtual);
+
+   
+
+})
+
 // var objeto = {"atributo1": "valor 1", "atributo2": 23};
 // var now = new Date;
 // let mes = now.getMonth();
@@ -7397,11 +7449,9 @@ var options = {
 // }
 
 
-listMuncipios.sort(function(a,b) {
-    return a.municipionome < b.municipionome ? -1 : a.municipionome > b.municipionome ? 1 : 0;
-});
 
-console.log(listMuncipios);
+
+// console.log(listMuncipios);
 
 
 const filteredMunicpios =[]
@@ -7413,10 +7463,15 @@ municpios.forEach(category => {
   }
 });
 
-console.log(filteredMunicpios)
+// console.log(filteredMunicpios)
 
 
-
+function parseFloat2Decimals(value) {
+  if (value != null) {
+      return parseFloat(parseFloat(value).toFixed(2));
+  }
+  else { return 0; }
+}
 // const filteredCategories = [];
 // const categories = [
 //     { id: '1', name: 'Autos & Motos', img: 'img/autos.jpg', department: '01', province: '01' },
