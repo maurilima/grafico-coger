@@ -7379,9 +7379,18 @@ console.log(municpios)
 // municpios.sort(function(a,b) {
 //   return a.portalrepasseicms < b.portalrepasseicms ? -1 : a.portalrepasseicms > b.portalrepasseicms ?  1: 0;
 // });
-var data = sortJSON(municpios, 'desc','portalrepasseicms')
 
-console.log(data)
+
+
+municpios.sort(function(a, b) {
+  return b.portalrepasseicms - a.portalrepasseicms;
+
+
+})
+
+// var data = sortJSON(municpios, 'desc','portalrepasseicms')
+console.log('passou')
+console.log(municpios)
 
 
 
