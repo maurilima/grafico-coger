@@ -1,5 +1,5 @@
 
- const municpios =  [
+ const repases =  [
   {
     "portalrepassedata": "2020-05-11 00:00:00",
     "portalrepassemunicipiocod": "201",
