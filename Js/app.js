@@ -19,10 +19,10 @@ let listMuncipio = [
     { municipiocod: "321", municipionome: "UIRAMUTÃ" }
 ];
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
-var labelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
-let labelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
+const labelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
+const labelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
 
-var options = {
+const options = {
     method: 'GET',
     mode: 'cors',
     cache: 'default'
@@ -34,7 +34,7 @@ let dataInicial = null;
 let dataFinal = null;
 let selectedMunicipio = '0'
 
-var arrays = ['portalarrecadacaoicms',
+const arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
     'portalportalarrecadacaooutros',
     'portalarrecadacaoitcd',
