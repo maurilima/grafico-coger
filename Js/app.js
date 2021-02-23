@@ -19,10 +19,10 @@ let listMuncipio = [
     { municipiocod: "321", municipionome: "UIRAMUTÃ" }
 ];
 const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
-const labelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
-const labelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
+let labelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
+let labelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
 
-const options = {
+let options = {
     method: 'GET',
     mode: 'cors',
     cache: 'default'
@@ -34,7 +34,7 @@ let dataInicial = null;
 let dataFinal = null;
 let selectedMunicipio = '0'
 
-const arrays = ['portalarrecadacaoicms',
+let arrays = ['portalarrecadacaoicms',
     'portalarrecadacaoipva',
     'portalportalarrecadacaooutros',
     'portalarrecadacaoitcd',
@@ -46,7 +46,6 @@ listMuncipio.sort(function (a, b) {
     return a.municipionome < b.municipionome ? -1 : a.municipionome > b.municipionome ? 1 : 0;
 });
 
-// 
 let meses = ['NUL', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 let btnRepasse = document.getElementById("repasse");
 let btnArrecada = document.getElementById("arrecada");
@@ -83,7 +82,6 @@ function municipioSelecionado() {
     selectedMunicipio = selectMunicipio.value;
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
     var now = new Date;
     let mes = now.getMonth();
@@ -95,151 +93,149 @@ document.addEventListener('DOMContentLoaded', function () {
         elementos += '<option value="' + listMuncipio[i].municipiocod + '">' + listMuncipio[i].municipionome + '</option>'
     }
     selectMunicipio.innerHTML = elementos;
-     getApiArrecadaco(mes, ano);  
+    getApiArrecadaco(mes, ano);
 })
 
 function getApiArrecadaco(mes, ano) {
-  var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
-  // console.log(url);
-  fetch(url, options)
-      .then(response => {
-          response.json()
-              .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
-      })
-      .catch(e => console.log('Erro :' + e.message));
+    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+    // console.log(url);
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => prepareImpostoDonut(data, mes, ano, 'impostoChart'))
+        })
+        .catch(e => console.log('Erro :' + e.message));
 }
 
 function prepareImpostoDonut(data, mes, ano, canvas) {
-  let lMes = mes ;
-  let lAno = ano ;
+    let lMes = mes;
+    let lAno = ano;
 
-  if (data.length == 0) {
-      lMes--;
-      if (lMes == 0 ) {
-        lAno--;
-        lMes = 12
-        // console.log(lMes, lAno)
-      }
-      getApiArrecadaco(lMes, lAno)
-    }    
+    if (data.length == 0) {
+        lMes--;
+        if (lMes == 0) {
+            lAno--;
+            lMes = 12
+            // console.log(lMes, lAno)
+        }
+        getApiArrecadaco(lMes, lAno)
+    }
 
-  if (data.length > 0) {
-      arrays = arrays.map(function (campo) {
-          var novoConteudo = data.map(function (objeto) {
-              return objeto[campo];
-          });
-          return novoConteudo;
-      });
-      document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
-          .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-      document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
-          .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-      document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"])
-          .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-      document.getElementById('irrfvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"])
-          .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-      document.getElementById('itcdvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"])
-          .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-      document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
-          .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-      dados = arrays.map(a => parseFloat2Decimals(a, 2));
+    if (data.length > 0) {
+        arrays = arrays.map(function (campo) {
+            var novoConteudo = data.map(function (objeto) {
+                return objeto[campo];
+            });
+            return novoConteudo;
+        });
+        document.getElementById('icmsvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoicms"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('ipvavalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoipva"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('outrosvalor').innerHTML = parseFloat2Decimals(data[0]["portalportalarrecadacaooutros"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('irrfvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoirrf"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('itcdvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaoitcd"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        document.getElementById('taxasvalor').innerHTML = parseFloat2Decimals(data[0]["portalarrecadacaotaxas"])
+            .toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        dados = arrays.map(a => parseFloat2Decimals(a, 2));
 
-      let mesano = document.querySelectorAll('.mesvalue');
+        let mesano = document.querySelectorAll('.mesvalue');
 
-      mesano.forEach(ma => { ma.innerHTML = meses[lMes] + ' / ' + lAno });
-      renderImpostGraficoDonut(dados, mes, canvas, lAno)
-      prepareRepasseDonut(mes, ano)
-      prepareArrecada(0, ano, 'arrecadaChart')
-      prepareRepasseBarra(ano)
+        mesano.forEach(ma => { ma.innerHTML = meses[lMes] + ' / ' + lAno });
+        renderImpostGraficoDonut(dados, mes, canvas, lAno)
+        prepareRepasseDonut(mes, ano)
+        prepareArrecada(0, ano, 'arrecadaChart')
+        prepareRepasseBarra(ano)
 
-  }
+    }
 }
 
 function prepareRepasseDonut(mes, ano) {
-  let lMes = mes; 
-  var url = BASE_URL + 'getportalrepasse/' + ano + '-' + lMes + '-01/' + ano + '-' + lMes + '-' + lastDay(ano, lMes);
+    let lMes = mes;
+    var url = BASE_URL + 'getportalrepasse/' + ano + '-' + lMes + '-01/' + ano + '-' + lMes + '-' + lastDay(ano, lMes);
 
-  // console.log(url);
+    // console.log(url);
 
-  fetch(url, options)
-      .then(response => {
-          response.json()
-              .then(data => prepareDadosRepasse(data, lMes, ano))
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => prepareDadosRepasse(data, lMes, ano))
 
-      })
-      .catch(e => console.log('Erro :' + e.message));
+        })
+        .catch(e => console.log('Erro :' + e.message));
 
 }
-//
 
 function prepareDadosRepasse(data, mes, ano) {
-  let lMes = mes;
-  let lAno = ano;
-  if (data.length == 0) {
-    lMes--;
-    if (lMes == 0 ) {
-      lAno--;
-      lMes = 12
-    }  
-    // console.log(lMes, lAno)
-      prepareRepasseDonut(lMes, lAno);
-  }
-  else {
-      let repasse = data.map(item => item)
+    let lMes = mes;
+    let lAno = ano;
+    if (data.length == 0) {
+        lMes--;
+        if (lMes == 0) {
+            lAno--;
+            lMes = 12
+        }
+        // console.log(lMes, lAno)
+        prepareRepasseDonut(lMes, lAno);
+    }
+    else {
+        let repasse = data.map(item => item)
 
-      let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
-      let repasseIpva = mapRepasse(repasse, 'portalrepasseipva')
-      let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms')
-      let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva')
+        let repasseIcms = mapRepasse(repasse, 'portalrepasseicms')
+        let repasseIpva = mapRepasse(repasse, 'portalrepasseipva')
+        let repasseFundebIcms = mapRepasse(repasse, 'portalrepassefundebicms')
+        let repasseFundebIpva = mapRepasse(repasse, 'portalrepassefundebipva')
 
-      let totalRepasseIcms = parseFloat2Decimals(repasseIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-      let totalRepasseIpva = parseFloat2Decimals(repasseIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0) + .05)
-      let totalRepasseFundebIcms = parseFloat2Decimals(repasseFundebIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-      let totalRepasseFundebIpva = parseFloat2Decimals(repasseFundebIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
-      let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva)
-      let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
+        let totalRepasseIcms = parseFloat2Decimals(repasseIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+        let totalRepasseIpva = parseFloat2Decimals(repasseIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0) + .05)
+        let totalRepasseFundebIcms = parseFloat2Decimals(repasseFundebIcms.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+        let totalRepasseFundebIpva = parseFloat2Decimals(repasseFundebIpva.reduce((acumulador, valorAtual) => { return acumulador + valorAtual }, 0))
+        let dados = [].concat(totalRepasseIcms, totalRepasseIpva, totalRepasseFundebIcms, totalRepasseFundebIpva)
+        let totalRepase = totalRepasseIcms + totalRepasseIpva + totalRepasseFundebIcms + totalRepasseFundebIpva
 
-      renderRepasseDonut(dados, totalRepase, lMes, lAno)
+        renderRepasseDonut(dados, totalRepase, lMes, lAno)
 
-  }
+    }
 
 }
 function renderArrecadaGraficoBar(data, canvas, tipo) {
-  if (data.length > 0) {
-      var ArrecadaIcms = mapArrecadaIcms(data)
-      var ArrecadaIpva = mapArrecadaIpva(data)
-      var ArrecadaOutros = mapArrecadaOutros(data)
-      var ArrecadaItcd = mapArrecadaItcd(data)
-      var ArrecadaIrrf = mapArrecadaIrrf(data)
-      var ArrecadaTaxas = mapArrecadaTaxas(data)
-      GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo)
-      // prepareRepasseDonut(mes, ano)
-      // prepareRepasseBarra(ano)
+    if (data.length > 0) {
+        var ArrecadaIcms = mapArrecadaIcms(data)
+        var ArrecadaIpva = mapArrecadaIpva(data)
+        var ArrecadaOutros = mapArrecadaOutros(data)
+        var ArrecadaItcd = mapArrecadaItcd(data)
+        var ArrecadaIrrf = mapArrecadaIrrf(data)
+        var ArrecadaTaxas = mapArrecadaTaxas(data)
+        GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo)
+        // prepareRepasseDonut(mes, ano)
+        // prepareRepasseBarra(ano)
 
-  } else {
-      throw alert('Nenhuma Informação Selecionada para os dados Informados')
-  }
+    } else {
+        throw alert('Nenhuma Informação Selecionada para os dados Informados')
+    }
 }
 
-
 function prepareArrecada(mes, ano, canvas) {
-  var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
-  let tipo = ''
-  if (mes > 0) {
-      tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
-  }
-  else
-      tipo = `Arrecadação anual de ${ano} :`
-  fetch(url, options)
-      .then(response => {
-          response.json()
-              .then(data => renderArrecadaGraficoBar(data, canvas, tipo))
-      })
-      .catch(e => console.log('Erro :' + e.message));
+    var url = BASE_URL + 'getportalarrecadacao/' + mes + '/' + ano;
+    let tipo = ''
+    if (mes > 0) {
+        tipo = 'Arrecadação mes ' + meses[mes] + '/' + ano + ' : '
+    }
+    else
+        tipo = `Arrecadação anual de ${ano} :`
+    fetch(url, options)
+        .then(response => {
+            response.json()
+                .then(data => renderArrecadaGraficoBar(data, canvas, tipo))
+        })
+        .catch(e => console.log('Erro :' + e.message));
 }
 
 function renderGhartBarRepasseMuncipio(data, canvas, texto) {
-    let tipo = 'Municipio :'+selectedMunicipio + ' ' +texto
+    let tipo = 'Municipio :' + selectedMunicipio + ' ' + texto
 
     let valorIcms = mapRepasse(data, 'portalrepasseicms')
     let valorIpva = mapRepasse(data, 'portalrepasseipva')
@@ -254,7 +250,7 @@ function renderGhartBarRepasseMuncipio(data, canvas, texto) {
 
     var totalPeriodo = (totalIcms + totalIpva + tvalorFundeIcms + tvalorFundeIpva)
 
-    
+
 
     // document.getElementById("divcanvas").innerHTML = '&nbsp;';
     // document.getElementById('divcanvas').innerHTML = '<canvas id=' + canvas + '></canvas>';
@@ -372,7 +368,6 @@ function gerarJsonRepasse() {
         .catch(e => console.log('Erro :' + e.message));
 }
 
-
 function gerarJsonArrecada() {
     var url = BASE_URL + 'getportalarrecadacao/' + mesArrecada + '/' + anoArrecada;
     let fileName = ''
@@ -426,7 +421,6 @@ function gerarCvsArrecada() {
         })
         .catch(e => console.log('Erro :' + e.message));
 }
-
 
 function renderCvs(data, fileName) {
     let dados = data.map(item => item)
@@ -504,42 +498,40 @@ function ObterDadosRepase(dInicial, dFinal, canvas, tipo) {
                 .then(data => prepareGraficoRemessa(data, canvas, tipo))
         })
         .catch(e => console.log('Erro :' + e.message));
- };
+};
 
 function filterMunicipio(munid, municpios) {
-          return municpios.filter(function(el) {
-              return el.municipiocod.indexOf(munid) > -1;
-          })
-        }
-
+    return municpios.filter(function (el) {
+        return el.municipiocod.indexOf(munid) > -1;
+    })
+}
 
 function prepareGraficoRemessa(data, canvas, tipo) {
     let dados = null;
-    if (data.length == 0 ) {
-      alert('Nenhum dado Selecionado para o Periodo Informado')
+    if (data.length == 0) {
+        alert('Nenhum dado Selecionado para o Periodo Informado')
     }
-    else
-    {
-    data.sort(function(a, b) {
-        return b.portalrepasseicms - a.portalrepasseicms;
-      
-      })
+    else {
+        data.sort(function (a, b) {
+            return b.portalrepasseicms - a.portalrepasseicms;
 
-    if (selectedMunicipio != '0') {
-        dados = filterMunicipio(selectedMunicipio, data)
-      renderGhartBarRepasseMuncipio(dados,"charBartrepasse", tipo)
+        })
 
-    } else { 
-        dados = data 
- 
-    var vArrecadaIcms = mapIcms(dados)
-    var vArrecadaIpva = mapIpva(dados)
-    var vFundebIcms = mapFundebIcms(dados)
-    var vFundebIpva = mapFundebIpva(dados)
+        if (selectedMunicipio != '0') {
+            dados = filterMunicipio(selectedMunicipio, data)
+            renderGhartBarRepasseMuncipio(dados, "charBartrepasse", tipo)
 
-    renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, canvas, tipo);
+        } else {
+            dados = data
+
+            var vArrecadaIcms = mapIcms(dados)
+            var vArrecadaIpva = mapIpva(dados)
+            var vFundebIcms = mapFundebIcms(dados)
+            var vFundebIpva = mapFundebIpva(dados)
+
+            renderGraficoRemessa(vArrecadaIcms, vArrecadaIpva, vFundebIcms, vFundebIpva, canvas, tipo);
+        }
     }
-  }
 
 
 }
@@ -569,7 +561,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
     // for (var i in vFundebIpva) {
     //     valorFundeIpva.push(vFundebIpva[i].fundebipva)
     // }
- 
+
     var ttotalIcms = valorIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
 
     var ttotalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
@@ -696,7 +688,6 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
     });
 }
 
-
 function mapRepasse(data, imposto) {
     return data.map(item => {
         return parseFloat2Decimals(item[imposto])
@@ -779,7 +770,7 @@ function renderRepasseDonut(dados, totalRepasse, mes, ano) {
 
 }
 
-function renderImpostGraficoDonut(dados, mes, canvas,ano) {
+function renderImpostGraficoDonut(dados, mes, canvas, ano) {
     var totalImpostos = dados.reduce(function (acumulador, valorAtual) {
         return acumulador + valorAtual
     })
@@ -817,7 +808,7 @@ function renderImpostGraficoDonut(dados, mes, canvas,ano) {
             title: {
                 display: true,
                 fontSize: 16,
-                text: 'Arrecadação Mês ' + meses[mes] +'/ '+ano+' : ' + totalImpostos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                text: 'Arrecadação Mês ' + meses[mes] + '/ ' + ano + ' : ' + totalImpostos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
             },
             layout: {
                 padding: {
@@ -877,8 +868,6 @@ function renderArrecadacaoGrafico() {
 
 }
 
-
-
 function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItcd, ArrecadaIrrf, ArrecadaTaxas, canvas, tipo) {
     var labelIcms = []
     var valorIcms = []
@@ -929,7 +918,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         data: {
             labels: labelIcms,
             datasets: [{
-                label: 'ICMS : '+vtotalIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
+                label: 'ICMS : ' + vtotalIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(0, 123, 255,1)',
                 borderColor: 'rgba(0, 123, 255,0.7)',
                 pointBorderColor: 'rgba(0, 123, 255,0.7)',
@@ -943,7 +932,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorIcms
             },
             {
-                label: 'IPVA : '+vtotalIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
+                label: 'IPVA : ' + vtotalIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(108, 117, 125,1)',
                 borderColor: 'rgba(108, 117, 125,0.7)',
                 pointBorderColor: 'rgba(108, 117, 125,0.7)',
@@ -957,7 +946,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorIpva
             },
             {
-                label: 'ITCD : '+vtotalItcd.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
+                label: 'ITCD : ' + vtotalItcd.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(40, 167, 69,.9)',
                 borderColor: 'rgba(40, 167, 69,0.7)',
                 pointBorderColor: 'rgba(40, 167, 69,0.5)',
@@ -971,7 +960,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorItcd
             },
             {
-                label: 'IRRF : '+vtotalIrrf.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
+                label: 'IRRF : ' + vtotalIrrf.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(23, 162, 184,1)',
                 borderColor: 'rgba(23, 162, 184,0.7)',
                 pointBorderColor: 'rgba(255,0,0,0.7)',
@@ -985,7 +974,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorIrrf
             },
             {
-                label: 'TAXAS : '+vtotalTaxas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
+                label: 'TAXAS : ' + vtotalTaxas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(255, 193, 7,.8)',
                 borderColor: 'rgba(255, 193, 7,0.7)',
                 pointBorderColor: 'rgba(255, 193, 7,0.7)',
@@ -998,7 +987,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorTaxas
             },
             {
-                label: 'OUTROS : '+vtotalOutros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
+                label: 'OUTROS : ' + vtotalOutros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(111, 66, 193,.8)',
                 borderColor: 'rgba(111, 66, 193,0.7)',
                 pointBorderColor: 'rgba(111, 66, 193,0.7)',
@@ -1152,7 +1141,6 @@ function mapIpva(data) {
     })
     return totalIpva(retorno)
 }
-
 
 function mapFundebIcms(data) {
     var retorno = data.map(function (item) {

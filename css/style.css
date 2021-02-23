@@ -126,6 +126,17 @@ div.type {
     padding-top: 10px;
 }
 
+.div-select {
+    width: 250px;
+    /* Tamanho final do select */
+    overflow: hidden;
+    /* Esconde o conteúdo que passar do tamanho especificado */
+}
+
+.div-select select {
+    margin-bottom: 15px;
+}
+
 /* --------------------------------------- */
 
 /*   Garificos  */
@@ -142,22 +153,23 @@ div.type {
     padding-bottom: 10px;
     /* margin: 10px; */
     height: 420px;
-     /* border: 1px solid red;  */
+    /* border: 1px solid red;  */
 }
-.dashboard-box-donut{
+
+.dashboard-box-donut {
     border-radius: 8px;
     /* color: #f5f5f5; */
-    background-color: #f7f7fa;;
+    background-color: #f7f7fa;
+    ;
     /* border: 1px solid rgb(41, 168, 130);  */
-
-
 }
+
 .dashboard-box-arrecada {
     border-radius: 8px;
     color: #f5f5f5;
-    background-color: #f7f7fa;;
+    background-color: #f7f7fa;
+    ;
     /* border: 1px solid rgb(203, 214, 40);  */
-
 }
 
 /* -------------------------------- */
@@ -171,8 +183,8 @@ div.type {
     margin-right: 30px;
     height: auto;
     /* border: 1px solid rgb(6, 93, 28);  */
-
 }
+
 .dashboard-flex-parent-repasse {
     display: flex;
     flex-direction: column;
@@ -182,22 +194,20 @@ div.type {
     margin-right: 30px;
     height: 950px;
     /* border: 1px solid rgb(46, 4, 114);  */
-
 }
-
 
 .dashboard-box-repasse {
     border-radius: 8px;
     margin: 10px;
-
     color: #f5f5f5;
-    background-color:#f7f7fa;;
-} 
-
+    background-color: #f7f7fa;
+    ;
+}
 
 .charts-box-repasse {
     border-radius: 8px;
-    background-color:#f7f7fa;;
+    background-color: #f7f7fa;
+    ;
 }
 
 .entradas-imposto {
@@ -208,7 +218,6 @@ div.type {
     height: 780px;
     padding: 15px;
     /* border: 1px solid #ffee00; */
-
 }
 
 .charts-box-imposto {
@@ -227,7 +236,6 @@ div.type {
     padding: 10px;
     height: 780px;
     /* border: 1px solid #d40b98; */
-
 }
 
 .remesa {
