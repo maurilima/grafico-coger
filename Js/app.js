@@ -431,6 +431,7 @@ function gerarCvsArrecada() {
         .catch(e => console.log('Erro :' + e.message));
 }
 
+
 function renderCvs(data, fileName) {
     let dados = data.map(item => item)
     var json = data.item
@@ -932,7 +933,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
         data: {
             labels: labelIcms,
             datasets: [{
-                label: 'ICMS',
+                label: 'ICMS : '+vtotalIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
                 backgroundColor: 'rgba(0, 123, 255,1)',
                 borderColor: 'rgba(0, 123, 255,0.7)',
                 pointBorderColor: 'rgba(0, 123, 255,0.7)',
@@ -946,7 +947,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorIcms
             },
             {
-                label: 'IPVA',
+                label: 'IPVA : '+vtotalIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
                 backgroundColor: 'rgba(108, 117, 125,1)',
                 borderColor: 'rgba(108, 117, 125,0.7)',
                 pointBorderColor: 'rgba(108, 117, 125,0.7)',
@@ -960,7 +961,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorIpva
             },
             {
-                label: 'ITCD',
+                label: 'ITCD : '+vtotalItcd.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
                 backgroundColor: 'rgba(40, 167, 69,.9)',
                 borderColor: 'rgba(40, 167, 69,0.7)',
                 pointBorderColor: 'rgba(40, 167, 69,0.5)',
@@ -974,7 +975,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorItcd
             },
             {
-                label: 'IRRF',
+                label: 'IRRF : '+vtotalIrrf.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
                 backgroundColor: 'rgba(23, 162, 184,1)',
                 borderColor: 'rgba(23, 162, 184,0.7)',
                 pointBorderColor: 'rgba(255,0,0,0.7)',
@@ -988,7 +989,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorIrrf
             },
             {
-                label: 'TAXAS',
+                label: 'TAXAS : '+vtotalTaxas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
                 backgroundColor: 'rgba(255, 193, 7,.8)',
                 borderColor: 'rgba(255, 193, 7,0.7)',
                 pointBorderColor: 'rgba(255, 193, 7,0.7)',
@@ -1001,7 +1002,7 @@ function GraficoArrecada(ArrecadaIcms, ArrecadaIpva, ArrecadaOutros, ArrecadaItc
                 data: valorTaxas
             },
             {
-                label: 'OUTROS',
+                label: 'OUTROS : '+vtotalOutros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' } ),
                 backgroundColor: 'rgba(111, 66, 193,.8)',
                 borderColor: 'rgba(111, 66, 193,0.7)',
                 pointBorderColor: 'rgba(111, 66, 193,0.7)',

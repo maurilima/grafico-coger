@@ -1,3 +1,12 @@
 {
-    "liveServer.settings.multiRootWorkspaceName": "grafico-coger"
+    "liveServer.settings.multiRootWorkspaceName": "grafico-coger",
+    "debug.console.fontFamily": "source code pro",
+    "terminal.integrated.fontFamily": "source code pro",
+    "editor.fontFamily": "'Fira Code'",
+    "editor.fontLigatures": true,
+   "terminal.integrated.fontSize": 13,
+    "markdown.preview.fontSize": 13,
+    "editor.fontSize": 16,
+    "editor.linkedEditing": true,
+    "editor.fontWeight": "normal"
 }
