@@ -1,6 +1,16 @@
 // "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2020-01-01/2020-12-31";
 // https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
 
+
+[{"portalarrecadacaoano":"2017",
+"portalarrecadacaomes":"4",
+"portalarrecadacaoicms":"65033043.67",
+"portalarrecadacaoipva":"5124480.45",
+"portalportalarrecadacaooutros":"722095.31",
+"portalarrecadacaoitcd":"113283.75",
+"portalarrecadacaoirrf":"4908875.68",
+"portalarrecadacaotaxas":"121023.9"}]
+
 let listMuncipio = [
     { municipiocod: "201", municipionome: "CAROEBE" },
     { municipiocod: "221", municipionome: "IRACEMA" },
@@ -204,6 +214,9 @@ function prepareDadosRepasse(data, mes, ano) {
   }
 
 }
+
+
+
 function renderArrecadaGraficoBar(data, canvas, tipo) {
   if (data.length > 0) {
       var ArrecadaIcms = mapArrecadaIcms(data)
@@ -1384,3 +1397,21 @@ function onlynumber(evt) {
 //             console.log(retorno)
 //             return retorno
 //         
+
+// function mapArrecada(data, imposto) {
+//   return data.map(item => {
+//       return parseFloat2Decimals(item[imposto])
+//   })
+// }
+// mes: item.portalarrecadacaomes,
+// icms: parseFloat2Decimals(item.portalarrecadacaoicms)
+// function mapArrecadaIcms(data) {
+//   var retorno = data.map(function (item) {
+//       return {
+//           mes: item.portalarrecadacaomes,
+//           icms: parseFloat2Decimals(item.portalarrecadacaoicms)
+//       }
+//   }
+//   )
+//   return retorno
+// }
