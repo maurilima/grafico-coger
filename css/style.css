@@ -234,7 +234,6 @@ form.input {
     border: none;
     outline: 0;
 }
-
 @media (max-width: 800px) {
     .dashboard-flex-parent-arrecada {
         display: flex;
