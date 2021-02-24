@@ -129,7 +129,7 @@ div.type {
     margin-bottom: 15px;
 }
 /* --------------------------------------- */
-/*   Garificos  */
+/*   Gráficos  */
 /* --------------------------------------- */
 .dashboard-flex-parent-arrecada {
     display: grid;
@@ -139,7 +139,7 @@ div.type {
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
-    height: 420px;
+    height: 480px;
 }
 
 .dashboard-box-donut {
@@ -160,19 +160,22 @@ div.type {
     display: flex;
     flex-direction: column;
     padding-top: 10px;
-    padding-bottom: 20px;
-    margin-left: 30px;
-    margin-right: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 10px;
     height: auto;
 }
 
 .dashboard-flex-parent-repasse {
     display: flex;
     flex-direction: column;
-    padding-bottom: 20px;
-    padding-top: 10px;
-    margin-left: 30px;
-    margin-right: 30px;
+    /* padding-bottom: 10px;
+    padding-top: 10px; */
+    /* margin-left: 10px;
+    margin-right: 10px; */
+    /* padding-left: 10px;
+    padding-right: 10px; */
+    padding: 10px;
     height: 950px;
 }
 
@@ -194,7 +197,7 @@ div.type {
     gap: 15px;
     margin: 10px;
     height: 780px;
-    padding: 15px;
+    padding: 10px;
 }
 
 .charts-box-imposto {
@@ -208,7 +211,7 @@ div.type {
     display: grid;
     grid-template-columns: 1.6fr 5fr;
     gap: 15px;
-    margin-top: 15px;
+    /* margin-top: 15px; */
     margin: 10px;
     padding: 10px;
     height: 780px;
