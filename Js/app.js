@@ -246,29 +246,18 @@ function renderGhartBarRepasseMuncipio(data, canvas, texto) {
     var totalIpva = valorIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
     var tvalorFundeIcms = valorFundeIcms.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
     var tvalorFundeIpva = valorFundeIpva.reduce(function (acumulador, valorAtual) { return acumulador + valorAtual })
-
-
     var totalPeriodo = (totalIcms + totalIpva + tvalorFundeIcms + tvalorFundeIpva)
 
-
-
-    // document.getElementById("divcanvas").innerHTML = '&nbsp;';
-    // document.getElementById('divcanvas').innerHTML = '<canvas id=' + canvas + '></canvas>';
-
-
     document.getElementById("divremesa").innerHTML = '&nbsp;';
-
     document.getElementById("divremesa").innerHTML = '<canvas id=' + canvas + '></canvas>'
-
     var ctx = document.getElementById(canvas).getContext('2d');
 
     var chart = new Chart(ctx, {
-
         type: 'bar',
         data: {
             labels: '',
             datasets: [{
-                label: 'ICMS',
+                label: 'ICMS'+ totalIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(0, 123, 255,1)',
                 borderColor: 'rgba(0, 123, 255,0.7)',
                 pointBorderColor: 'rgba(0, 123, 255,0.7)',
@@ -278,7 +267,7 @@ function renderGhartBarRepasseMuncipio(data, canvas, texto) {
                 data: [totalIcms]
             },
             {
-                label: 'IPVA',
+                label: 'IPVA'+ totalIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(108, 117, 125,1)',
                 borderColor: 'rgba(108, 117, 125,0.7)',
                 pointBorderColor: 'rgba(108, 117, 125,0.7)',
@@ -289,7 +278,7 @@ function renderGhartBarRepasseMuncipio(data, canvas, texto) {
 
             },
             {
-                label: 'FUNDEBICMS',
+                label: 'FUNDEBICMS'+ tvalorFundeIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(40, 167, 69,1)',
                 borderColor: 'rgba(40, 167, 69,0.7)',
                 pointBorderColor: 'rgba(40, 167, 69,0.7)',
@@ -300,7 +289,7 @@ function renderGhartBarRepasseMuncipio(data, canvas, texto) {
 
             },
             {
-                label: 'FUNDEBIPVA',
+                label: 'FUNDEBIPVA'+ tvalorFundeIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(23, 162, 184,1)',
                 borderColor: 'rgba(23, 162, 184,0.6)',
                 pointBorderColor: 'rgba(23, 162, 184,0.6)',
@@ -545,7 +534,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
     var valorFundeIpva = []
 
     for (var i in vIcms) {
-        labelIcms.push(vIcms[i].munId.substr(0, 10))
+        labelIcms.push(vIcms[i].munId.substr(0, 12))
         valorIcms.push(vIcms[i].icms)
     }
     for (var i in vIpva) {
@@ -583,7 +572,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
         data: {
             labels: labelIcms,
             datasets: [{
-                label: 'ICMS',
+                label: 'ICMS : '+ ttotalIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
                 backgroundColor: 'rgba(0, 123, 255,1)',
                 borderColor: 'rgba(0, 123, 255,0.7)',
                 pointBorderColor: 'rgba(0, 123, 255,0.7)',
@@ -597,7 +586,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
                 data: valorIcms
             },
             {
-                label: 'IPVA',
+                label: 'IPVA : '+ttotalIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }), 
                 backgroundColor: 'rgba(108, 117, 125,1)',
                 borderColor: 'rgba(108, 117, 125,0.7)',
                 pointBorderColor: 'rgba(108, 117, 125,0.7)',
@@ -612,7 +601,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
 
             },
             {
-                label: 'FUNDEBICMS',
+                label: 'FUNDEBICMS : '+tvalorFundeIcms.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }), 
                 backgroundColor: 'rgba(40, 167, 69,1)',
                 borderColor: 'rgba(40, 167, 69,0.7)',
                 pointBorderColor: 'rgba(40, 167, 69,0.7)',
@@ -627,7 +616,7 @@ function renderGraficoRemessa(vIcms, vIpva, vFundebIcms, vFundebIpva, canvas, ti
 
             },
             {
-                label: 'FUNDEBIPVA',
+                label: 'FUNDEBIPVA : '+tvalorFundeIpva.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }), 
                 backgroundColor: 'rgba(23, 162, 184,1)',
                 borderColor: 'rgba(23, 162, 184,0.6)',
                 pointBorderColor: 'rgba(23, 162, 184,0.6)',
