@@ -1,6 +1,8 @@
 // "https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalrepasse/2020-01-01/2020-12-31";
 // https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
 
+// https://servicos.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/getportalarrecadacao/4/2017
+
 let listMuncipio = [
     { municipiocod: "201", municipionome: "CAROEBE" },
     { municipiocod: "221", municipionome: "IRACEMA" },
@@ -18,7 +20,7 @@ let listMuncipio = [
     { municipiocod: "181", municipionome: "CARACARAÍ" },
     { municipiocod: "321", municipionome: "UIRAMUTÃ" }
 ];
-const BASE_URL = 'https://homol.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
+const BASE_URL = 'https://servicos.sefaz.rr.gov.br/apiarrecadacaorepasse/public/api/';
 let labelImpostos = ['ICMS', 'IPVA', 'OUTROS', 'ITCD', 'IRRF', 'TAXAS'];
 let labelRepasses = ['ICMS', 'IPVA', 'FUNDEBICMS', 'FUNDEBIPVA'];
 
